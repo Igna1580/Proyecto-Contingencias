@@ -1,6 +1,7 @@
 
 i <- 0.04
 v <- 1/(1+i)
+
 #Probabilidades
 
 ProbaH <- read_delim("ProbTransHombres.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
@@ -52,13 +53,19 @@ B_moderate <- 0.3
 B_severe <- 2000000
 B_profound <- 8000000
 
-#--------------------------------------------------
+#----gastos-----------------------------------------
+
+G_emision <- 0.01 #%de prima
+G_renovación <- 0.5 #% de prima
+
+
+
 
 Prima <- function(age){
   P <- (B_severe*a_vitalicia(age, "Able", "Severe") 
-        + B_profound*a_vitalicia(age, "Able", "Profound"))/(a_temporal(age, "Able", "Able") +
+        + B_profound*a_vitalicia(age, "Able", "Profound"))/(1-G_renovacion)((a_temporal(age, "Able", "Able") +
                                                               a_temporal(age, "Able", "Mild") +
-                                                              a_temporal(age, "Able", "Moderate") - a_vitalicia(age, "Able", "Mild") - a_vitalicia(age, "Able", "Moderate"))
+                                                              a_temporal(age, "Able", "Moderate")) - a_vitalicia(age, "Able", "Mild") - a_vitalicia(age, "Able", "Moderate"))-G_emision
   
   return(P)
 }
