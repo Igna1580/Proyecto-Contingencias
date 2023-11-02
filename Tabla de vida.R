@@ -35,12 +35,12 @@ Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 # inflación en Costa Rica de los últimos 20 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
 inflacion_data <- data.frame(
-  Año = c(2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
-  Costa_Rica = c(9.17, 9.45, 12.31, 13.80, 11.47, 9.36, 13.42, 7.84, 5.66, 4.88, 4.50, 5.23, 4.52, 0.80, -0.02, 1.63, 2.22, 2.10, 0.72, 1.73, 8.27)
+  Año = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
+  Costa_Rica = c(4.50, 5.23, 4.52, 0.80, -0.02, 1.63, 2.22, 2.10, 0.72, 1.73, 8.27)
 )
 
 inflacion <- mean(inflacion_data$Costa_Rica) 
-# inflación = 6.15
+# inflación = 2.8818
 
 
 # descargamos la curva de rendimiento soberana de los últimos 6 meses
@@ -99,5 +99,13 @@ tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
   return(p)
 }
 
-#obtencion_tabla_proyeccion(50,1,"H")
-#tPx_ij(2,50,1,2,sexo ="H")
+ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
+  prob <- obtencion_tabla_proyeccion(x,i,sexo)
+  resultado <- 0
+  for (e in 0:(n-1)){
+    resultado <- ((1+inf/100)/(1+r/100))^(e)*prob[e+1,j+2] + resultado
+  }
+  return(resultado)
+}
+
+#--- Obtencion de prima por edad -----------------------------------------------
