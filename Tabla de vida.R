@@ -11,12 +11,11 @@ library(readxl)
 # Supuesto de edad maxima es 110 años
 # inflación, promedio de los últimos 20 años
 
-
 Hombres_2023_demografia <- read_excel("repoblacev2011-2050-05_2.xlsx", sheet = "Cuadro 5 ", range = "G1017:G1177")
 Mujeres_2023_demografia <- read_excel("repoblacev2011-2050-05_2.xlsx", sheet = "Cuadro 5 ", range = "G1857:G2017")
 
-colnames(Hombres_2023_demografia) <- c("lx")
-colnames(Mujeres_2023_demografia) <- c("lx")
+colnames(Hombres_2023_demografia) <- c("poblacion_Hombres")
+colnames(Mujeres_2023_demografia) <- c("poblacion_Mujeres")
 
 
 filtro <- c()
@@ -31,6 +30,8 @@ Prob_Trans_Hombres <- read.csv("ProbTransHombres.csv", sep = ";")
 Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 
+
+#--- Obtencion de inflacio e interes -------------------------------------------
 
 # inflación en Costa Rica de los últimos 20 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
 inflacion_data <- data.frame(
@@ -47,3 +48,56 @@ tasas_Descuento <- read_excel("descuento.xlsx")
 
 descuento <- mean(tasas_Descuento$`3 meses`)
 # descuento 5.8
+
+
+
+#--- Obtencion de Probabilidades -----------------------------------------------
+
+##--- Creacion de Dataframe con datos actuariales ------------------------------
+#Esta funcion crea un dataframe con la pyoyeccion de personas en 
+#ciertos estados a ciertas edades partiendo de una edad base y un sexo
+
+obtencion_tabla_proyeccion <- function(x,status,sexo) {
+  if (sexo == "H"){
+    probabilidades <- Prob_Trans_Hombres
+  }
+  if (sexo == "M"){
+    probabilidades <- Prob_Trans_Mujeres
+  }
+  
+  tabla <- data.frame(
+    "edad" = x:111,
+    "l_age.x_sta.0" = rep(0, 112-x),
+    "l_age.x_sta.1" = rep(0, 112-x),
+    "l_age.x_sta.2" = rep(0, 112-x),
+    "l_age.x_sta.3" = rep(0, 112-x),
+    "l_age.x_sta.4" = rep(0, 112-x),
+    "l_age.x_sta.5" = rep(0, 112-x)
+  )
+  tabla[1,status+2] = 1
+  
+  c(10000, rep(0, 111-x))
+  
+  
+  for (fila in 2:nrow(tabla)){
+    for (col in 2:7){
+      tabla[fila,col] <- 
+        tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
+        tabla[fila-1,3]*probabilidades[(fila+x-21)+91,col+1] + 
+        tabla[fila-1,4]*probabilidades[(fila+x-21)+182,col+1] + 
+        tabla[fila-1,5]*probabilidades[(fila+x-21)+273,col+1] + 
+        tabla[fila-1,6]*probabilidades[(fila+x-21)+364,col+1] + 
+        tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
+    }
+  }
+  return (tabla)
+}
+
+##--- Funcion de obtencion de probabilidades------------------------------------
+tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
+  p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
+  return(p)
+}
+
+#obtencion_tabla_proyeccion(50,1,"H")
+#tPx_ij(2,50,1,2,sexo ="H")
