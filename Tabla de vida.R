@@ -30,6 +30,35 @@ Prob_Trans_Hombres <- read.csv("ProbTransHombres.csv", sep = ";")
 Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 
+#--- Poblacion -----------------------------------------------------------------
+
+edades <- 30:64
+
+porcentajes <- c(0.05, 0.05, 0.8, 0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
+                 rep(0.6, 20))  # Luego, 20 porcentajes uniformes de 0.6
+# Caso hombres 
+
+# Crear un dataframe para las edades
+edades_df <- data.frame(Edad = edades)
+
+edades_seleccionadas_hombres <- Hombres_2023_demografia[edades,] 
+
+# Unir el dataframe de edades con el dataframe de hombres
+edades_seleccionadas_hombres <- cbind(edades_df, edades_seleccionadas_hombres)
+
+
+# Luego puedes agregar este vector de porcentajes al dataframe edades_seleccionadas_hombres
+edades_seleccionadas_hombres$Porcentajes_Diferentes <- porcentajes
+
+# Calcular la población por edad (multiplicar la cantidad de hombres por el porcentaje)
+edades_seleccionadas_hombres$Poblacion_por_Edad <- edades_seleccionadas_hombres$edades_seleccionadas_hombres * edades_seleccionadas_hombres$Porcentajes_Diferentes
+
+# Caso Mujeres 
+edades_seleccionadas_mujeres <- Mujeres_2023_demografia[edades,] 
+edades_seleccionadas_mujeres <- cbind(edades_df, edades_seleccionadas_mujeres)
+edades_seleccionadas_mujeres$Porcentajes_Diferentes <- porcentajes
+edades_seleccionadas_mujeres$Poblacion_por_Edad <- edades_seleccionadas_mujeres$edades_seleccionadas_mujeres * edades_seleccionadas_mujeres$Porcentajes_Diferentes
+
 
 #--- Obtencion de inflacio e interes -------------------------------------------
 
@@ -109,3 +138,6 @@ ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
 }
 
 #--- Obtencion de prima por edad -----------------------------------------------
+
+
+
