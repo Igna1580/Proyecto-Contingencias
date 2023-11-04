@@ -4,7 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(plotly)
 library(readxl)
-
+library("papaja")
 
 #--- Abrir base de datos -------------------------------------------------------
 # Supuesto de distribucion uniforme de muertes
@@ -32,14 +32,14 @@ Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 #--- Poblacion -----------------------------------------------------------------
 
-edades <- 30:64
+edades <- 31:65
 
 porcentajes <- c(0.05, 0.05, 0.8, 0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
                  rep(0.6, 20))  # Luego, 20 porcentajes uniformes de 0.6
 # Caso hombres 
 
 # Crear un dataframe para las edades
-edades_df <- data.frame(Edad = edades)
+edades_df <- data.frame(Edad = edades-1)
 
 edades_seleccionadas_hombres <- Hombres_2023_demografia[edades,] 
 
@@ -62,7 +62,7 @@ edades_seleccionadas_mujeres$Poblacion_por_Edad <- edades_seleccionadas_mujeres$
 
 #--- Obtencion de inflacio e interes -------------------------------------------
 
-# inflación en Costa Rica de los últimos 20 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
+# inflación en Costa Rica de los últimos 10 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
 inflacion_data <- data.frame(
   Año = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
   Costa_Rica = c(4.50, 5.23, 4.52, 0.80, -0.02, 1.63, 2.22, 2.10, 0.72, 1.73, 8.27)

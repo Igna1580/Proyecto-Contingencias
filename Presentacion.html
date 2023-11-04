@@ -181,6 +181,79 @@ window.buildTabsets = function(tocID) {
 };
 
 </script>
+        <script>
+window.initializeCodeFolding = function(show) {
+
+  // handlers for show-all and hide all
+  $("#rmd-show-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('show');
+    });
+  });
+  $("#rmd-hide-all-code").click(function() {
+    $('div.r-code-collapse').each(function() {
+      $(this).collapse('hide');
+    });
+  });
+
+  // index for unique code element ids
+  var currentIndex = 1;
+
+  // select all R code blocks
+  var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
+  rCodeBlocks.each(function() {
+
+    // create a collapsable div to wrap the code in
+    var div = $('<div class="collapse r-code-collapse"></div>');
+    var showThis = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    var id = 'rcode-643E0F36' + currentIndex++;
+    div.attr('id', id);
+    $(this).before(div);
+    $(this).detach().appendTo(div);
+
+    // add a show code button right above
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
+    showCodeButton.append(showCodeText);
+    showCodeButton
+        .attr('data-toggle', 'collapse')
+        .attr('data-target', '#' + id)
+        .attr('aria-expanded', showThis)
+        .attr('aria-controls', id);
+
+    var buttonRow = $('<div class="row"></div>');
+    var buttonCol = $('<div class="col-md-12"></div>');
+
+    buttonCol.append(showCodeButton);
+    buttonRow.append(buttonCol);
+
+    div.before(buttonRow);
+
+    // show the div if necessary
+    if (showThis) div.collapse('show');
+
+    // update state of button on show/hide
+    //   * Change text
+    //   * add a class for intermediate states styling
+    div.on('hide.bs.collapse', function () {
+      showCodeText.text('Code');
+      showCodeButton.addClass('btn-collapsing');
+    });
+    div.on('hidden.bs.collapse', function () {
+      showCodeButton.removeClass('btn-collapsing');
+    });
+    div.on('show.bs.collapse', function () {
+      showCodeText.text('Hide');
+      showCodeButton.addClass('btn-expanding');
+    });
+    div.on('shown.bs.collapse', function () {
+      showCodeButton.removeClass('btn-expanding');
+    });
+
+  });
+
+}
+</script>
         <style type="text/css">
 
 #main .nav-pills {
@@ -1197,6 +1270,11 @@ code span.wa { color: #bf0303; }
     </script>
 
     <!-- code folding -->
+        <script>
+      $(document).ready(function () {
+	  	  	  window.initializeCodeFolding("hide" === "show");
+	        });
+    </script>
     
     <!-- code download -->
     
@@ -1265,6 +1343,13 @@ margin-left: 0 !important;
        <a role="button" href="#" data-toggle="wy-nav-top"><span class="glyphicon glyphicon-menu-hamburger"></span></a>
      </nav>
          
+      <div class="btn-group pull-right">
+     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+     <ul class="dropdown-menu" style="min-width: 50px;">
+	    	    <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+	    <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+	    	    	         </ul>
+   </div>
    
         
       <h1 class="title">Seguro de cuidados de largo plazo</h1>
@@ -1277,7 +1362,7 @@ margin-left: 0 !important;
       <ul>
       <li><a href="#introducción" id="toc-introducción">Introducción</a></li>
       <li><a href="#supuestos" id="toc-supuestos">Supuestos</a></li>
-      <li><a href="#base" id="toc-base">Base</a></li>
+      <li><a href="#bibliografía" id="toc-bibliografía">Bibliografía</a></li>
       <li><a href="#including-plots" id="toc-including-plots">Including
       Plots</a></li>
       </ul>
@@ -1291,7 +1376,7 @@ Carolina Navarro, C05513</p>
 Beirute Abarca, C10997</p>
                         <p class="author"><span class="glyphicon glyphicon-user"></span> Valeria
 Vásquez Venegas, C18373</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 01
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 03
 de noviembre de 2023</p>
           </div>
    </div>
@@ -1305,21 +1390,1087 @@ de noviembre de 2023</p>
 <div id="introducción" class="section level2">
 <h2>Introducción</h2>
 <p>El presente trabajo tiene como objetivo presentar el diseño de un
-producto de cuidados de largo plazo.</p>
+producto de cuidados de largo plazo para la población costarricense. El
+producto propuesto se llama <strong>Longevidad Asegurada</strong> y
+realiza pagos anuales de forma vitalicia, dependiendo del estado de
+salud de la persona, siempre y cuando esta realice pagos de primas
+anuales hasta los 65 años.</p>
+<p>La propuesta actual se centra en ofrecer a los clientes un producto
+especializado que les brinde mayor seguridad de contar con ingresos
+anuales en el futuro, proporcionándoles los recursos necesarios para
+hacer frente a gastos médicos, cirugías y cuidados en la etapa final de
+la vida, sin depender de apoyo financiero externo.</p>
+<p>Debido a que este producto no se encuentra actualmente en el país, se
+utilizan como base para los cálculos los datos experimentales de
+probabilidad en el trabajo: “A multiple state model for pricing and
+reserving private long term care insurance contracts in Australia” <span class="citation">(Leung, 2006)</span>.</p>
 </div>
 <div id="supuestos" class="section level2">
 <h2>Supuestos</h2>
-<p>El producto que estamos proponiendo es de pago anual.</p>
-<p>Se considera una inflación de 6.15%, el cual es un promedio de la
-inflación en Costa Rica en los últimos 20 años según datos del Fondo
-Monetario Internacional, Banco Mundial e indicador del IPC de la
-OCDE.</p>
-<p>Para la tasa de descuento, se considera el promedio de la curva
-soberana del Banco Central de Costa Rica a 3 meeses. Esta es de
-5,8%.</p>
+<p>Para poder crear un producto que sea rentable, se utilizaron
+herramientas de matemática actuarial y fue necesario tomar una serie de
+supuestos que se presentan a continuación:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Inflación:</strong> Se considera un valor fijo de
+inflación de <span class="math inline">\(2.88\%\)</span>. Este es un
+promedio de la inflación en Costa Rica en los últimos 10 años según
+datos de <span class="citation">(Datos Mundial, 2022)</span>,
+alimentados por la base de datos del Fondo Monetario Internacional,
+Banco Mundial e indicador del IPC de la OCDE.</p></li>
+<li><p><strong>Tasa de descuento:</strong> Se descargó la base de datos
+de la Curva de Rendimeinto Soberana del Banco Central a tres meses y se
+decidió considerar un promedio de las tasas de los últimos seis meses,
+específicamente desde 03/05/2023 al 07/11/2023 <span class="citation">(Banco Central de Costa Rica, 2023)</span>. Por lo
+tanto, se consdiera una tasa de descuento del <span class="math inline">\(5.8\%\)</span> para realizar los cálculos
+respectivos.</p></li>
+<li><p><strong>Gastos:</strong> Se consideran unos gastos inciales de
+20% de la primera prima y 5% de las subsiguientes primas.</p></li>
+<li><p><strong>Población:</strong> Se utilizaron estadísticas
+demográficas del 2023 basadas en proyecciones a partir del año 2018 como
+fuente de datos de la población costarricense <span class="citation">(INEC, 2023)</span>. Estas estadísticas proporcionan
+información sobre la cantidad de personas costarricenses vivas,
+desglosadas por género, en edades que varían desde 0 hasta 100 años. El
+producto que se presenta en este informe está dirigido específicamente a
+personas con edades comprendidas entre 30 y 65 años, ya que se considera
+que es menos atractivo para un público más joven. A partir de los 45
+años, se espera que el interés en este seguro se distribuya de manera
+más uniforme. A continuación, se presenta dos cuadros con la información
+de la población considerada en el diseño de este producto para hombres y
+mujeres.</p></li>
+</ol>
+<button onclick="var x = document.getElementById( &#39;tabla_hombres&#39; ); if (x.style.display ===  &#39;none&#39; ) { x.style.display =  &#39;block&#39; ; } else { x.style.display =  &#39;none&#39; ; }">
+Mostrar u ocultar cuadro hombres
+</button>
+<div id="tabla_hombres" style="display: none;">
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+Edad
+</th>
+<th style="text-align:right;">
+Número de hombres
+</th>
+<th style="text-align:right;">
+Porcentaje
+</th>
+<th style="text-align:right;">
+Número de hombres considerados
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+46471.55
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+2323.577
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+45530.12
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+2276.506
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+46035.84
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+36828.670
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+47254.99
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+<td style="text-align:right;">
+3780.399
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+47131.21
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+4713.121
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+45315.22
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+4531.522
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+45221.45
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+6783.217
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+47830.55
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+7174.582
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+46089.45
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+9217.891
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+42828.91
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+8565.782
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+41123.15
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+10280.788
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+40201.72
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+10050.430
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+38810.88
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+11643.263
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+37930.63
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+11379.190
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+36456.87
+</td>
+<td style="text-align:right;">
+0.35
+</td>
+<td style="text-align:right;">
+12759.903
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+35819.45
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+21491.671
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+33057.33
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+19834.399
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+31953.26
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+19171.956
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+30212.43
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+18127.457
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+30067.69
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+18040.613
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+29432.91
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17659.744
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+28548.66
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17129.194
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+28019.22
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16811.531
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+27391.43
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16434.857
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+27402.19
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16441.312
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:right;">
+27549.50
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16529.702
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:right;">
+27751.20
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16650.722
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+27472.85
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16483.712
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+27148.10
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16288.857
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+26738.00
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16042.797
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+25778.65
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+15467.193
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:right;">
+25330.62
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+15198.371
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+24798.63
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+14879.181
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+23754.59
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+14252.756
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+22376.97
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+13426.182
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="base" class="section level2">
-<h2>Base</h2>
+<button onclick="var x = document.getElementById( &#39;tabla_mujeres&#39; ); if (x.style.display ===  &#39;none&#39; ) { x.style.display =  &#39;block&#39; ; } else { x.style.display =  &#39;none&#39; ; }">
+Mostrar u ocultar cuadro mujeres
+</button>
+<div id="tabla_mujeres" style="display: none;">
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+Edad
+</th>
+<th style="text-align:right;">
+Número de mujeres
+</th>
+<th style="text-align:right;">
+Porcentaje
+</th>
+<th style="text-align:right;">
+Número de mujeres consideradas
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+43241.18
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+2162.059
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+42877.77
+</td>
+<td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
+2143.889
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+43013.65
+</td>
+<td style="text-align:right;">
+0.80
+</td>
+<td style="text-align:right;">
+34410.918
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+44751.22
+</td>
+<td style="text-align:right;">
+0.08
+</td>
+<td style="text-align:right;">
+3580.098
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+44142.04
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+4414.204
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+42451.59
+</td>
+<td style="text-align:right;">
+0.10
+</td>
+<td style="text-align:right;">
+4245.159
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+43408.24
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+6511.235
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+46010.49
+</td>
+<td style="text-align:right;">
+0.15
+</td>
+<td style="text-align:right;">
+6901.574
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+44029.80
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+8805.961
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+40401.39
+</td>
+<td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
+8080.278
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+39035.00
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+9758.749
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+38892.27
+</td>
+<td style="text-align:right;">
+0.25
+</td>
+<td style="text-align:right;">
+9723.068
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+38210.65
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+11463.196
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+37293.70
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+11188.111
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+36530.27
+</td>
+<td style="text-align:right;">
+0.35
+</td>
+<td style="text-align:right;">
+12785.593
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+35760.42
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+21456.253
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+32976.85
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+19786.110
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+31788.42
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+19073.053
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+30733.39
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+18440.035
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+30523.50
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+18314.101
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+30046.80
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+18028.078
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+29547.73
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17728.635
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+29184.58
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17510.746
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+28598.01
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17158.806
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+28666.93
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17200.158
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+55
+</td>
+<td style="text-align:right;">
+28928.04
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17356.822
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+56
+</td>
+<td style="text-align:right;">
+29346.97
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17608.181
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+57
+</td>
+<td style="text-align:right;">
+28881.60
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17328.961
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+28400.52
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+17040.314
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+27980.98
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16788.586
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+27033.04
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+16219.824
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+61
+</td>
+<td style="text-align:right;">
+26574.79
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+15944.871
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+26172.69
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+15703.613
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+24952.74
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+14971.645
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+64
+</td>
+<td style="text-align:right;">
+23372.61
+</td>
+<td style="text-align:right;">
+0.60
+</td>
+<td style="text-align:right;">
+14023.568
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="bibliografía" class="section level2">
+<h2>Bibliografía</h2>
 <p>This is an R Markdown document. Markdown is a simple formatting
 syntax for authoring HTML, PDF, and MS Word documents. For more details
 on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
@@ -1343,6 +2494,26 @@ chunk like this:</p>
 <p>Note that the <code>echo = FALSE</code> parameter was added to the
 code chunk to prevent printing of the R code that generated the
 plot.</p>
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-descuento" class="csl-entry">
+Banco Central de Costa Rica, m. (2023). <em>Curva de rendimiento
+soberana</em>. <a href="https://gee.bccr.fi.cr/indicadoreseconomicos/Cuadros/frmVerCatCuadro.aspx?idioma=1&amp;CodCuadro=%202786">https://gee.bccr.fi.cr/indicadoreseconomicos/Cuadros/frmVerCatCuadro.aspx?idioma=1&amp;CodCuadro=%202786</a>
+</div>
+<div id="ref-inflacion" class="csl-entry">
+Datos Mundial, m. (2022). <em>Desarrollo de las tasas de inflación en
+costa rica</em>. <a href="https://www.datosmundial.com/america/costa-rica/inflacion.php">https://www.datosmundial.com/america/costa-rica/inflacion.php</a>
+</div>
+<div id="ref-poblacion" class="csl-entry">
+INEC, m. (2023). <em>Estadísticas demográficas. 2011 – 2050.
+Proyecciones nacionales. Población por años calendario, según sexo y
+grupos especiales de edades</em>. <a href="https://inec.cr/estadisticas-fuentes/estadisticas-demograficas?topics=91&amp;filtertext=Poblaci%25C3%25B3n%2520&amp;formats=text%252Fcsv%252Capplication%252Fvnd.openxmlformats-officedocument.spreadsheetml.sheet%252Capplication%252Fvnd.ms-excel&amp;page=2">https://inec.cr/estadisticas-fuentes/estadisticas-demograficas?topics=91&amp;filtertext=Poblaci%25C3%25B3n%2520&amp;formats=text%252Fcsv%252Capplication%252Fvnd.openxmlformats-officedocument.spreadsheetml.sheet%252Capplication%252Fvnd.ms-excel&amp;page=2</a>
+</div>
+<div id="ref-leung2006multiple" class="csl-entry">
+Leung, E. (2006). A multiple state model for pricing and reserving
+private long term care insurance contracts in australia. <em>Australian
+Actuarial Journal</em>, <em>12</em>(2), 187–247.
+</div>
+</div>
 </div>
 </div>
 
