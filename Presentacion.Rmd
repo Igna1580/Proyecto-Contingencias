@@ -16,7 +16,6 @@ bibliography: bibliografia_contingencias.bib
 csl: apa.csl  
 editor_options: 
   chunk_output_type: console
-
 ---
 
 ```{r setup, include=FALSE}
@@ -25,9 +24,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introducción
 
-El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos anuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas anuales hasta los 65 años. 
+El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas mensuales hasta los 65 años. 
 
-La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos anuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo.
+La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos anuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo. Específicamente, el seguro de cuidados de largo plazo propuesto constituye una póliza para las personas con estados de salud delicados que requieren tratamiento y atención médica constante. Este seguro cubre los costos mensuales de enfermería domiciliaria para los cuidados paliativos como lo son: ayuda con la alimentación y el aseo, aplicación de inyecciones y medicamentos, tratamiento de heridas, entre otros requeridos.También, el seguro cubre los gastos mensuales de estancia en hogares de ancianos.
 
 Debido a que este producto no se encuentra actualmente en el país, se utilizan como base para los cálculos los datos experimentales de probabilidad en el trabajo: "A multiple state model for pricing and reserving private long term care insurance contracts in Australia" [@leung2006multiple].
 
@@ -35,13 +34,29 @@ Debido a que este producto no se encuentra actualmente en el país, se utilizan 
 
 Para poder crear un producto que sea rentable, se utilizaron herramientas de matemática actuarial y fue necesario tomar una serie de supuestos que se presentan a continuación: 
 
-1. **Inflación:** Se considera un valor fijo de inflación de $2.88\%$. Este es un promedio de la inflación en Costa Rica en los últimos 10 años según datos de [@inflacion], alimentados por la base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE.  
+1. **Monto de los beneficios:** Para establecer el monto de los beneficios se toma en consideración el estado de salud en que se encuentre el asegurado al final del mes. Se dictaminan cuatro estados pagaderos de beneficios:  leve, moderado, severo y profundo. El valor de los beneficios correspondientes a cada estado cubrirá un porcentaje de los gastos de cuidados, el cual es de 25%, 35%, 45%, 55% respectivamente. 
 
-2. **Tasa de descuento:** Se descargó la base de datos de la Curva de Rendimeinto Soberana del Banco Central a tres meses y se decidió considerar un promedio de las tasas de los últimos seis meses, específicamente desde 03/05/2023 al 07/11/2023 [@descuento]. Por lo tanto, se consdiera una tasa de descuento del $5.8\%$ para realizar los cálculos respectivos. 
+Por tanto, primeramente, es necesario definir el costo promedio mensual en Costa Rica de los servicios de atención de enfermería y la estancia en acilos de ancianos. De acuerdo con [@ascilo], el costo promedio de cuido de un adulto en una residencia de largo plazo es aproximadamente de 431.136 colones mensuales. En cuanto a la asistencia de enfermería privada a domicilio, según [@enfermeria], el salario mínimo por servicios profesionales durante el segundo semestre 2019 de enfermería es de 809.463,15 colones mensuales. Considerando que trabajan seis días a la semana durante 8 horas el salario por hora es de 4215,953906 colones. Para el cálculo de los gastos por este servicio, se establece el supuesto de que el cuido es durante seis días de la semana en todo el mes y las horas de atención son de acuerdo con el estado de salud del asegurado.  Si el estado es leve se considera una atención de tres horas. En caso de presentar un estado moderado, la atención es de 6 horas.  Para un asegurado con salud grave son 8 horas y profunda son 10 horas de atención. De tal manera, los costos mensuales corresponden a:  303.548,6812 colones, 607.097,3625 colones, 809.463,15 colones y 1.011.828,937 colones respectivamente.
 
-3. **Gastos:** Se consideran unos gastos inciales de 20\% de la primera prima y 5\% de las subsiguientes primas. 
+Por consiguiente, el costo total de los gastos por cuidados y valor de los beneficios que proporciona el seguro se muestran en la siguiente tabla:
 
-4. **Población:** Se utilizaron estadísticas demográficas del 2023 basadas en proyecciones a partir del año 2018 como fuente de datos de la población costarricense [@poblacion]. Estas estadísticas proporcionan información sobre la cantidad de personas costarricenses vivas, desglosadas por género, en edades que varían desde 0 hasta 100 años. El producto que se presenta en este informe está dirigido específicamente a personas con edades comprendidas entre 30 y 65 años, ya que se considera que es menos atractivo para un público más joven. A partir de los 45 años, se espera que el interés en este seguro se distribuya de manera más uniforme. A continuación, se presenta dos cuadros con la información de la población considerada en el diseño de este producto para hombres y mujeres. 
+```
+| Estado de salud | Costo total mensual de los gastos de cuido (en colones) | Beneficios mensuales del seguro (en colones) |
+|-----------------|---------------------------------------------------------|----------------------------------------------|
+| Leve            |     734.684,6812                                        |     183.671,1703                             |
+| Moderado        |     1.038.233,363                                       |     363.381,6771                             |
+| Severo          |     1.240.599,15                                        |     558.269,6175                             |
+| Profuno         |     1.442.964,937                                       |     793.630,7154                             |
+
+```
+
+2. **Inflación:** Se considera un valor fijo de inflación de $2.88\%$. Este es un promedio de la inflación en Costa Rica en los últimos 10 años según datos de [@inflacion], alimentados por la base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE.  
+
+3. **Tasa de descuento:** Se descargó la base de datos de la Curva de Rendimiento Soberana del Banco Central a tres meses y se decidió considerar un promedio de las tasas de los últimos seis meses, específicamente desde 03/05/2023 al 07/11/2023 [@descuento]. Por lo tanto, se considera una tasa de descuento del $5.8\%$ para realizar los cálculos respectivos. 
+
+4. **Gastos:** Se consideran unos gastos inciales de 20\% de la primera prima y 5\% de las subsiguientes primas. 
+
+5. **Población:** Se utilizaron estadísticas demográficas del 2023 basadas en proyecciones a partir del año 2018 como fuente de datos de la población costarricense [@poblacion]. Estas estadísticas proporcionan información sobre la cantidad de personas costarricenses vivas, desglosadas por género, en edades que varían desde 0 hasta 100 años. El producto que se presenta en este informe está dirigido específicamente a personas con edades comprendidas entre 30 y 65 años, ya que se considera que es menos atractivo para un público más joven. A partir de los 45 años, se espera que el interés en este seguro se distribuya de manera más uniforme. A continuación, se presenta dos cuadros con la información de la población considerada en el diseño de este producto para hombres y mujeres. 
 
 ```{r, echo=FALSE, results='hide', message=FALSE}
 
