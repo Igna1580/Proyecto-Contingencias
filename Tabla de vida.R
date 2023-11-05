@@ -140,10 +140,10 @@ ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
 
 #--- Prima inclusiva -----------------------------------------------
 
-A <- 2000
-B <- 4000
-C <- 6000
-D <- 8000
+A <- 183671.1703
+B <- 363381.6771
+C <- 740398.8263
+D <- 1572738.998
 
 # Crear un vector vacío para almacenar los resultados de hombres
 

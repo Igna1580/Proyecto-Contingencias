@@ -1403,6 +1403,24 @@ especializado que les brinde mayor seguridad de contar con ingresos
 mensuales en el futuro, proporcionándoles los recursos necesarios para
 hacer frente a gastos médicos, cirugías y cuidados en la etapa final de
 la vida, sin depender de apoyo financiero externo.</p>
+<p>El presente trabajo tiene como objetivo presentar el diseño de un
+producto de cuidados de largo plazo para la población costarricense. El
+producto propuesto se llama <strong>Longevidad Asegurada</strong> y
+realiza pagos mensuales de forma vitalicia, dependiendo del estado de
+salud de la persona, siempre y cuando esta realice pagos de primas
+mensuales hasta los 65 años.</p>
+<p>La propuesta actual se centra en ofrecer a los clientes un producto
+especializado que les brinde mayor seguridad de contar con ingresos
+mensuales en el futuro, proporcionándoles los recursos necesarios para
+hacer frente a gastos médicos, cirugías y cuidados en la etapa final de
+la vida, sin depender de apoyo financiero externo. Específicamente, el
+seguro de cuidados de largo plazo propuesto constituye una póliza para
+las personas con estados de salud delicados que requieren tratamiento y
+atención médica constante. Este seguro cubre los costos mensuales de
+enfermería domiciliaria para los cuidados paliativos como lo son: ayuda
+con la alimentación y el aseo, aplicación de inyecciones y medicamentos,
+tratamiento de heridas, entre otros requeridos.También, el seguro cubre
+los gastos mensuales de estancia en hogares de ancianos.</p>
 <p>Debido a que este producto no se encuentra actualmente en el país, se
 utilizan como base para los cálculos los datos experimentales de
 probabilidad en el trabajo: “A multiple state model for pricing and
@@ -1414,6 +1432,71 @@ reserving private long term care insurance contracts in Australia” <span class
 herramientas de matemática actuarial y fue necesario tomar una serie de
 supuestos que se presentan a continuación:</p>
 <ol style="list-style-type: decimal">
+<li><strong>Monto de los beneficios:</strong> Para establecer el monto
+de los beneficios se toma en consideración el estado de salud en que se
+encuentre el asegurado al final del mes. Se dictaminan cuatro estados
+pagaderos de beneficios: leve, moderado, severo y profundo. El valor de
+los beneficios correspondientes a cada estado cubrirá un porcentaje de
+los gastos de cuidados, el cual es de 25%, 35%, 45%, 55%
+respectivamente. Por tanto, primeramente, es necesario definir el costo
+promedio mensual en Costa Rica de los servicios de atención de
+enfermería y la estancia en ascilos de ancianos. De acuerdo con <span class="citation">(Medellín et al., 2020)</span>, el costo promedio de
+cuido de un adulto en una residencia de largo plazo es aproximadamente
+de 431.136 colones mensuales. En cuanto a la asistencia de enfermería
+privada a domicilio, según <span class="citation">(Enfermeras de Costa
+Rica, 2020)</span>, el salario mínimo por servicios profesionales
+durante el segundo semestre 2019 de enfermería es de 809.463,15 colones
+mensuales. Considerando que trabajan seis días a la semana durante 8
+horas el salario por hora es de 4215,953906 colones. Para el cálculo de
+los gastos por este servicio, se establece el supuesto de que el cuido
+es durante seis días de la semana en todo el mes y las horas de atención
+son de acuerdo con el estado de salud del asegurado. Si el estado es
+leve se considera una atención de tres horas. En caso de presentar un
+estado moderado, la atención es de seis horas. Para un asegurado con
+salud grave son doce horas y profunda son veinticuatro horas de
+atención. De tal manera, los costos mensuales corresponden a:
+303.548,6812 colones, 607.097,3625 colones, 1.214.194,725 colones y
+2.428.389,45 colones respectivamente. Por consiguiente, el costo total
+de los gastos por cuidados y valor de los beneficios que proporciona el
+seguro se muestran en la siguiente tabla:</li>
+</ol>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="47%" />
+<col width="38%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Estado de salud</th>
+<th>Costo total mensual de los gastos de cuido (en colones)</th>
+<th>Beneficios mensuales del seguro (en colones)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Leve</td>
+<td>734.684,6812</td>
+<td>183.671,1703</td>
+</tr>
+<tr class="even">
+<td>Moderado</td>
+<td>1.038.233,363</td>
+<td>363.381,6771</td>
+</tr>
+<tr class="odd">
+<td>Severo</td>
+<td>1.645.330,725</td>
+<td>740.398,8263</td>
+</tr>
+<tr class="even">
+<td>Profundo</td>
+<td>2.859.525,45</td>
+<td>1.572.738,998</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
 <li><p><strong>Inflación:</strong> Se considera un valor fijo de
 inflación de <span class="math inline">\(2.88\%\)</span>. Este es un
 promedio de la inflación en Costa Rica en los últimos 10 años según
@@ -1421,10 +1504,10 @@ datos de <span class="citation">(Datos Mundial, 2022)</span>,
 alimentados por la base de datos del Fondo Monetario Internacional,
 Banco Mundial e indicador del IPC de la OCDE.</p></li>
 <li><p><strong>Tasa de descuento:</strong> Se descargó la base de datos
-de la Curva de Rendimeinto Soberana del Banco Central a tres meses y se
+de la Curva de Rendimiento Soberana del Banco Central a tres meses y se
 decidió considerar un promedio de las tasas de los últimos seis meses,
 específicamente desde 03/05/2023 al 07/11/2023 <span class="citation">(Banco Central de Costa Rica, 2023)</span>. Por lo
-tanto, se consdiera una tasa de descuento del <span class="math inline">\(5.8\%\)</span> para realizar los cálculos
+tanto, se considera una tasa de descuento del <span class="math inline">\(5.8\%\)</span> para realizar los cálculos
 respectivos.</p></li>
 <li><p><strong>Gastos:</strong> Se consideran unos gastos inciales de
 20% de la primera prima y 5% de las subsiguientes primas.</p></li>
@@ -2607,6 +2690,10 @@ soberana</em>. <a href="https://gee.bccr.fi.cr/indicadoreseconomicos/Cuadros/frm
 Datos Mundial, m. (2022). <em>Desarrollo de las tasas de inflación en
 costa rica</em>. <a href="https://www.datosmundial.com/america/costa-rica/inflacion.php">https://www.datosmundial.com/america/costa-rica/inflacion.php</a>
 </div>
+<div id="ref-enfemeria" class="csl-entry">
+Enfermeras de Costa Rica, C. de. (2020). <em>Salarios sector privado
+para enfermería II semestre 2019</em>. <a href="https://www.enfermeria.cr/pr0ject/docs/reglamentos/FIS_CECR_2414%20(1).pdf">https://www.enfermeria.cr/pr0ject/docs/reglamentos/FIS_CECR_2414%20(1).pdf</a>
+</div>
 <div id="ref-poblacion" class="csl-entry">
 INEC, m. (2023). <em>Estadísticas demográficas. 2011 – 2050.
 Proyecciones nacionales. Población por años calendario, según sexo y
@@ -2616,6 +2703,10 @@ grupos especiales de edades</em>. <a href="https://inec.cr/estadisticas-fuentes/
 Leung, E. (2006). A multiple state model for pricing and reserving
 private long term care insurance contracts in australia. <em>Australian
 Actuarial Journal</em>, <em>12</em>(2), 187–247.
+</div>
+<div id="ref-ascilo" class="csl-entry">
+Medellín, N., Jara Maleš, P., &amp; Matus-López, M. (2020).
+<em>Envejecimiento y atención a la dependencia en costa rica</em>. <a href="https://eurosocial.eu/wp-content/uploads/2020/10/Envejecimiento_y_atenci%C3%B3n_a_la_dependencia_en_Costa_Rica.pdf">https://eurosocial.eu/wp-content/uploads/2020/10/Envejecimiento_y_atenci%C3%B3n_a_la_dependencia_en_Costa_Rica.pdf</a>
 </div>
 </div>
 </div>
