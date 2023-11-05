@@ -22,12 +22,16 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+<style>
+body {
+text-align: justify}
+</style>
 
 ## Introducción
 
-El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos anuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas anuales hasta los 65 años. 
+El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas anuales hasta los 65 años. 
 
-La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos anuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo.
+La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos mensuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo.
 
 Debido a que este producto no se encuentra actualmente en el país, se utilizan como base para los cálculos los datos experimentales de probabilidad en el trabajo: "A multiple state model for pricing and reserving private long term care insurance contracts in Australia" [@leung2006multiple].
 
@@ -132,6 +136,92 @@ cat(tabla_html)
 cat('</div>')
 ```
 
+## Diseño del producto 
+
+Siguiendo la base del trabajo de @leung2006multiple, el modelo debe de considerar los siguientes cinco estados: 
+
+Estado  | Nombre   |Transiciona a estados|
+--------|----------|---------------------|
+0       | capaz    |1, 2, 3, 4, 5.       |
+1       | leve     |0, 2, 3, 4, 5.       |       
+2       | moderado |1, 3, 4, 5.          |
+3       | severo   |2, 4, 5.             |  
+4       | profundo |3, 5.                |
+5       | muerto   |ninguno              |
+
+Si una persona que compra el seguro **Longevidad Asegurada**, que actualmente se encuentra en el estado de leve (1), dentro de un período futuro t, su estado de salud puede permanecer igual o cambiar a uno de los siguientes estados: capaz (0), moderado (2), severo (3), profundo (4) o muerto (5). Sin embargo, para una persona que hoy se encuentra en el estado profundo, en cualquier momento en el futuro, su estado de salud puede permanecer sin cambios, o puede cambiar a los estados severo (3) o muerto (5).
+
+Para un mayor entendimiento, se presenta el siguiente gráfico de múltiples estados: 
+
+```{r echo=FALSE, error=FALSE}
+knitr::include_graphics("modelo.jpg")
+```
+
+En este gráfico, cada una de las flechas simboliza que existe probabilidad positiva ( > 0 ) de pasar de un estado "i" a un estado "j".
+
+
+Lo primero que se realizó fue la creación de la tabla de probabilidades de transición para la población masculina y femenina. Esto implica conocer la probabilidad de transición de un estado "i" a un estado "j", que puede ser el mismo, para cada edad. Si desea ver cómo se realizó lo anterior, puede acceder a la visualización presionando el botón correspondiente. Además, se presenta la función que permite obtener las probabilidades de transición a un año de un estado "i" a un estado "j", para cada edad.
+
+```{r, eval=TRUE, message=FALSE}
+
+# Creamos una función llamada "obtencion_tabla_proyeccion", la cual va depender de tres parámetros: 
+# la edad x, el estado en el cual se encuentra la persona a la edad x y el sexo de la persona. 
+
+# Se toma las probabilidades del paper de Leung
+obtencion_tabla_proyeccion <- function(x,status,sexo) {
+  if (sexo == "H"){
+    probabilidades <- Prob_Trans_Hombres
+  }
+  if (sexo == "M"){
+    probabilidades <- Prob_Trans_Mujeres
+  }
+  
+  tabla <- data.frame(
+    "edad" = x:111,
+    "l_age.x_sta.0" = rep(0, 112-x),
+    "l_age.x_sta.1" = rep(0, 112-x),
+    "l_age.x_sta.2" = rep(0, 112-x),
+    "l_age.x_sta.3" = rep(0, 112-x),
+    "l_age.x_sta.4" = rep(0, 112-x),
+    "l_age.x_sta.5" = rep(0, 112-x)
+  )
+  tabla[1,status+2] = 1
+  
+  c(10000, rep(0, 111-x))
+  
+  
+  for (fila in 2:nrow(tabla)){
+    for (col in 2:7){
+      tabla[fila,col] <- 
+        tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
+        tabla[fila-1,3]*probabilidades[(fila+x-21)+91,col+1] + 
+        tabla[fila-1,4]*probabilidades[(fila+x-21)+182,col+1] + 
+        tabla[fila-1,5]*probabilidades[(fila+x-21)+273,col+1] + 
+        tabla[fila-1,6]*probabilidades[(fila+x-21)+364,col+1] + 
+        tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
+    }
+  }
+  return (tabla)
+}
+
+# Ahora, creamos otra función para obtener las probabilidades de transición de un año, para una persona 
+# de edad x, del estado i al estado j. 
+
+tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
+  p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
+  return(p)
+}
+
+```
+### Propuesta #1
+
+La primera propuesta considera un producto en el cual el cálculo de la prima es el mismo para todas las personas, sin importar su edad, la edad en la que adquieren el producto, su estado de salud o su sexo.
+
+El producto va a pagar montos de anualidad diferentes dependiendo del estado en el que se encuentre la persona. Para ello, se utiliza la 
+
+
+
+
 
 
 ##  Bibliografía
@@ -142,20 +232,4 @@ cat('</div>')
 
 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

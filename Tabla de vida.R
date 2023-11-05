@@ -123,6 +123,7 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
 }
 
 ##--- Funcion de obtencion de probabilidades------------------------------------
+
 tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
   p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
   return(p)
