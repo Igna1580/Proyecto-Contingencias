@@ -34,7 +34,7 @@ Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 edades <- 31:65
 
-porcentajes <- c(0.05, 0.05, 0.8, 0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
+porcentajes <- c(0.05, 0.05, 0.08,0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
                  rep(0.6, 20))  # Luego, 20 porcentajes uniformes de 0.6
 # Caso hombres 
 
@@ -45,7 +45,6 @@ edades_selec_H <- Hombres_2023_demografia[edades,]
 
 # Unir el dataframe de edades con el dataframe de hombres
 edades_selec_H <- cbind(edades_df, edades_selec_H)
-
 
 # Luego puedes agregar este vector de porcentajes al dataframe edades_selec_H
 edades_selec_H$porc_estimados <- porcentajes
@@ -64,7 +63,7 @@ edades_selec_M$pob_estimada<- edades_selec_M$pob_M * edades_selec_M$porc_estimad
 
 # inflación en Costa Rica de los últimos 10 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
 inflacion_data <- data.frame(
-  Año = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
+  Ano = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
   Costa_Rica = c(4.50, 5.23, 4.52, 0.80, -0.02, 1.63, 2.22, 2.10, 0.72, 1.73, 8.27)
 )
 
@@ -227,9 +226,37 @@ beneficios_totales <- suma_benef_M_indiv + suma_benef_H_indiv
 
 primas_0.95 <- (primas_hombres_suma + primas_mujeres_suma)*0.95
 
-costo_incial <- 0.15
+costo_inicial <- 0.15
 
-total_primas <- costo_incial + primas_0.95
+total_primas <- costo_inicial + primas_0.95
 
 prima <- beneficios_totales / total_primas
+
+# si consideramos primas separadas para población mujeres y población masculina sería:
+
+primas_0.95_hombres <- primas_hombres_suma*0.95
+
+total_primas_hombres <- costo_inicial + primas_0.95_hombres
+
+prima_hombres <- suma_benef_H_indiv / total_primas_hombres
+
+
+primas_0.95_mujeres <- primas_mujeres_suma*0.95
+
+total_primas_mujeres <- costo_inicial + primas_0.95_mujeres
+
+prima_mujeres <- suma_benef_M_indiv / total_primas_mujeres
+
+#--------Graficos de poblacion--------------
+
+p = ggplot() + 
+  geom_line(data = edades_selec_H, aes(x = Edad, y = pob_estimada, color = "Hombres"), linetype = "solid", size = 1) +
+  geom_line(data = edades_selec_M, aes(x = Edad, y = pob_estimada, color = "Mujeres"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Hombres" = "lightblue4", "Mujeres" = "maroon"), name = "Población") +
+  xlab('Edad') +
+  ylab('Población estimada') + cowplot::theme_cowplot()
+
+
+print(p)
+
 

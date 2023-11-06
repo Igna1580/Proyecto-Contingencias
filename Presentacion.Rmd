@@ -28,11 +28,6 @@ text-align: justify}
 
 ## Introducción
 
-
-El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas anuales hasta los 65 años. 
-
-La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos mensuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo.
-
 El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas mensuales hasta los 65 años.
 
 La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos mensuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo. Específicamente, el seguro de cuidados de largo plazo propuesto constituye una póliza para las personas con estados de salud delicados que requieren tratamiento y atención médica constante. Este seguro cubre los costos mensuales de enfermería domiciliaria para los cuidados paliativos como lo son: ayuda con la alimentación y el aseo, aplicación de inyecciones y medicamentos, tratamiento de heridas, entre otros requeridos.También, el seguro cubre los gastos mensuales de estancia en hogares de ancianos.
