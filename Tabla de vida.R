@@ -11,13 +11,14 @@ library("papaja")
 # Supuesto de edad maxima es 110 años
 # inflación, promedio de los últimos 10 años
 
+#abrir datos demograficos
 Hombres_2023_demografia <- read_excel("repoblacev2011-2050-05_2.xlsx", sheet = "Cuadro 5 ", range = "G1017:G1177")
 Mujeres_2023_demografia <- read_excel("repoblacev2011-2050-05_2.xlsx", sheet = "Cuadro 5 ", range = "G1857:G2017")
 
 colnames(Hombres_2023_demografia) <- c("pob_H")
 colnames(Mujeres_2023_demografia) <- c("pob_M")
 
-
+#filtrar los datos demograficos
 filtro <- c()
 for (i in 0:19){
   filtro <- c(filtro, (4+i*8):(8+i*8))
@@ -26,21 +27,26 @@ for (i in 0:19){
 Hombres_2023_demografia <- Hombres_2023_demografia[filtro,1]
 Mujeres_2023_demografia <- Mujeres_2023_demografia[filtro,1]
 
+#abrir datos de probabilidades de transicion
 Prob_Trans_Hombres <- read.csv("ProbTransHombres.csv", sep = ";")
 Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
+#ajustarlas para que sumen 1
+for(fila in 1:nrow(Prob_Trans_Hombres)){
+  for(col in 3:8){
+    Prob_Trans_Hombres[fila,col] <- Prob_Trans_Hombres[fila,col]/sum(Prob_Trans_Hombres[fila,3:8])
+    Prob_Trans_Mujeres[fila,col] <- Prob_Trans_Mujeres[fila,col]/sum(Prob_Trans_Mujeres[fila,3:8])
+  }
+}
 
 #--- Poblacion -----------------------------------------------------------------
-
 edades <- 31:65
-
-porcentajes <- c(0.05, 0.05, 0.8, 0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
+porcentajes <- c(0.05, 0.05, 0.08, 0.08, 0.10, 0.10, 0.15, 0.15, 0.20, 0.20, 0.25, 0.25, 0.30, 0.30, 0.35,
                  rep(0.6, 20))  # Luego, 20 porcentajes uniformes de 0.6
 # Caso hombres 
 
 # Crear un dataframe para las edades
 edades_df <- data.frame(Edad = edades-1)
-
 edades_selec_H <- Hombres_2023_demografia[edades,] 
 
 # Unir el dataframe de edades con el dataframe de hombres
@@ -83,8 +89,8 @@ descuento <- mean(tasas_Descuento$`3 meses`)
 #--- Probabilidades ------------------------------------------------------------
 
 ##--- Creacion de Dataframe con datos actuariales ------------------------------
-#Esta funcion crea un dataframe con la pyoyeccion de personas en 
-#ciertos estados a ciertas edades partiendo de una edad base y un sexo
+#Esta funcion crea un dataframe con la proyeccion de personas (1 persona) en 
+#ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
 
 obtencion_tabla_proyeccion <- function(x,status,sexo) {
   if (sexo == "H"){
@@ -122,13 +128,15 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
   return (tabla)
 }
 
-##--- Funcion de Obtencion de Probabilidades------------------------------------
+##--- Funciones actuariales ----------------------------------------------------
 
+#Funcion de probabilidad
 tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
   p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
   return(p)
 }
 
+#Funcion de anualidad prepagable
 ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
@@ -232,4 +240,201 @@ costo_incial <- 0.15
 total_primas <- costo_incial + primas_0.95
 
 prima <- beneficios_totales / total_primas
+
+#--- Modelo Deterministico Cantidad Esperada de Personas al final del año ------
+
+
+
+#--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
+#Proyeccion a 80 años
+#Esperanza y el percentil 99,5
+#Se toman 100 bases de datos, cada una con 1000 personas
+
+set.seed(123) #establece semilla para probabilidades
+
+#Crear vector con 100 dataframes
+vector_de_df <- vector("list", 100)
+for (i in 1:100) {#Crear los df
+  vector_de_df[[i]] <- data.frame(
+    Edad = c(rep(30,5),
+             rep(31,5),
+             rep(32,8),
+             rep(33,8),
+             rep(34,11),
+             rep(35,10),
+             rep(36,15),
+             rep(37,16),
+             rep(38,21),
+             rep(39,19),
+             rep(40,23),
+             rep(41,23),
+             rep(42,26),
+             rep(43,26),
+             rep(44,29),
+             rep(45,48),
+             rep(46,45),
+             rep(47,43),
+             rep(48,41),
+             rep(49,40),
+             rep(50,40),
+             rep(51,38),
+             rep(52,38),
+             rep(53,37),
+             rep(54,37),
+             rep(55,37),
+             rep(56,37),
+             rep(57,37),
+             rep(58,37),
+             rep(59,36),
+             rep(60,35),
+             rep(61,34),
+             rep(62,33),
+             rep(63,32),
+             rep(64,30)),
+    Año_0 = rep(0,1000),  
+    Año_1 = runif(1000),  
+    Año_2 = runif(1000),  
+    Año_3 = runif(1000),  
+    Año_4 = runif(1000),  
+    Año_5 = runif(1000),  
+    Año_6 = runif(1000),  
+    Año_7 = runif(1000),  
+    Año_8 = runif(1000),  
+    Año_9 = runif(1000),
+    Año_10 = runif(1000),
+    Año_11 = runif(1000),
+    Año_12 = runif(1000),
+    Año_13 = runif(1000),
+    Año_14 = runif(1000),
+    Año_15 = runif(1000),
+    Año_16 = runif(1000),
+    Año_17 = runif(1000),
+    Año_18 = runif(1000),
+    Año_19 = runif(1000),
+    Año_20 = runif(1000),
+    Año_21 = runif(1000),
+    Año_22 = runif(1000),
+    Año_23 = runif(1000),
+    Año_24 = runif(1000),
+    Año_25 = runif(1000),
+    Año_26 = runif(1000),
+    Año_27 = runif(1000),
+    Año_28 = runif(1000),
+    Año_29 = runif(1000),
+    Año_30 = runif(1000),
+    Año_31 = runif(1000),
+    Año_32 = runif(1000),
+    Año_33 = runif(1000),
+    Año_34 = runif(1000),
+    Año_35 = runif(1000),
+    Año_36 = runif(1000),
+    Año_37 = runif(1000),
+    Año_38 = runif(1000),
+    Año_39 = runif(1000),
+    Año_40 = runif(1000),
+    Año_41 = runif(1000),
+    Año_42 = runif(1000),
+    Año_43 = runif(1000),
+    Año_44 = runif(1000),
+    Año_45 = runif(1000),
+    Año_46 = runif(1000),
+    Año_47 = runif(1000),
+    Año_48 = runif(1000),
+    Año_49 = runif(1000),
+    Año_50 = runif(1000),
+    Año_51 = runif(1000),
+    Año_52 = runif(1000),
+    Año_53 = runif(1000),
+    Año_54 = runif(1000),
+    Año_55 = runif(1000),
+    Año_56 = runif(1000),
+    Año_57 = runif(1000),
+    Año_58 = runif(1000),
+    Año_59 = runif(1000),
+    Año_60 = runif(1000),
+    Año_61 = runif(1000),
+    Año_62 = runif(1000),
+    Año_63 = runif(1000),
+    Año_64 = runif(1000),
+    Año_65 = runif(1000),
+    Año_66 = runif(1000),
+    Año_67 = runif(1000),
+    Año_68 = runif(1000),
+    Año_69 = runif(1000),
+    Año_70 = runif(1000),
+    Año_71 = runif(1000),
+    Año_72 = runif(1000),
+    Año_73 = runif(1000),
+    Año_74 = runif(1000),
+    Año_75 = runif(1000),
+    Año_76 = runif(1000),
+    Año_77 = runif(1000),
+    Año_78 = runif(1000),
+    Año_79 = runif(1000),
+    Año_80 = runif(1000)
+  )
+}
+
+#Obtener los estados de las personas simuladas
+for(i in 1:1){#(i in 1:100){
+  for(col in 3:82){
+    for(fil in 1:1000){
+      if(vector_de_df[[i]][fil,col-1]==0){
+        fil_prob <-  0
+      }
+      if(vector_de_df[[i]][fil,col-1]==1){
+        fil_prob <-  91
+      }
+      if(vector_de_df[[i]][fil,col-1]==2){
+        fil_prob <-  182
+      }
+      if(vector_de_df[[i]][fil,col-1]==3){
+        fil_prob <-  273
+      }
+      if(vector_de_df[[i]][fil,col-1]==4){
+        fil_prob <-  364
+      }
+      if(vector_de_df[[i]][fil,col-1]==5){
+        vector_de_df[[i]][fil,col] <- 5
+        next
+      }
+      
+      traspaso_0 <- Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),3]#pasar al estado 0
+      if(vector_de_df[[i]][fil,col]<=traspaso_0){
+        vector_de_df[[i]][fil,col] <- 0
+      }else{
+        traspaso_1 <- traspaso_0 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),4]#pasar al estado 1
+        if(vector_de_df[[i]][fil,col]<=traspaso_1){
+          vector_de_df[[i]][fil,col] <- 1
+        }else{
+          traspaso_2 <- traspaso_1 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),5]#pasar al estado 2
+          if(vector_de_df[[i]][fil,col]<=traspaso_2){
+            vector_de_df[[i]][fil,col] <- 2
+          }else{
+            traspaso_3 <- traspaso_2 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),6]#pasar al estado 3
+            if(vector_de_df[[i]][fil,col]<=traspaso_3){
+              vector_de_df[[i]][fil,col] <- 3
+            }else{
+              traspaso_4 <- traspaso_3 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),7]#pasar al estado 4
+              if(vector_de_df[[i]][fil,col]<=traspaso_4){
+                vector_de_df[[i]][fil,col] <- 4
+              }else{
+                vector_de_df[[i]][fil,col] <- 5
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
+
+
+#--- Modelo Estocastico montos esperados de ingresos y egresos para cada uno estado -----
+
+
+
+
 
