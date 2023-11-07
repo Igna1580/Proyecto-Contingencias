@@ -66,7 +66,7 @@ edades_selec_M$porc_estimados <- porcentajes
 edades_selec_M$pob_estimada<- edades_selec_M$pob_M * edades_selec_M$porc_estimados
 
 
-#--- Inflacio e Interes --------------------------------------------------------
+#--- Inflación e Interés --------------------------------------------------------
 
 # inflación en Costa Rica de los últimos 10 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
 inflacion_data <- data.frame(
@@ -88,9 +88,9 @@ descuento <- mean(tasas_Descuento$`3 meses`)
 
 #--- Probabilidades ------------------------------------------------------------
 
-##--- Creacion de Dataframe con datos actuariales ------------------------------
-#Esta funcion crea un dataframe con la proyeccion de personas (1 persona) en 
-#ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
+##--- Creación de Dataframe con datos actuariales ------------------------------
+# Esta función crea un dataframe con la proyección de personas (1 persona) en 
+# ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
 
 obtencion_tabla_proyeccion <- function(x,status,sexo) {
   if (sexo == "H"){
@@ -130,13 +130,13 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
 
 ##--- Funciones actuariales ----------------------------------------------------
 
-#Funcion de probabilidad
+#Función de probabilidad
 tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
   p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
   return(p)
 }
 
-#Funcion de anualidad prepagable
+#Función de anualidad prepagable
 ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
@@ -257,7 +257,7 @@ total_primas_mujeres <- costo_inicial + primas_0.95_mujeres
 
 prima_mujeres <- suma_benef_M_indiv / total_primas_mujeres
 
-#--------Graficos de poblacion--------------
+##--------Graficos de población--------------
 
 p = ggplot() + 
   geom_line(data = edades_selec_H, aes(x = Edad, y = pob_estimada, color = "Hombres"), linetype = "solid", size = 1) +
