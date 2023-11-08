@@ -264,6 +264,19 @@ total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_M)
 prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=249,309.43
 prima_mujeres_mensual <- prima_mujeres_anual/12 #P_M_mensual = 20,775.78
 
+#--Prima según la edad de entrada-----------------------------------------------------
+
+Prima_justa_H <- edades_selec_H[,5]/(edades_selec_H[,7] - 0.15)
+Prima_justa_H_mensual <- Prima_justa_H/12
+edades_selec_H <- cbind(edades_selec_H, Prima_justa_anual = Prima_justa_H)
+edades_selec_H <- cbind(edades_selec_H, Prima_justa_mensual = Prima_justa_H_mensual)
+
+Prima_justa_M <- edades_selec_M[,5]/(edades_selec_M[,7] - 0.15)
+Prima_justa_M_mensual <- Prima_justa_M/12
+edades_selec_M <- cbind(edades_selec_M, Prima_justa_anual = Prima_justa_M)
+edades_selec_M <- cbind(edades_selec_M, Prima_justa_mensual = Prima_justa_M_mensual)
+
+
 ##--------Graficos de población--------------
 
 p = ggplot() + 
