@@ -291,6 +291,79 @@ print(p)
 
 #--- Modelo Deterministico Cantidad Esperada de Personas al final del año ------
 
+# Esta función crea un dataframe con la proyección a 80 años de personas en 
+# ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
+
+obtencion_tabla_proyeccion <- function(x,status,sexo) {
+  if (sexo == "H"){
+    probabilidades <- Prob_Trans_Hombres
+    poblacion_estimada <- edades_selec_H$pob_estimada
+  }
+  if (sexo == "M"){
+    probabilidades <- Prob_Trans_Mujeres
+    poblacion_estimada <- edades_selec_M$pob_estimada
+  }
+  
+  tabla <- data.frame(
+    "edad" = x:111,
+    "l_age.x_sta.0" = rep(0, 112-x),
+    "l_age.x_sta.1" = rep(0, 112-x),
+    "l_age.x_sta.2" = rep(0, 112-x),
+    "l_age.x_sta.3" = rep(0, 112-x),
+    "l_age.x_sta.4" = rep(0, 112-x),
+    "l_age.x_sta.5" = rep(0, 112-x)
+  )
+  
+  #se generan valores aleatorios correspondientes a la cantidad de población
+  #perteneciente a cierto estado en el año cero.
+  div_poblacion <- sample(poblacion_estimada[x-29], 5)
+  
+  tabla[1,status+2] = div_poblacion[status+1]
+  
+  c(10000, rep(0, 111-x))
+  
+  for (fila in 2:nrow(tabla)){
+    for (col in 2:7){
+      tabla[fila,col] <- 
+        tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
+        tabla[fila-1,3]*probabilidades[(fila+x-21)+91,col+1] + 
+        tabla[fila-1,4]*probabilidades[(fila+x-21)+182,col+1] + 
+        tabla[fila-1,5]*probabilidades[(fila+x-21)+273,col+1] + 
+        tabla[fila-1,6]*probabilidades[(fila+x-21)+364,col+1] + 
+        tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
+    }
+  }
+  return (tabla)
+}
+
+
+#Se crean listas que contienen las proyecciones de personas según la edad y 
+#estado del año cero, separados por sexo.
+
+
+#Caso hombres
+lista_proyeccionesH <- list()
+for(i in 1:nrow(edades_df)){
+  lista_proyecciones <- list()
+  x <- edades_df[i,]
+  status <- c(0:4)
+  for (j in status) {
+    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"H")
+  }
+  lista_proyeccionesH[[i]] <- lista_proyecciones
+}
+
+#Caso mujeres
+lista_proyeccionesM <- list()
+for(i in 1:nrow(edades_df)){
+  lista_proyecciones <- list()
+  x <- edades_df[i,]
+  status <- c(0:5)
+  for (j in status) {
+    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"M")
+  }
+  lista_proyeccionesM[[i]] <- lista_proyecciones
+} 
 
 
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
