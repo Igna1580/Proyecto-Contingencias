@@ -146,6 +146,12 @@ ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
   return(resultado)
 }
 
+#Función anualidad diferida
+ax.u_ij <- function(x, u=65-x, i=0, j, r=5.8, inf=2.8818, sexo){
+  diferida <- ax.n_ij(x, 110-x, i, j, r, inf, sexo) - ax.n_ij(x, u, i, j, r, inf, sexo)
+  return(diferida)
+}
+
 #--- Calculo Prima Generalizada -----------------------------------------------
 
 A <- 183671.1703 #Beneficio estado 1
@@ -154,13 +160,14 @@ C <- 740398.8263 #Beneficio estado 3
 D <- 1572738.998 #Beneficio estado 4
 
 ##--- Beneficios ---------------------------------------------------------------
+
 # Crear un vector vacío para almacenar los resultados de hombres
 benef_H_indiv <- data.frame(benef_H_indiv = numeric())
 for (x in 30:64) {
-  beneficios_por_edad_hombres <- (A*ax.n_ij(x,n = 110-x,i=0,j=1,sexo="H")) +
-                           (B*ax.n_ij(x,n = 110-x,i=0,j=2,sexo="H")) +
-                             (C*ax.n_ij(x,n = 110-x,i=0,j=3,sexo="H")) +
-                               (D*ax.n_ij(x,n= 110-x,i=0,j=4,sexo="H"))
+  beneficios_por_edad_hombres <- (A*ax.u_ij(x,65-x,i=0,j=1,sexo="H")) +
+                           (B*ax.u_ij(x, 65-x,i=0,j=2,sexo="H")) +
+                             (C*ax.u_ij(x, 65-x,i=0,j=3,sexo="H")) +
+                               (D*ax.u_ij(x, 65-x,i=0,j=4,sexo="H"))
   benef_H_indiv <- rbind(benef_H_indiv, data.frame(benef_H_indiv = beneficios_por_edad_hombres))
 }
 
@@ -170,16 +177,16 @@ benef_tot_por_edad <- edades_selec_H[, 5] * edades_selec_H[, 4]
 benef_tot_por_edad <- as.vector(benef_tot_por_edad)
 edades_selec_H <- cbind(edades_selec_H, benef_tot_por_edad)
 
-suma_benef_H_indiv <- sum(edades_selec_H$benef_tot_por_edad)
+suma_benef_H_total <- sum(edades_selec_H$benef_tot_por_edad)
 
 
 # Crear un vector vacío para almacenar los resultados de mujeres
 benef_M_indiv <- data.frame(benef_M_indiv = numeric())
 for (x in 30:64) {
-  beneficios_por_edad_mujeres <- (A*ax.n_ij(x,n = 110-x,i=0,j=1,sexo="M")) +
-    (B*ax.n_ij(x,n = 110-x,i=0,j=2,sexo="M")) +
-    (C*ax.n_ij(x,n = 110-x,i=0,j=3,sexo="M")) +
-    (D*ax.n_ij(x,n= 110-x,i=0,j=4,sexo="M"))
+  beneficios_por_edad_mujeres <- (A*ax.u_ij(x, 65-x,i=0,j=1,sexo="M")) +
+    (B*ax.u_ij(x, 65-x,i=0,j=2,sexo="M")) +
+    (C*ax.u_ij(x, 65-x,i=0,j=3,sexo="M")) +
+    (D*ax.u_ij(x, 65-x,i=0,j=4,sexo="M"))
   benef_M_indiv <- rbind(benef_M_indiv, data.frame(benef_M_indiv = beneficios_por_edad_mujeres))
 }
 
@@ -189,7 +196,7 @@ benef_tot_por_edad_M <- edades_selec_M[, 5] * edades_selec_M[, 4]
 benef_tot_por_edad_M <- as.vector(benef_tot_por_edad_M)
 edades_selec_M <- cbind(edades_selec_M, benef_tot_por_edad_M)
 
-suma_benef_M_indiv <- sum(edades_selec_M$benef_tot_por_edad_M)
+suma_benef_M_total <- sum(edades_selec_M$benef_tot_por_edad_M)
 
 ##--- Primas -------------------------------------------------------------------
 
@@ -197,9 +204,9 @@ suma_benef_M_indiv <- sum(edades_selec_M$benef_tot_por_edad_M)
 
 primas_hombres <- data.frame(Primas_hombres = numeric())
 for (x in 30:64) {
-  primas_por_edad_hombres <- (ax.n_ij(x,n = 110-x,i=0,j=0,sexo="H")) +
-    (ax.n_ij(x,n = 110-x,i=0,j=1,sexo="H")) +
-    (ax.n_ij(x,n = 110-x,i=0,j=2,sexo="H")) 
+  primas_por_edad_hombres <- (ax.n_ij(x,n = 65-x,i=0,j=0,sexo="H")) +
+    (ax.n_ij(x,n = 65-x,i=0,j=1,sexo="H")) +
+    (ax.n_ij(x,n = 65-x,i=0,j=2,sexo="H")) 
   primas_hombres <- rbind(primas_hombres, data.frame(Primas_hombres = primas_por_edad_hombres))
 }
 
@@ -214,9 +221,9 @@ primas_hombres_suma <- sum(edades_selec_H$primas_tot_por_edad)
 # mujeres
 primas_mujeres <- data.frame(Primas_mujeres = numeric())
 for (x in 30:64) {
-  primas_por_edad_mujeres <- (ax.n_ij(x,n = 110-x,i=0,0,5.8,inf=2.8818,"M")) +
-    (ax.n_ij(x,n = 110-x,i=0,1,5.8,inf=2.8818,"M")) +
-    (ax.n_ij(x,n = 110-x,i=0,2,5.8,inf=2.8818,"M")) 
+  primas_por_edad_mujeres <- (ax.n_ij(x,n = 65-x,i=0,0,5.8,inf=2.8818,"M")) +
+    (ax.n_ij(x,n = 65-x,i=0,1,5.8,inf=2.8818,"M")) +
+    (ax.n_ij(x,n = 65-x,i=0,2,5.8,inf=2.8818,"M")) 
   primas_mujeres <- rbind(primas_mujeres, data.frame(Primas_mujeres = primas_por_edad_mujeres))
 }
 
@@ -231,31 +238,44 @@ primas_mujeres_suma <- sum(edades_selec_M$primas_tot_por_edad_M)
 
 # principio de equivalencia
 
-beneficios_totales <- suma_benef_M_indiv + suma_benef_H_indiv
+beneficios_totales <- suma_benef_M_total + suma_benef_H_total
 
 primas_0.95 <- (primas_hombres_suma + primas_mujeres_suma)*0.95
 
-costo_inicial <- 0.15
+costo_inicial <- 0.15*(sum(edades_selec_H$pob_estimada)+sum(edades_selec_M$pob_estimada))
 
-total_primas <- costo_inicial + primas_0.95
+total_primas <- primas_0.95 - costo_inicial
 
-prima <- beneficios_totales / total_primas
+prima_anual <- beneficios_totales / total_primas #P_anual = 205,600.47
 
+prima_mensual <- prima_anual/12 #P_mensual = 17,133.37
 
-# si consideramos primas separadas para población mujeres y población masculina sería:
+#Si consideramos primas separadas para población mujeres y población masculina sería:
 
+#Hombres
 primas_0.95_hombres <- primas_hombres_suma*0.95
+total_primas_hombres <- primas_0.95_hombres - 0.15*sum(edades_selec_H$pob_estimada)
+prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 167,408.38
+prima_hombres_mensual <- prima_hombres_anual/12 #P_H_mensual = 13,950.69
 
-total_primas_hombres <- costo_inicial + primas_0.95_hombres
-
-prima_hombres <- suma_benef_H_indiv / total_primas_hombres
-
-
+#Mujeres
 primas_0.95_mujeres <- primas_mujeres_suma*0.95
+total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_estimada)
+prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=243,169.13
+prima_mujeres_mensual <- prima_mujeres_anual/12 #P_M_mensual = 20,264.09
 
-total_primas_mujeres <- costo_inicial + primas_0.95_mujeres
+#--Prima según la edad de entrada-----------------------------------------------------
 
-prima_mujeres <- suma_benef_M_indiv / total_primas_mujeres
+Prima_justa_H <- edades_selec_H[,5]/(edades_selec_H[,7] - 0.15)
+Prima_justa_H_mensual <- Prima_justa_H/12
+edades_selec_H <- cbind(edades_selec_H, Prima_justa_anual = Prima_justa_H)
+edades_selec_H <- cbind(edades_selec_H, Prima_justa_mensual = Prima_justa_H_mensual)
+
+Prima_justa_M <- edades_selec_M[,5]/(edades_selec_M[,7] - 0.15)
+Prima_justa_M_mensual <- Prima_justa_M/12
+edades_selec_M <- cbind(edades_selec_M, Prima_justa_anual = Prima_justa_M)
+edades_selec_M <- cbind(edades_selec_M, Prima_justa_mensual = Prima_justa_M_mensual)
+
 
 ##--------Graficos de población--------------
 
@@ -271,6 +291,79 @@ print(p)
 
 #--- Modelo Deterministico Cantidad Esperada de Personas al final del año ------
 
+# Esta función crea un dataframe con la proyección a 80 años de personas en 
+# ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
+
+obtencion_tabla_proyeccion <- function(x,status,sexo) {
+  if (sexo == "H"){
+    probabilidades <- Prob_Trans_Hombres
+    poblacion_estimada <- edades_selec_H$pob_estimada
+  }
+  if (sexo == "M"){
+    probabilidades <- Prob_Trans_Mujeres
+    poblacion_estimada <- edades_selec_M$pob_estimada
+  }
+  
+  tabla <- data.frame(
+    "edad" = x:111,
+    "l_age.x_sta.0" = rep(0, 112-x),
+    "l_age.x_sta.1" = rep(0, 112-x),
+    "l_age.x_sta.2" = rep(0, 112-x),
+    "l_age.x_sta.3" = rep(0, 112-x),
+    "l_age.x_sta.4" = rep(0, 112-x),
+    "l_age.x_sta.5" = rep(0, 112-x)
+  )
+  
+  #se generan valores aleatorios correspondientes a la cantidad de población
+  #perteneciente a cierto estado en el año cero.
+  div_poblacion <- sample(poblacion_estimada[x-29], 5)
+  
+  tabla[1,status+2] = div_poblacion[status+1]
+  
+  c(10000, rep(0, 111-x))
+  
+  for (fila in 2:nrow(tabla)){
+    for (col in 2:7){
+      tabla[fila,col] <- 
+        tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
+        tabla[fila-1,3]*probabilidades[(fila+x-21)+91,col+1] + 
+        tabla[fila-1,4]*probabilidades[(fila+x-21)+182,col+1] + 
+        tabla[fila-1,5]*probabilidades[(fila+x-21)+273,col+1] + 
+        tabla[fila-1,6]*probabilidades[(fila+x-21)+364,col+1] + 
+        tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
+    }
+  }
+  return (tabla)
+}
+
+
+#Se crean listas que contienen las proyecciones de personas según la edad y 
+#estado del año cero, separados por sexo.
+
+
+#Caso hombres
+lista_proyeccionesH <- list()
+for(i in 1:nrow(edades_df)){
+  lista_proyecciones <- list()
+  x <- edades_df[i,]
+  status <- c(0:4)
+  for (j in status) {
+    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"H")
+  }
+  lista_proyeccionesH[[i]] <- lista_proyecciones
+}
+
+#Caso mujeres
+lista_proyeccionesM <- list()
+for(i in 1:nrow(edades_df)){
+  lista_proyecciones <- list()
+  x <- edades_df[i,]
+  status <- c(0:5)
+  for (j in status) {
+    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"M")
+  }
+  lista_proyeccionesM[[i]] <- lista_proyecciones
+} 
 
 
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
