@@ -11,7 +11,7 @@ output:
   rmdformats::readthedown:
     code_folding: hide
   html_document:
-    toc: TRUE
+    toc: true
     fig_caption: true
 bibliography: bibliografia_contingencias.bib
 csl: apa.csl  
