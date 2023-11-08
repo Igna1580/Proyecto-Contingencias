@@ -242,27 +242,27 @@ beneficios_totales <- suma_benef_M_total + suma_benef_H_total
 
 primas_0.95 <- (primas_hombres_suma + primas_mujeres_suma)*0.95
 
-costo_inicial <- 0.15*(sum(edades_selec_H$pob_H)+sum(edades_selec_M$pob_M))
+costo_inicial <- 0.15*(sum(edades_selec_H$pob_estimada)+sum(edades_selec_M$pob_estimada))
 
 total_primas <- primas_0.95 - costo_inicial
 
-prima_anual <- beneficios_totales / total_primas #P_anual = 210,901.86
+prima_anual <- beneficios_totales / total_primas #P_anual = 205,600.47
 
-prima_mensual <- prima_anual/12 #P_mensual = 17,575.15
+prima_mensual <- prima_anual/12 #P_mensual = 17,133.37
 
 #Si consideramos primas separadas para población mujeres y población masculina sería:
 
 #Hombres
 primas_0.95_hombres <- primas_hombres_suma*0.95
-total_primas_hombres <- primas_0.95_hombres - 0.15*sum(edades_selec_H$pob_H)
-prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 171,815.93
-prima_hombres_mensual <- prima_hombres_anual/12 #P_H_mensual = 14,317.99
+total_primas_hombres <- primas_0.95_hombres - 0.15*sum(edades_selec_H$pob_estimada)
+prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 167,408.38
+prima_hombres_mensual <- prima_hombres_anual/12 #P_H_mensual = 13,950.69
 
 #Mujeres
 primas_0.95_mujeres <- primas_mujeres_suma*0.95
-total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_M)
-prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=249,309.43
-prima_mujeres_mensual <- prima_mujeres_anual/12 #P_M_mensual = 20,775.78
+total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_estimada)
+prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=243,169.13
+prima_mujeres_mensual <- prima_mujeres_anual/12 #P_M_mensual = 20,264.09
 
 #--Prima según la edad de entrada-----------------------------------------------------
 
