@@ -42,7 +42,7 @@ for(fila in 1:nrow(Prob_Trans_Hombres)){
 #--- Poblacion -----------------------------------------------------------------
 edades <- 31:65
 
-porcentajes <- c(0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.15, 0.15, 0.15, 0.15,
+porcentajes <- c(0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.15, 0.15,
                  rep(0.13, 20))  # Luego, 20 porcentajes uniformes de 0.6
 # Caso hombres 
 
@@ -401,11 +401,68 @@ for(i in 1: 82) {
 
 set.seed(123) #establece semilla para probabilidades
 
-#Crear vector con 100 nombres de dataframes
-vector_simulacion <- vector("list", 100)
-pob_tot <- sum(edades_selec_H$pob_estimada)
+#Creamos la fucnion simulacion
+func_simulacion <- function(edad, col_ant, col_act, sexo, año){
+  
+  if(sexo == "H"){
+    proba <- Prob_Trans_Hombres
+  }
+  if(sexo == "M"){
+    proba <- Prob_Trans_Mujeres
+  }
+  
+  if(col_ant == 5){
+    col_act <- 5
+    return(5)
+  }
+  if(col_ant == 0){
+    fil_prob <-  0
+  }
+  if(col_ant == 1){
+    fil_prob <- 91
+  }
+  if(col_ant == 2){
+    fil_prob <- 182
+  }
+  if(col_ant == 3){
+    fil_prob <- 273
+  }
+  if(col_ant == 4){
+    fil_prob <- 364
+  }
+  
+  
+  if(col_act < proba[edad+fil_prob+año-22,3]){#Pasar al estado 0
+    return(0)
+  }else{
+    if(col_act < sum(proba[edad+fil_prob+año-22,3:4])){#Pasar al estado 1
+      return(1)
+    }else{
+      if(col_act < sum(proba[edad+fil_prob+año-22,3:5])){#Pasar al estado 2
+        return(2)
+      }else{
+        if(col_act < sum(proba[edad+fil_prob+año-22,3:6])){#Pasar al estado 3
+          return(3)
+        }else{
+          if(col_act < sum(proba[edad+fil_prob+año-22,3:7])){#Pasar al estado 4
+            return(4)
+          }else{
+            return(5)
+          }
+        }
+      }
+    }
+  }
+}
+
+
+##--- Hombres ----
+
+#Crear vector con 100 dataframes
+vector_simulacion_H <- vector("list", 100)
+pob_tot_H <- sum(edades_selec_H$pob_estimada)
 for (i in 1:100) {#Crear los df
-  vector_simulacion[[i]] <- data.frame(
+  vector_simulacion_H[[i]] <- data.frame(
     Edad = c(rep(30,edades_selec_H[1,4]),
              rep(31,edades_selec_H[2,4]),
              rep(32,edades_selec_H[3,4]),
@@ -441,145 +498,389 @@ for (i in 1:100) {#Crear los df
              rep(62,edades_selec_H[33,4]),
              rep(63,edades_selec_H[34,4]),
              rep(64,edades_selec_H[35,4])),
-    Año_0 = rep(0,pob_tot),  
-    Año_1 = runif(pob_tot),  
-    Año_2 = runif(pob_tot),  
-    Año_3 = runif(pob_tot),  
-    Año_4 = runif(pob_tot),  
-    Año_5 = runif(pob_tot),  
-    Año_6 = runif(pob_tot),  
-    Año_7 = runif(pob_tot),  
-    Año_8 = runif(pob_tot),  
-    Año_9 = runif(pob_tot),
-    Año_10 = runif(pob_tot),
-    Año_11 = runif(pob_tot),
-    Año_12 = runif(pob_tot),
-    Año_13 = runif(pob_tot),
-    Año_14 = runif(pob_tot),
-    Año_15 = runif(pob_tot),
-    Año_16 = runif(pob_tot),
-    Año_17 = runif(pob_tot),
-    Año_18 = runif(pob_tot),
-    Año_19 = runif(pob_tot),
-    Año_20 = runif(pob_tot),
-    Año_21 = runif(pob_tot),
-    Año_22 = runif(pob_tot),
-    Año_23 = runif(pob_tot),
-    Año_24 = runif(pob_tot),
-    Año_25 = runif(pob_tot),
-    Año_26 = runif(pob_tot),
-    Año_27 = runif(pob_tot),
-    Año_28 = runif(pob_tot),
-    Año_29 = runif(pob_tot),
-    Año_30 = runif(pob_tot),
-    Año_31 = runif(pob_tot),
-    Año_32 = runif(pob_tot),
-    Año_33 = runif(pob_tot),
-    Año_34 = runif(pob_tot),
-    Año_35 = runif(pob_tot),
-    Año_36 = runif(pob_tot),
-    Año_37 = runif(pob_tot),
-    Año_38 = runif(pob_tot),
-    Año_39 = runif(pob_tot),
-    Año_40 = runif(pob_tot),
-    Año_41 = runif(pob_tot),
-    Año_42 = runif(pob_tot),
-    Año_43 = runif(pob_tot),
-    Año_44 = runif(pob_tot),
-    Año_45 = runif(pob_tot),
-    Año_46 = runif(pob_tot),
-    Año_47 = runif(pob_tot),
-    Año_48 = runif(pob_tot),
-    Año_49 = runif(pob_tot),
-    Año_50 = runif(pob_tot),
-    Año_51 = runif(pob_tot),
-    Año_52 = runif(pob_tot),
-    Año_53 = runif(pob_tot),
-    Año_54 = runif(pob_tot),
-    Año_55 = runif(pob_tot),
-    Año_56 = runif(pob_tot),
-    Año_57 = runif(pob_tot),
-    Año_58 = runif(pob_tot),
-    Año_59 = runif(pob_tot),
-    Año_60 = runif(pob_tot),
-    Año_61 = runif(pob_tot),
-    Año_62 = runif(pob_tot),
-    Año_63 = runif(pob_tot),
-    Año_64 = runif(pob_tot),
-    Año_65 = runif(pob_tot),
-    Año_66 = runif(pob_tot),
-    Año_67 = runif(pob_tot),
-    Año_68 = runif(pob_tot),
-    Año_69 = runif(pob_tot),
-    Año_70 = runif(pob_tot),
-    Año_71 = runif(pob_tot),
-    Año_72 = runif(pob_tot),
-    Año_73 = runif(pob_tot),
-    Año_74 = runif(pob_tot),
-    Año_75 = runif(pob_tot),
-    Año_76 = runif(pob_tot),
-    Año_77 = runif(pob_tot),
-    Año_78 = runif(pob_tot),
-    Año_79 = runif(pob_tot),
-    Año_80 = runif(pob_tot)
+    Año_0 = rep(0,pob_tot_H),  
+    Año_1 = runif(pob_tot_H),  
+    Año_2 = runif(pob_tot_H),  
+    Año_3 = runif(pob_tot_H),  
+    Año_4 = runif(pob_tot_H),  
+    Año_5 = runif(pob_tot_H),  
+    Año_6 = runif(pob_tot_H),  
+    Año_7 = runif(pob_tot_H),  
+    Año_8 = runif(pob_tot_H),  
+    Año_9 = runif(pob_tot_H),
+    Año_10 = runif(pob_tot_H),
+    Año_11 = runif(pob_tot_H),
+    Año_12 = runif(pob_tot_H),
+    Año_13 = runif(pob_tot_H),
+    Año_14 = runif(pob_tot_H),
+    Año_15 = runif(pob_tot_H),
+    Año_16 = runif(pob_tot_H),
+    Año_17 = runif(pob_tot_H),
+    Año_18 = runif(pob_tot_H),
+    Año_19 = runif(pob_tot_H),
+    Año_20 = runif(pob_tot_H),
+    Año_21 = runif(pob_tot_H),
+    Año_22 = runif(pob_tot_H),
+    Año_23 = runif(pob_tot_H),
+    Año_24 = runif(pob_tot_H),
+    Año_25 = runif(pob_tot_H),
+    Año_26 = runif(pob_tot_H),
+    Año_27 = runif(pob_tot_H),
+    Año_28 = runif(pob_tot_H),
+    Año_29 = runif(pob_tot_H),
+    Año_30 = runif(pob_tot_H),
+    Año_31 = runif(pob_tot_H),
+    Año_32 = runif(pob_tot_H),
+    Año_33 = runif(pob_tot_H),
+    Año_34 = runif(pob_tot_H),
+    Año_35 = runif(pob_tot_H),
+    Año_36 = runif(pob_tot_H),
+    Año_37 = runif(pob_tot_H),
+    Año_38 = runif(pob_tot_H),
+    Año_39 = runif(pob_tot_H),
+    Año_40 = runif(pob_tot_H),
+    Año_41 = runif(pob_tot_H),
+    Año_42 = runif(pob_tot_H),
+    Año_43 = runif(pob_tot_H),
+    Año_44 = runif(pob_tot_H),
+    Año_45 = runif(pob_tot_H),
+    Año_46 = runif(pob_tot_H),
+    Año_47 = runif(pob_tot_H),
+    Año_48 = runif(pob_tot_H),
+    Año_49 = runif(pob_tot_H),
+    Año_50 = runif(pob_tot_H),
+    Año_51 = runif(pob_tot_H),
+    Año_52 = runif(pob_tot_H),
+    Año_53 = runif(pob_tot_H),
+    Año_54 = runif(pob_tot_H),
+    Año_55 = runif(pob_tot_H),
+    Año_56 = runif(pob_tot_H),
+    Año_57 = runif(pob_tot_H),
+    Año_58 = runif(pob_tot_H),
+    Año_59 = runif(pob_tot_H),
+    Año_60 = runif(pob_tot_H),
+    Año_61 = runif(pob_tot_H),
+    Año_62 = runif(pob_tot_H),
+    Año_63 = runif(pob_tot_H),
+    Año_64 = runif(pob_tot_H),
+    Año_65 = runif(pob_tot_H),
+    Año_66 = runif(pob_tot_H),
+    Año_67 = runif(pob_tot_H),
+    Año_68 = runif(pob_tot_H),
+    Año_69 = runif(pob_tot_H),
+    Año_70 = runif(pob_tot_H),
+    Año_71 = runif(pob_tot_H),
+    Año_72 = runif(pob_tot_H),
+    Año_73 = runif(pob_tot_H),
+    Año_74 = runif(pob_tot_H),
+    Año_75 = runif(pob_tot_H),
+    Año_76 = runif(pob_tot_H),
+    Año_77 = runif(pob_tot_H),
+    Año_78 = runif(pob_tot_H),
+    Año_79 = runif(pob_tot_H),
+    Año_80 = runif(pob_tot_H)
   )
 }
 
 #Obtener los estados de las personas simuladas
 for(i in 1:100){
-  for(col in 3:82){
-    for(fil in 1:sum(edades_selec_H$pob_estimada)){
-      if(vector_simulacion[[i]][fil,col-1]==5){
-        vector_simulacion[[i]][fil,col] <- 5
-        next
-      }
-      if(vector_simulacion[[i]][fil,col-1]==0){
-        fil_prob <-  0
-      }
-      if(vector_simulacion[[i]][fil,col-1]==1){
-        fil_prob <-  91
-      }
-      if(vector_simulacion[[i]][fil,col-1]==2){
-        fil_prob <-  182
-      }
-      if(vector_simulacion[[i]][fil,col-1]==3){
-        fil_prob <-  273
-      }
-      if(vector_simulacion[[i]][fil,col-1]==4){
-        fil_prob <-  364
-      }
-      
-      
-      traspaso_0 <- Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),3]#pasar al estado 0
-      if(vector_simulacion[[i]][fil,col]<=traspaso_0){
-        vector_simulacion[[i]][fil,col] <- 0
-      }else{
-        traspaso_1 <- traspaso_0 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),4]#pasar al estado 1
-        if(vector_simulacion[[i]][fil,col]<=traspaso_1){
-          vector_simulacion[[i]][fil,col] <- 1
-        }else{
-          traspaso_2 <- traspaso_1 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),5]#pasar al estado 2
-          if(vector_simulacion[[i]][fil,col]<=traspaso_2){
-            vector_simulacion[[i]][fil,col] <- 2
-          }else{
-            traspaso_3 <- traspaso_2 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),6]#pasar al estado 3
-            if(vector_simulacion[[i]][fil,col]<=traspaso_3){
-              vector_simulacion[[i]][fil,col] <- 3
-            }else{
-              traspaso_4 <- traspaso_3 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),7]#pasar al estado 4
-              if(vector_simulacion[[i]][fil,col]<=traspaso_4){
-                vector_simulacion[[i]][fil,col] <- 4
-              }else{
-                vector_simulacion[[i]][fil,col] <- 5
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  vector_simulacion_H[[1]] <- vector_simulacion_H[[1]] %>%
+    rowwise() %>%
+    mutate(Año_1 = func_simulacion(Edad, Año_0, Año_1,sexo="H",año=0),
+           Año_2 = func_simulacion(Edad, Año_1, Año_2,sexo="H",año=1),
+           Año_3 = func_simulacion(Edad, Año_2, Año_3,sexo="H",año=2),
+           Año_4 = func_simulacion(Edad, Año_3, Año_4,sexo="H",año=3),
+           Año_5 = func_simulacion(Edad, Año_4, Año_5,sexo="H",año=4),
+           Año_6 = func_simulacion(Edad, Año_5, Año_6,sexo="H",año=5),
+           Año_7 = func_simulacion(Edad, Año_6, Año_7,sexo="H",año=6),
+           Año_8 = func_simulacion(Edad, Año_7, Año_8,sexo="H",año=7),
+           Año_9 = func_simulacion(Edad, Año_8, Año_9,sexo="H",año=8),
+           Año_10 = func_simulacion(Edad, Año_9, Año_10,sexo="H",año=9),
+           Año_11 = func_simulacion(Edad, Año_10, Año_11,sexo="H",año=10),
+           Año_12 = func_simulacion(Edad, Año_11, Año_12,sexo="H",año=11),
+           Año_13 = func_simulacion(Edad, Año_12, Año_13,sexo="H",año=12),
+           Año_14 = func_simulacion(Edad, Año_13, Año_14,sexo="H",año=13),
+           Año_15 = func_simulacion(Edad, Año_14, Año_15,sexo="H",año=14),
+           Año_16 = func_simulacion(Edad, Año_15, Año_16,sexo="H",año=15),
+           Año_17 = func_simulacion(Edad, Año_16, Año_17,sexo="H",año=16),
+           Año_18 = func_simulacion(Edad, Año_17, Año_18,sexo="H",año=17),
+           Año_19 = func_simulacion(Edad, Año_18, Año_19,sexo="H",año=18),
+           Año_20 = func_simulacion(Edad, Año_19, Año_20,sexo="H",año=19),
+           Año_21 = func_simulacion(Edad, Año_20, Año_21,sexo="H",año=20),
+           Año_22 = func_simulacion(Edad, Año_21, Año_22,sexo="H",año=21),
+           Año_23 = func_simulacion(Edad, Año_22, Año_23,sexo="H",año=22),
+           Año_24 = func_simulacion(Edad, Año_23, Año_24,sexo="H",año=23),
+           Año_25 = func_simulacion(Edad, Año_24, Año_25,sexo="H",año=24),
+           Año_26 = func_simulacion(Edad, Año_25, Año_26,sexo="H",año=25),
+           Año_27 = func_simulacion(Edad, Año_26, Año_27,sexo="H",año=26),
+           Año_28 = func_simulacion(Edad, Año_27, Año_28,sexo="H",año=27),
+           Año_29 = func_simulacion(Edad, Año_28, Año_29,sexo="H",año=28),
+           Año_30 = func_simulacion(Edad, Año_29, Año_30,sexo="H",año=29),
+           Año_31 = func_simulacion(Edad, Año_30, Año_31,sexo="H",año=30),
+           Año_32 = func_simulacion(Edad, Año_31, Año_32,sexo="H",año=31),
+           Año_33 = func_simulacion(Edad, Año_32, Año_33,sexo="H",año=32),
+           Año_34 = func_simulacion(Edad, Año_33, Año_34,sexo="H",año=33),
+           Año_35 = func_simulacion(Edad, Año_34, Año_35,sexo="H",año=34),
+           Año_36 = func_simulacion(Edad, Año_35, Año_36,sexo="H",año=35),
+           Año_37 = func_simulacion(Edad, Año_36, Año_37,sexo="H",año=36),
+           Año_38 = func_simulacion(Edad, Año_37, Año_38,sexo="H",año=37),
+           Año_39 = func_simulacion(Edad, Año_38, Año_39,sexo="H",año=38),
+           Año_40 = func_simulacion(Edad, Año_39, Año_40,sexo="H",año=39),
+           Año_41 = func_simulacion(Edad, Año_40, Año_41,sexo="H",año=40),
+           Año_42 = func_simulacion(Edad, Año_41, Año_42,sexo="H",año=41),
+           Año_43 = func_simulacion(Edad, Año_42, Año_43,sexo="H",año=42),
+           Año_44 = func_simulacion(Edad, Año_43, Año_44,sexo="H",año=43),
+           Año_45 = func_simulacion(Edad, Año_44, Año_45,sexo="H",año=44),
+           Año_46 = func_simulacion(Edad, Año_45, Año_46,sexo="H",año=45),
+           Año_47 = func_simulacion(Edad, Año_46, Año_47,sexo="H",año=46),
+           Año_48 = func_simulacion(Edad, Año_47, Año_48,sexo="H",año=47),
+           Año_49 = func_simulacion(Edad, Año_48, Año_49,sexo="H",año=48),
+           Año_50 = func_simulacion(Edad, Año_49, Año_50,sexo="H",año=49),
+           Año_51 = func_simulacion(Edad, Año_50, Año_51,sexo="H",año=50),
+           Año_52 = func_simulacion(Edad, Año_51, Año_52,sexo="H",año=51),
+           Año_53 = func_simulacion(Edad, Año_52, Año_53,sexo="H",año=52),
+           Año_54 = func_simulacion(Edad, Año_53, Año_54,sexo="H",año=53),
+           Año_55 = func_simulacion(Edad, Año_54, Año_55,sexo="H",año=54),
+           Año_56 = func_simulacion(Edad, Año_55, Año_56,sexo="H",año=55),
+           Año_57 = func_simulacion(Edad, Año_56, Año_57,sexo="H",año=56),
+           Año_58 = func_simulacion(Edad, Año_57, Año_58,sexo="H",año=57),
+           Año_59 = func_simulacion(Edad, Año_58, Año_59,sexo="H",año=58),
+           Año_60 = func_simulacion(Edad, Año_59, Año_60,sexo="H",año=59),
+           Año_61 = func_simulacion(Edad, Año_60, Año_61,sexo="H",año=60),
+           Año_62 = func_simulacion(Edad, Año_61, Año_62,sexo="H",año=61),
+           Año_63 = func_simulacion(Edad, Año_62, Año_63,sexo="H",año=62),
+           Año_64 = func_simulacion(Edad, Año_63, Año_64,sexo="H",año=63),
+           Año_65 = func_simulacion(Edad, Año_64, Año_65,sexo="H",año=64),
+           Año_66 = func_simulacion(Edad, Año_65, Año_66,sexo="H",año=65),
+           Año_67 = func_simulacion(Edad, Año_66, Año_67,sexo="H",año=66),
+           Año_68 = func_simulacion(Edad, Año_67, Año_68,sexo="H",año=67),
+           Año_69 = func_simulacion(Edad, Año_68, Año_69,sexo="H",año=68),
+           Año_70 = func_simulacion(Edad, Año_69, Año_70,sexo="H",año=69),
+           Año_71 = func_simulacion(Edad, Año_70, Año_71,sexo="H",año=70),
+           Año_72 = func_simulacion(Edad, Año_71, Año_72,sexo="H",año=71),
+           Año_73 = func_simulacion(Edad, Año_72, Año_73,sexo="H",año=72),
+           Año_74 = func_simulacion(Edad, Año_73, Año_74,sexo="H",año=73),
+           Año_75 = func_simulacion(Edad, Año_74, Año_75,sexo="H",año=74),
+           Año_76 = func_simulacion(Edad, Año_75, Año_76,sexo="H",año=75),
+           Año_77 = func_simulacion(Edad, Año_76, Año_77,sexo="H",año=76),
+           Año_78 = func_simulacion(Edad, Año_77, Año_78,sexo="H",año=77),
+           Año_79 = func_simulacion(Edad, Año_78, Año_79,sexo="H",año=78),
+           Año_80 = func_simulacion(Edad, Año_79, Año_80,sexo="H",año=79),
+    )
 }
 
+
+##--- Mujeres----
+#Crear vector con 100 dataframes
+vector_simulacion_M <- vector("list", 100)
+pob_tot_M <- sum(edades_selec_M$pob_estimada)
+for (i in 1:100) {#Crear los df
+  vector_simulacion_M[[i]] <- data.frame(
+    Edad = c(rep(30,edades_selec_M[1,4]),
+             rep(31,edades_selec_M[2,4]),
+             rep(32,edades_selec_M[3,4]),
+             rep(33,edades_selec_M[4,4]),
+             rep(34,edades_selec_M[5,4]),
+             rep(35,edades_selec_M[6,4]),
+             rep(36,edades_selec_M[7,4]),
+             rep(37,edades_selec_M[8,4]),
+             rep(38,edades_selec_M[9,4]),
+             rep(39,edades_selec_M[10,4]),
+             rep(40,edades_selec_M[11,4]),
+             rep(41,edades_selec_M[12,4]),
+             rep(42,edades_selec_M[13,4]),
+             rep(43,edades_selec_M[14,4]),
+             rep(44,edades_selec_M[15,4]),
+             rep(45,edades_selec_M[16,4]),
+             rep(46,edades_selec_M[17,4]),
+             rep(47,edades_selec_M[18,4]),
+             rep(48,edades_selec_M[19,4]),
+             rep(49,edades_selec_M[20,4]),
+             rep(50,edades_selec_M[21,4]),
+             rep(51,edades_selec_M[22,4]),
+             rep(52,edades_selec_M[23,4]),
+             rep(53,edades_selec_M[24,4]),
+             rep(54,edades_selec_M[25,4]),
+             rep(55,edades_selec_M[26,4]),
+             rep(56,edades_selec_M[27,4]),
+             rep(57,edades_selec_M[28,4]),
+             rep(58,edades_selec_M[29,4]),
+             rep(59,edades_selec_M[30,4]),
+             rep(60,edades_selec_M[31,4]),
+             rep(61,edades_selec_M[32,4]),
+             rep(62,edades_selec_M[33,4]),
+             rep(63,edades_selec_M[34,4]),
+             rep(64,edades_selec_M[35,4])),
+    Año_0 = rep(0,pob_tot_M),  
+    Año_1 = runif(pob_tot_M),  
+    Año_2 = runif(pob_tot_M),  
+    Año_3 = runif(pob_tot_M),  
+    Año_4 = runif(pob_tot_M),  
+    Año_5 = runif(pob_tot_M),  
+    Año_6 = runif(pob_tot_M),  
+    Año_7 = runif(pob_tot_M),  
+    Año_8 = runif(pob_tot_M),  
+    Año_9 = runif(pob_tot_M),
+    Año_10 = runif(pob_tot_M),
+    Año_11 = runif(pob_tot_M),
+    Año_12 = runif(pob_tot_M),
+    Año_13 = runif(pob_tot_M),
+    Año_14 = runif(pob_tot_M),
+    Año_15 = runif(pob_tot_M),
+    Año_16 = runif(pob_tot_M),
+    Año_17 = runif(pob_tot_M),
+    Año_18 = runif(pob_tot_M),
+    Año_19 = runif(pob_tot_M),
+    Año_20 = runif(pob_tot_M),
+    Año_21 = runif(pob_tot_M),
+    Año_22 = runif(pob_tot_M),
+    Año_23 = runif(pob_tot_M),
+    Año_24 = runif(pob_tot_M),
+    Año_25 = runif(pob_tot_M),
+    Año_26 = runif(pob_tot_M),
+    Año_27 = runif(pob_tot_M),
+    Año_28 = runif(pob_tot_M),
+    Año_29 = runif(pob_tot_M),
+    Año_30 = runif(pob_tot_M),
+    Año_31 = runif(pob_tot_M),
+    Año_32 = runif(pob_tot_M),
+    Año_33 = runif(pob_tot_M),
+    Año_34 = runif(pob_tot_M),
+    Año_35 = runif(pob_tot_M),
+    Año_36 = runif(pob_tot_M),
+    Año_37 = runif(pob_tot_M),
+    Año_38 = runif(pob_tot_M),
+    Año_39 = runif(pob_tot_M),
+    Año_40 = runif(pob_tot_M),
+    Año_41 = runif(pob_tot_M),
+    Año_42 = runif(pob_tot_M),
+    Año_43 = runif(pob_tot_M),
+    Año_44 = runif(pob_tot_M),
+    Año_45 = runif(pob_tot_M),
+    Año_46 = runif(pob_tot_M),
+    Año_47 = runif(pob_tot_M),
+    Año_48 = runif(pob_tot_M),
+    Año_49 = runif(pob_tot_M),
+    Año_50 = runif(pob_tot_M),
+    Año_51 = runif(pob_tot_M),
+    Año_52 = runif(pob_tot_M),
+    Año_53 = runif(pob_tot_M),
+    Año_54 = runif(pob_tot_M),
+    Año_55 = runif(pob_tot_M),
+    Año_56 = runif(pob_tot_M),
+    Año_57 = runif(pob_tot_M),
+    Año_58 = runif(pob_tot_M),
+    Año_59 = runif(pob_tot_M),
+    Año_60 = runif(pob_tot_M),
+    Año_61 = runif(pob_tot_M),
+    Año_62 = runif(pob_tot_M),
+    Año_63 = runif(pob_tot_M),
+    Año_64 = runif(pob_tot_M),
+    Año_65 = runif(pob_tot_M),
+    Año_66 = runif(pob_tot_M),
+    Año_67 = runif(pob_tot_M),
+    Año_68 = runif(pob_tot_M),
+    Año_69 = runif(pob_tot_M),
+    Año_70 = runif(pob_tot_M),
+    Año_71 = runif(pob_tot_M),
+    Año_72 = runif(pob_tot_M),
+    Año_73 = runif(pob_tot_M),
+    Año_74 = runif(pob_tot_M),
+    Año_75 = runif(pob_tot_M),
+    Año_76 = runif(pob_tot_M),
+    Año_77 = runif(pob_tot_M),
+    Año_78 = runif(pob_tot_M),
+    Año_79 = runif(pob_tot_M),
+    Año_80 = runif(pob_tot_M)
+  )
+}
+
+#Obtener los estados de las personas simuladas
+for(i in 1:100){
+  vector_simulacion_H[[1]] <- vector_simulacion_H[[1]] %>%
+    rowwise() %>%
+    mutate(Año_1 = func_simulacion(Edad, Año_0, Año_1,sexo="M",año=0),
+           Año_2 = func_simulacion(Edad, Año_1, Año_2,sexo="M",año=1),
+           Año_3 = func_simulacion(Edad, Año_2, Año_3,sexo="M",año=2),
+           Año_4 = func_simulacion(Edad, Año_3, Año_4,sexo="M",año=3),
+           Año_5 = func_simulacion(Edad, Año_4, Año_5,sexo="M",año=4),
+           Año_6 = func_simulacion(Edad, Año_5, Año_6,sexo="M",año=5),
+           Año_7 = func_simulacion(Edad, Año_6, Año_7,sexo="M",año=6),
+           Año_8 = func_simulacion(Edad, Año_7, Año_8,sexo="M",año=7),
+           Año_9 = func_simulacion(Edad, Año_8, Año_9,sexo="M",año=8),
+           Año_10 = func_simulacion(Edad, Año_9, Año_10,sexo="M",año=9),
+           Año_11 = func_simulacion(Edad, Año_10, Año_11,sexo="M",año=10),
+           Año_12 = func_simulacion(Edad, Año_11, Año_12,sexo="M",año=11),
+           Año_13 = func_simulacion(Edad, Año_12, Año_13,sexo="M",año=12),
+           Año_14 = func_simulacion(Edad, Año_13, Año_14,sexo="M",año=13),
+           Año_15 = func_simulacion(Edad, Año_14, Año_15,sexo="M",año=14),
+           Año_16 = func_simulacion(Edad, Año_15, Año_16,sexo="M",año=15),
+           Año_17 = func_simulacion(Edad, Año_16, Año_17,sexo="M",año=16),
+           Año_18 = func_simulacion(Edad, Año_17, Año_18,sexo="M",año=17),
+           Año_19 = func_simulacion(Edad, Año_18, Año_19,sexo="M",año=18),
+           Año_20 = func_simulacion(Edad, Año_19, Año_20,sexo="M",año=19),
+           Año_21 = func_simulacion(Edad, Año_20, Año_21,sexo="M",año=20),
+           Año_22 = func_simulacion(Edad, Año_21, Año_22,sexo="M",año=21),
+           Año_23 = func_simulacion(Edad, Año_22, Año_23,sexo="M",año=22),
+           Año_24 = func_simulacion(Edad, Año_23, Año_24,sexo="M",año=23),
+           Año_25 = func_simulacion(Edad, Año_24, Año_25,sexo="M",año=24),
+           Año_26 = func_simulacion(Edad, Año_25, Año_26,sexo="M",año=25),
+           Año_27 = func_simulacion(Edad, Año_26, Año_27,sexo="M",año=26),
+           Año_28 = func_simulacion(Edad, Año_27, Año_28,sexo="M",año=27),
+           Año_29 = func_simulacion(Edad, Año_28, Año_29,sexo="M",año=28),
+           Año_30 = func_simulacion(Edad, Año_29, Año_30,sexo="M",año=29),
+           Año_31 = func_simulacion(Edad, Año_30, Año_31,sexo="M",año=30),
+           Año_32 = func_simulacion(Edad, Año_31, Año_32,sexo="M",año=31),
+           Año_33 = func_simulacion(Edad, Año_32, Año_33,sexo="M",año=32),
+           Año_34 = func_simulacion(Edad, Año_33, Año_34,sexo="M",año=33),
+           Año_35 = func_simulacion(Edad, Año_34, Año_35,sexo="M",año=34),
+           Año_36 = func_simulacion(Edad, Año_35, Año_36,sexo="M",año=35),
+           Año_37 = func_simulacion(Edad, Año_36, Año_37,sexo="M",año=36),
+           Año_38 = func_simulacion(Edad, Año_37, Año_38,sexo="M",año=37),
+           Año_39 = func_simulacion(Edad, Año_38, Año_39,sexo="M",año=38),
+           Año_40 = func_simulacion(Edad, Año_39, Año_40,sexo="M",año=39),
+           Año_41 = func_simulacion(Edad, Año_40, Año_41,sexo="M",año=40),
+           Año_42 = func_simulacion(Edad, Año_41, Año_42,sexo="M",año=41),
+           Año_43 = func_simulacion(Edad, Año_42, Año_43,sexo="M",año=42),
+           Año_44 = func_simulacion(Edad, Año_43, Año_44,sexo="M",año=43),
+           Año_45 = func_simulacion(Edad, Año_44, Año_45,sexo="M",año=44),
+           Año_46 = func_simulacion(Edad, Año_45, Año_46,sexo="M",año=45),
+           Año_47 = func_simulacion(Edad, Año_46, Año_47,sexo="M",año=46),
+           Año_48 = func_simulacion(Edad, Año_47, Año_48,sexo="M",año=47),
+           Año_49 = func_simulacion(Edad, Año_48, Año_49,sexo="M",año=48),
+           Año_50 = func_simulacion(Edad, Año_49, Año_50,sexo="M",año=49),
+           Año_51 = func_simulacion(Edad, Año_50, Año_51,sexo="M",año=50),
+           Año_52 = func_simulacion(Edad, Año_51, Año_52,sexo="M",año=51),
+           Año_53 = func_simulacion(Edad, Año_52, Año_53,sexo="M",año=52),
+           Año_54 = func_simulacion(Edad, Año_53, Año_54,sexo="M",año=53),
+           Año_55 = func_simulacion(Edad, Año_54, Año_55,sexo="M",año=54),
+           Año_56 = func_simulacion(Edad, Año_55, Año_56,sexo="M",año=55),
+           Año_57 = func_simulacion(Edad, Año_56, Año_57,sexo="M",año=56),
+           Año_58 = func_simulacion(Edad, Año_57, Año_58,sexo="M",año=57),
+           Año_59 = func_simulacion(Edad, Año_58, Año_59,sexo="M",año=58),
+           Año_60 = func_simulacion(Edad, Año_59, Año_60,sexo="M",año=59),
+           Año_61 = func_simulacion(Edad, Año_60, Año_61,sexo="M",año=60),
+           Año_62 = func_simulacion(Edad, Año_61, Año_62,sexo="M",año=61),
+           Año_63 = func_simulacion(Edad, Año_62, Año_63,sexo="M",año=62),
+           Año_64 = func_simulacion(Edad, Año_63, Año_64,sexo="M",año=63),
+           Año_65 = func_simulacion(Edad, Año_64, Año_65,sexo="M",año=64),
+           Año_66 = func_simulacion(Edad, Año_65, Año_66,sexo="M",año=65),
+           Año_67 = func_simulacion(Edad, Año_66, Año_67,sexo="M",año=66),
+           Año_68 = func_simulacion(Edad, Año_67, Año_68,sexo="M",año=67),
+           Año_69 = func_simulacion(Edad, Año_68, Año_69,sexo="M",año=68),
+           Año_70 = func_simulacion(Edad, Año_69, Año_70,sexo="M",año=69),
+           Año_71 = func_simulacion(Edad, Año_70, Año_71,sexo="M",año=70),
+           Año_72 = func_simulacion(Edad, Año_71, Año_72,sexo="M",año=71),
+           Año_73 = func_simulacion(Edad, Año_72, Año_73,sexo="M",año=72),
+           Año_74 = func_simulacion(Edad, Año_73, Año_74,sexo="M",año=73),
+           Año_75 = func_simulacion(Edad, Año_74, Año_75,sexo="M",año=74),
+           Año_76 = func_simulacion(Edad, Año_75, Año_76,sexo="M",año=75),
+           Año_77 = func_simulacion(Edad, Año_76, Año_77,sexo="M",año=76),
+           Año_78 = func_simulacion(Edad, Año_77, Año_78,sexo="M",año=77),
+           Año_79 = func_simulacion(Edad, Año_78, Año_79,sexo="M",año=78),
+           Año_80 = func_simulacion(Edad, Año_79, Año_80,sexo="M",año=79),
+    )
+}
 
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
