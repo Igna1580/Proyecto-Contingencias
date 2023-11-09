@@ -57,13 +57,13 @@ edades_selec_H <- cbind(edades_df, edades_selec_H)
 edades_selec_H$porc_estimados <- porcentajes
 
 # Calcular la población por edad (multiplicar la cantidad de hombres por el porcentaje)
-edades_selec_H$pob_estimada<- edades_selec_H$pob_H* edades_selec_H$porc_estimados
+edades_selec_H$pob_estimada<- round(edades_selec_H$pob_H* edades_selec_H$porc_estimados, digits = 0)
 
 # Caso Mujeres 
 edades_selec_M <- Mujeres_2023_demografia[edades,] 
 edades_selec_M <- cbind(edades_df, edades_selec_M)
 edades_selec_M$porc_estimados <- porcentajes
-edades_selec_M$pob_estimada<- edades_selec_M$pob_M * edades_selec_M$porc_estimados
+edades_selec_M$pob_estimada<- round(edades_selec_M$pob_M * edades_selec_M$porc_estimados, digits = 0)
 
 
 #--- Inflación e Interés --------------------------------------------------------
@@ -110,10 +110,7 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
     "l_age.x_sta.5" = rep(0, 112-x)
   )
   tabla[1,status+2] = 1
-  
-  c(10000, rep(0, 111-x))
-  
-  
+
   for (fila in 2:nrow(tabla)){
     for (col in 2:7){
       tabla[fila,col] <- 
@@ -137,7 +134,7 @@ tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
 }
 
 #Función de anualidad prepagable
-ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
+ax.n_ij <- function(x,n=110-x,i=0,j,r=5.8,inf=2.8818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
   for (e in 0:(n-1)){
@@ -147,9 +144,13 @@ ax.n_ij <- function(x,n,i=0,j,r=5.8,inf=2.8818,sexo){
 }
 
 #Función anualidad diferida
-ax.u_ij <- function(x, u=65-x, i=0, j, r=5.8, inf=2.8818, sexo){
-  diferida <- ax.n_ij(x, 110-x, i, j, r, inf, sexo) - ax.n_ij(x, u, i, j, r, inf, sexo)
-  return(diferida)
+u.ax.n_ij <- function(x,u=65-x,n=110-x,i=0, j,r=5.8,inf=2.8818,sexo){
+  prob <- obtencion_tabla_proyeccion(x,i,sexo)
+  resultado <- 0
+  for (e in u:(n-1)){
+    resultado <- ((1+inf/100)/(1+r/100))^(e)*prob[e+1,j+2] + resultado
+  }
+  return(resultado)
 }
 
 #--- Calculo Prima Generalizada -----------------------------------------------
@@ -164,10 +165,10 @@ D <- 1572738.998 #Beneficio estado 4
 # Crear un vector vacío para almacenar los resultados de hombres
 benef_H_indiv <- data.frame(benef_H_indiv = numeric())
 for (x in 30:64) {
-  beneficios_por_edad_hombres <- (A*ax.u_ij(x,65-x,i=0,j=1,sexo="H")) +
-                           (B*ax.u_ij(x, 65-x,i=0,j=2,sexo="H")) +
-                             (C*ax.u_ij(x, 65-x,i=0,j=3,sexo="H")) +
-                               (D*ax.u_ij(x, 65-x,i=0,j=4,sexo="H"))
+  beneficios_por_edad_hombres <- (A*u.ax.n_ij(x,65-x,i=0,j=1,sexo="H")) +
+                           (B*u.ax.n_ij(x, 65-x,i=0,j=2,sexo="H")) +
+                             (C*u.ax.n_ij(x, 65-x,i=0,j=3,sexo="H")) +
+                               (D*u.ax.n_ij(x, 65-x,i=0,j=4,sexo="H"))
   benef_H_indiv <- rbind(benef_H_indiv, data.frame(benef_H_indiv = beneficios_por_edad_hombres))
 }
 
@@ -183,10 +184,10 @@ suma_benef_H_total <- sum(edades_selec_H$benef_tot_por_edad)
 # Crear un vector vacío para almacenar los resultados de mujeres
 benef_M_indiv <- data.frame(benef_M_indiv = numeric())
 for (x in 30:64) {
-  beneficios_por_edad_mujeres <- (A*ax.u_ij(x, 65-x,i=0,j=1,sexo="M")) +
-    (B*ax.u_ij(x, 65-x,i=0,j=2,sexo="M")) +
-    (C*ax.u_ij(x, 65-x,i=0,j=3,sexo="M")) +
-    (D*ax.u_ij(x, 65-x,i=0,j=4,sexo="M"))
+  beneficios_por_edad_mujeres <- (A*u.ax.n_ij(x, 65-x,i=0,j=1,sexo="M")) +
+    (B*u.ax.n_ij(x, 65-x,i=0,j=2,sexo="M")) +
+    (C*u.ax.n_ij(x, 65-x,i=0,j=3,sexo="M")) +
+    (D*u.ax.n_ij(x, 65-x,i=0,j=4,sexo="M"))
   benef_M_indiv <- rbind(benef_M_indiv, data.frame(benef_M_indiv = beneficios_por_edad_mujeres))
 }
 
@@ -246,23 +247,19 @@ costo_inicial <- 0.15*(sum(edades_selec_H$pob_estimada)+sum(edades_selec_M$pob_e
 
 total_primas <- primas_0.95 - costo_inicial
 
-prima_anual <- beneficios_totales / total_primas #P_anual = 205,600.47
-
-prima_mensual <- prima_anual/12 #P_mensual = 17,133.37
+prima_anual <- beneficios_totales / total_primas #P_anual = 205,600.7
 
 #Si consideramos primas separadas para población mujeres y población masculina sería:
 
 #Hombres
 primas_0.95_hombres <- primas_hombres_suma*0.95
 total_primas_hombres <- primas_0.95_hombres - 0.15*sum(edades_selec_H$pob_estimada)
-prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 167,408.38
-prima_hombres_mensual <- prima_hombres_anual/12 #P_H_mensual = 13,950.69
+prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 167,407.8
 
 #Mujeres
 primas_0.95_mujeres <- primas_mujeres_suma*0.95
 total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_estimada)
-prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=243,169.13
-prima_mujeres_mensual <- prima_mujeres_anual/12 #P_M_mensual = 20,264.09
+prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual=243,170.4
 
 #--Prima según la edad de entrada-----------------------------------------------------
 
@@ -305,24 +302,20 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
   }
   
   tabla <- data.frame(
-    "edad" = x:111,
-    "l_age.x_sta.0" = rep(0, 112-x),
-    "l_age.x_sta.1" = rep(0, 112-x),
-    "l_age.x_sta.2" = rep(0, 112-x),
-    "l_age.x_sta.3" = rep(0, 112-x),
-    "l_age.x_sta.4" = rep(0, 112-x),
-    "l_age.x_sta.5" = rep(0, 112-x)
+    "edad" = x:(x + 81),
+    "l_age.x_sta.0" = rep(0, 82),
+    "l_age.x_sta.1" = rep(0, 82),
+    "l_age.x_sta.2" = rep(0, 82),
+    "l_age.x_sta.3" = rep(0, 82),
+    "l_age.x_sta.4" = rep(0, 82),
+    "l_age.x_sta.5" = rep(0, 82)
   )
   
-  #se generan valores aleatorios correspondientes a la cantidad de población
-  #perteneciente a cierto estado en el año cero.
-  div_poblacion <- sample(poblacion_estimada[x-29], 5)
+  tabla[1,status+2] = poblacion_estimada[x-29]
   
-  tabla[1,status+2] = div_poblacion[status+1]
+  #c(10000, rep(0, 111-x))
   
-  c(10000, rep(0, 111-x))
-  
-  for (fila in 2:nrow(tabla)){
+  for (fila in 2:length(x:111)){
     for (col in 2:7){
       tabla[fila,col] <- 
         tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
@@ -333,38 +326,73 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
         tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
     }
   }
+  
+  if(0 %in% tabla$l_age.x_sta.5[2:82]) {
+    tabla$l_age.x_sta.5[(113-x):82] <-tabla$l_age.x_sta.5[112-x]
+  }
+  
   return (tabla)
 }
 
-
-#Se crean listas que contienen las proyecciones de personas según la edad y 
-#estado del año cero, separados por sexo.
-
+#Se crean listas que contienen las proyecciones a 80 años de personas 
+#según la edad y estado del año cero (able), separados por sexo.
 
 #Caso hombres
 lista_proyeccionesH <- list()
-for(i in 1:nrow(edades_df)){
-  lista_proyecciones <- list()
-  x <- edades_df[i,]
-  status <- c(0:4)
-  for (j in status) {
-    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"H")
-  }
-  lista_proyeccionesH[[i]] <- lista_proyecciones
-}
-
 #Caso mujeres
 lista_proyeccionesM <- list()
 for(i in 1:nrow(edades_df)){
-  lista_proyecciones <- list()
   x <- edades_df[i,]
-  status <- c(0:5)
-  for (j in status) {
-    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"M")
-  }
-  lista_proyeccionesM[[i]] <- lista_proyecciones
-} 
+  lista_proyeccionesH[[i]] <- obtencion_tabla_proyeccion(x,0,"H")
+  lista_proyeccionesM[[i]] <- obtencion_tabla_proyeccion(x,0,"M")
+}
 
+#Se obtiene la proyección total a 80 años para cada estado para hombres 
+#y mujeres
+
+#Hombres
+tabla_proyeccionesH_total <- data.frame(
+  "Año" = 0:81,
+  "Estado 0" = rep(0, 82),
+  "Estado 1" = rep(0, 82),
+  "Estado 2" = rep(0, 82),
+  "Estado 3" = rep(0, 82),
+  "Estado 4" = rep(0, 82),
+  "Estado 5" = rep(0, 82)
+)
+
+#Mujeres
+tabla_proyeccionesM_total <- data.frame(
+  "Año" = 0:81,
+  "Estado 0" = rep(0, 82),
+  "Estado 1" = rep(0, 82),
+  "Estado 2" = rep(0, 82),
+  "Estado 3" = rep(0, 82),
+  "Estado 4" = rep(0, 82),
+  "Estado 5" = rep(0, 82)
+)
+
+for(i in 1: 82) {
+  sumaH <- c(0)
+  sumaM <- c(0)
+  for (j in 1:35) {
+    sumaH <- sumaH + lista_proyeccionesH[[j]][i,]
+    sumaM <- sumaM + lista_proyeccionesM[[j]][i,]
+  }
+  tabla_proyeccionesH_total$Estado.0[i] <- sumaH[2]
+  tabla_proyeccionesH_total$Estado.1[i] <- sumaH[3]
+  tabla_proyeccionesH_total$Estado.2[i] <- sumaH[4]
+  tabla_proyeccionesH_total$Estado.3[i] <- sumaH[5]
+  tabla_proyeccionesH_total$Estado.4[i] <- sumaH[6]
+  tabla_proyeccionesH_total$Estado.5[i] <- sumaH[7]
+  
+  tabla_proyeccionesM_total$Estado.0[i] <- sumaM[2]
+  tabla_proyeccionesM_total$Estado.1[i] <- sumaM[3]
+  tabla_proyeccionesM_total$Estado.2[i] <- sumaM[4]
+  tabla_proyeccionesM_total$Estado.3[i] <- sumaM[5]
+  tabla_proyeccionesM_total$Estado.4[i] <- sumaM[6]
+  tabla_proyeccionesM_total$Estado.5[i] <- sumaM[7]
+}
 
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
 #Proyeccion a 80 años
@@ -373,133 +401,133 @@ for(i in 1:nrow(edades_df)){
 
 set.seed(123) #establece semilla para probabilidades
 
-#Crear vector con 100 dataframes
-vector_de_df <- vector("list", 100)
-for (i in 1:100) {#Crear los df
-  vector_de_df[[i]] <- data.frame(
-    Edad = c(rep(30,5),
-             rep(31,5),
-             rep(32,8),
-             rep(33,8),
-             rep(34,11),
-             rep(35,10),
-             rep(36,15),
-             rep(37,16),
-             rep(38,21),
-             rep(39,19),
-             rep(40,23),
-             rep(41,23),
-             rep(42,26),
-             rep(43,26),
-             rep(44,29),
-             rep(45,48),
-             rep(46,45),
-             rep(47,43),
-             rep(48,41),
-             rep(49,40),
-             rep(50,40),
-             rep(51,38),
-             rep(52,38),
-             rep(53,37),
-             rep(54,37),
-             rep(55,37),
-             rep(56,37),
-             rep(57,37),
-             rep(58,37),
-             rep(59,36),
-             rep(60,35),
-             rep(61,34),
-             rep(62,33),
-             rep(63,32),
-             rep(64,30)),
-    Año_0 = rep(0,1000),  
-    Año_1 = runif(1000),  
-    Año_2 = runif(1000),  
-    Año_3 = runif(1000),  
-    Año_4 = runif(1000),  
-    Año_5 = runif(1000),  
-    Año_6 = runif(1000),  
-    Año_7 = runif(1000),  
-    Año_8 = runif(1000),  
-    Año_9 = runif(1000),
-    Año_10 = runif(1000),
-    Año_11 = runif(1000),
-    Año_12 = runif(1000),
-    Año_13 = runif(1000),
-    Año_14 = runif(1000),
-    Año_15 = runif(1000),
-    Año_16 = runif(1000),
-    Año_17 = runif(1000),
-    Año_18 = runif(1000),
-    Año_19 = runif(1000),
-    Año_20 = runif(1000),
-    Año_21 = runif(1000),
-    Año_22 = runif(1000),
-    Año_23 = runif(1000),
-    Año_24 = runif(1000),
-    Año_25 = runif(1000),
-    Año_26 = runif(1000),
-    Año_27 = runif(1000),
-    Año_28 = runif(1000),
-    Año_29 = runif(1000),
-    Año_30 = runif(1000),
-    Año_31 = runif(1000),
-    Año_32 = runif(1000),
-    Año_33 = runif(1000),
-    Año_34 = runif(1000),
-    Año_35 = runif(1000),
-    Año_36 = runif(1000),
-    Año_37 = runif(1000),
-    Año_38 = runif(1000),
-    Año_39 = runif(1000),
-    Año_40 = runif(1000),
-    Año_41 = runif(1000),
-    Año_42 = runif(1000),
-    Año_43 = runif(1000),
-    Año_44 = runif(1000),
-    Año_45 = runif(1000),
-    Año_46 = runif(1000),
-    Año_47 = runif(1000),
-    Año_48 = runif(1000),
-    Año_49 = runif(1000),
-    Año_50 = runif(1000),
-    Año_51 = runif(1000),
-    Año_52 = runif(1000),
-    Año_53 = runif(1000),
-    Año_54 = runif(1000),
-    Año_55 = runif(1000),
-    Año_56 = runif(1000),
-    Año_57 = runif(1000),
-    Año_58 = runif(1000),
-    Año_59 = runif(1000),
-    Año_60 = runif(1000),
-    Año_61 = runif(1000),
-    Año_62 = runif(1000),
-    Año_63 = runif(1000),
-    Año_64 = runif(1000),
-    Año_65 = runif(1000),
-    Año_66 = runif(1000),
-    Año_67 = runif(1000),
-    Año_68 = runif(1000),
-    Año_69 = runif(1000),
-    Año_70 = runif(1000),
-    Año_71 = runif(1000),
-    Año_72 = runif(1000),
-    Año_73 = runif(1000),
-    Año_74 = runif(1000),
-    Año_75 = runif(1000),
-    Año_76 = runif(1000),
-    Año_77 = runif(1000),
-    Año_78 = runif(1000),
-    Año_79 = runif(1000),
-    Año_80 = runif(1000)
+#Crear vector con 100 nombres de dataframes
+for (i in 1:1) {#Crear los df
+  pob_tot <- sum(edades_selec_H$pob_estimada)
+  v <- data.frame(
+    Edad = c(rep(30,edades_selec_H[1,4]),
+             rep(31,edades_selec_H[2,4]),
+             rep(32,edades_selec_H[3,4]),
+             rep(33,edades_selec_H[4,4]),
+             rep(34,edades_selec_H[5,4]),
+             rep(35,edades_selec_H[6,4]),
+             rep(36,edades_selec_H[7,4]),
+             rep(37,edades_selec_H[8,4]),
+             rep(38,edades_selec_H[9,4]),
+             rep(39,edades_selec_H[10,4]),
+             rep(40,edades_selec_H[11,4]),
+             rep(41,edades_selec_H[12,4]),
+             rep(42,edades_selec_H[13,4]),
+             rep(43,edades_selec_H[14,4]),
+             rep(44,edades_selec_H[15,4]),
+             rep(45,edades_selec_H[16,4]),
+             rep(46,edades_selec_H[17,4]),
+             rep(47,edades_selec_H[18,4]),
+             rep(48,edades_selec_H[19,4]),
+             rep(49,edades_selec_H[20,4]),
+             rep(50,edades_selec_H[21,4]),
+             rep(51,edades_selec_H[22,4]),
+             rep(52,edades_selec_H[23,4]),
+             rep(53,edades_selec_H[24,4]),
+             rep(54,edades_selec_H[25,4]),
+             rep(55,edades_selec_H[26,4]),
+             rep(56,edades_selec_H[27,4]),
+             rep(57,edades_selec_H[28,4]),
+             rep(58,edades_selec_H[29,4]),
+             rep(59,edades_selec_H[30,4]),
+             rep(60,edades_selec_H[31,4]),
+             rep(61,edades_selec_H[32,4]),
+             rep(62,edades_selec_H[33,4]),
+             rep(63,edades_selec_H[34,4]),
+             rep(64,edades_selec_H[35,4])),
+    Año_0 = rep(0,pob_tot),  
+    Año_1 = runif(pob_tot),  
+    Año_2 = runif(pob_tot),  
+    Año_3 = runif(pob_tot),  
+    Año_4 = runif(pob_tot),  
+    Año_5 = runif(pob_tot),  
+    Año_6 = runif(pob_tot),  
+    Año_7 = runif(pob_tot),  
+    Año_8 = runif(pob_tot),  
+    Año_9 = runif(pob_tot),
+    Año_10 = runif(pob_tot),
+    Año_11 = runif(pob_tot),
+    Año_12 = runif(pob_tot),
+    Año_13 = runif(pob_tot),
+    Año_14 = runif(pob_tot),
+    Año_15 = runif(pob_tot),
+    Año_16 = runif(pob_tot),
+    Año_17 = runif(pob_tot),
+    Año_18 = runif(pob_tot),
+    Año_19 = runif(pob_tot),
+    Año_20 = runif(pob_tot),
+    Año_21 = runif(pob_tot),
+    Año_22 = runif(pob_tot),
+    Año_23 = runif(pob_tot),
+    Año_24 = runif(pob_tot),
+    Año_25 = runif(pob_tot),
+    Año_26 = runif(pob_tot),
+    Año_27 = runif(pob_tot),
+    Año_28 = runif(pob_tot),
+    Año_29 = runif(pob_tot),
+    Año_30 = runif(pob_tot),
+    Año_31 = runif(pob_tot),
+    Año_32 = runif(pob_tot),
+    Año_33 = runif(pob_tot),
+    Año_34 = runif(pob_tot),
+    Año_35 = runif(pob_tot),
+    Año_36 = runif(pob_tot),
+    Año_37 = runif(pob_tot),
+    Año_38 = runif(pob_tot),
+    Año_39 = runif(pob_tot),
+    Año_40 = runif(pob_tot),
+    Año_41 = runif(pob_tot),
+    Año_42 = runif(pob_tot),
+    Año_43 = runif(pob_tot),
+    Año_44 = runif(pob_tot),
+    Año_45 = runif(pob_tot),
+    Año_46 = runif(pob_tot),
+    Año_47 = runif(pob_tot),
+    Año_48 = runif(pob_tot),
+    Año_49 = runif(pob_tot),
+    Año_50 = runif(pob_tot),
+    Año_51 = runif(pob_tot),
+    Año_52 = runif(pob_tot),
+    Año_53 = runif(pob_tot),
+    Año_54 = runif(pob_tot),
+    Año_55 = runif(pob_tot),
+    Año_56 = runif(pob_tot),
+    Año_57 = runif(pob_tot),
+    Año_58 = runif(pob_tot),
+    Año_59 = runif(pob_tot),
+    Año_60 = runif(pob_tot),
+    Año_61 = runif(pob_tot),
+    Año_62 = runif(pob_tot),
+    Año_63 = runif(pob_tot),
+    Año_64 = runif(pob_tot),
+    Año_65 = runif(pob_tot),
+    Año_66 = runif(pob_tot),
+    Año_67 = runif(pob_tot),
+    Año_68 = runif(pob_tot),
+    Año_69 = runif(pob_tot),
+    Año_70 = runif(pob_tot),
+    Año_71 = runif(pob_tot),
+    Año_72 = runif(pob_tot),
+    Año_73 = runif(pob_tot),
+    Año_74 = runif(pob_tot),
+    Año_75 = runif(pob_tot),
+    Año_76 = runif(pob_tot),
+    Año_77 = runif(pob_tot),
+    Año_78 = runif(pob_tot),
+    Año_79 = runif(pob_tot),
+    Año_80 = runif(pob_tot)
   )
 }
 
 #Obtener los estados de las personas simuladas
 for(i in 1:1){#(i in 1:100){
   for(col in 3:82){
-    for(fil in 1:1000){
+    for(fil in 1:sum(edades_selec_H$pob_estimada)){
       if(vector_de_df[[i]][fil,col-1]==0){
         fil_prob <-  0
       }
@@ -552,11 +580,101 @@ for(i in 1:1){#(i in 1:100){
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
 
+#Proyección por generacion
+
+lista_gen_H <- list()
+lista_gen_M <- list()
+
+
+for (edad in 30:64) {
+  nombre_H <- paste("Gen_H_", edad, sep = "")
+  nombre_M <- paste("Gen_M_", edad, sep = "")
+  
+  lista_gen_H[[edad-29]] <- assign(nombre_H, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "H")[, -1], MARGIN = 2, STATS = edades_selec_H$pob_estimada[edad-29], FUN = "*"))))
+  lista_gen_M[[edad-29]] <- assign(nombre_M, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "M")[, -1], MARGIN = 2, STATS = edades_selec_M$pob_estimada[edad-29], FUN = "*"))))
+  
+}
+
+#Ingresos
+
+Ingresos_H <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+Ingresos_M <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+
+for (i in 1:81) {
+  for (k in 1:35) {
+    Ingresos_H[i,2] <- Ingresos_H[i,2] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 1])
+    Ingresos_H[i,3] <- Ingresos_H[i,3] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 2])
+    Ingresos_H[i,4] <- Ingresos_H[i,4] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 3])
+    
+    Ingresos_M[i,2] <- Ingresos_M[i,2] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 1])
+    Ingresos_M[i,3] <- Ingresos_M[i,3] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 2])
+    Ingresos_M[i,4] <- Ingresos_M[i,4] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 3])
+    
+    
+  }
+}
+
+G.ingresos_H = ggplot() + 
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.2 , color = "Moderate"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Esperados') + cowplot::theme_cowplot()
+
+
+print(G.ingresos_H)
+
+
+#Egresos
+
+Egresos_H <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+Egresos_M <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+
+for (i in 1:81) {
+  for (k in 1:35) {
+    
+    if(i == 1){
+      Egresos_H[i,2] <- Egresos_H[i,2] + 0.2*edades_selec_H$Prima_justa_anual[k]*(lista_gen_H[[k]][i, 1])
+      
+      Egresos_M[i,2] <- Egresos_M[i,2] + 0.2*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 1])
+      
+    } else{
+      Egresos_H[i,2] <- Egresos_H[i,2] + (0.05*edades_selec_H$Prima_justa_anual[k])*(lista_gen_H[[k]][i, 1])
+      Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*edades_selec_H$Prima_justa_anual[k]+B)*(lista_gen_H[[k]][i, 2])
+      Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*edades_selec_H$Prima_justa_anual[k]+C)*(lista_gen_H[[k]][i, 3])
+      Egresos_H[i,5] <- Egresos_H[i,5] + C*(lista_gen_H[[k]][i, 4])
+      Egresos_H[i,6] <- Egresos_H[i,6] + D*(lista_gen_H[[k]][i, 5])
+      
+      Egresos_M[i,2] <- Egresos_M[i,2] + (0.05*edades_selec_M$Prima_justa_anual[k])*(lista_gen_M[[k]][i, 1])
+      Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*edades_selec_M$Prima_justa_anual[k]+A)*(lista_gen_M[[k]][i, 2])
+      Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*edades_selec_M$Prima_justa_anual[k]+B)*(lista_gen_M[[k]][i, 3])
+      Egresos_M[i,5] <- Egresos_M[i,5] + C*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 4])
+      Egresos_M[i,6] <- Egresos_M[i,6] + D*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 5])
+      
+    }
+  }
+}
+
+
+G.egresos_H = ggplot() + 
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.4 , color = "Profound"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Esperados') + cowplot::theme_cowplot()
+
+print(G.egresos_H)
+
+
+
 
 #--- Modelo Estocastico montos esperados de ingresos y egresos para cada uno estado -----
 
 
+sum(round(c(13.3,3.25443,4.2433), digits = 0))
 
-
-
-
+assign(paste0("simulacion", i), 
