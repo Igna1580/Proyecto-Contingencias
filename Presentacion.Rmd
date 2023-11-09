@@ -11,7 +11,7 @@ output:
   rmdformats::readthedown:
     code_folding: hide
   html_document:
-    toc: TRUE
+    toc: true
     fig_caption: true
 bibliography: bibliografia_contingencias.bib
 csl: apa.csl  
@@ -53,6 +53,7 @@ suppressWarnings({
  library(kableExtra)
 })
 ```
+\usepackage{actuarialsymbol}
 ## Introducción
 
 El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas mensuales hasta los 65 años.
@@ -297,7 +298,7 @@ Si una persona que compra el seguro **Longevidad Asegurada**, que actualmente se
 Para un mayor entendimiento, se presenta el siguiente gráfico de múltiples estados: 
 
 
-```{r, fig.cap="Figura 2: Modelo de múltiples estados\nFuente: Elaboración propia basado en Leung (2006)."}
+```{r, echo=FALSE, fig.cap="Figura 2: Modelo de múltiples estados\nFuente: Elaboración propia basado en Leung (2006)."}
 
 knitr::include_graphics("modelo.jpg")
 ```
@@ -305,7 +306,7 @@ knitr::include_graphics("modelo.jpg")
 En este gráfico, cada una de las flechas simboliza que existe probabilidad positiva ( > 0 ) de pasar de un estado "i" a un estado "j".
 
 
-Lo primero que se realizó fue la creación de la tabla de probabilidades de transición para la población masculina y femenina. Esto implica conocer la probabilidad de transición de un estado "i" a un estado "j", que puede ser el mismo, para cada edad. Si desea ver cómo se realizó lo anterior, puede acceder a la visualización presionando el botón correspondiente. Además, se presenta la función que permite obtener las probabilidades de transición a un año de un estado "i" a un estado "j", para cada edad.
+Lo primero que se realizó fue la creación de la tabla de probabilidades de transición para la población masculina y femenina. Esto implica conocer la probabilidad de transición de un estado "i" a un estado "j", que puede ser el mismo, en t años para cada edad. Si desea ver cómo se realizó lo anterior, puede acceder a la visualización presionando el botón correspondiente. 
 
 ```{r, eval=TRUE, message=FALSE}
 
@@ -349,7 +350,13 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
   }
   return (tabla)
 }
+```
 
+
+
+$a_{\overline{n}|} ^{ij}$
+
+```{r, eval=TRUE, message=FALSE}
 ##--- Funciones actuariales ----------------------------------------------------
 
 # Función de probabilidad
@@ -357,8 +364,9 @@ tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
   p <- obtencion_tabla_proyeccion(x,i,sexo)[t+1,j+2]
   return(p)
 }
-
 ```
+Además, se presenta la función que permite obtener las probabilidades de transición a un año de un estado "i" a un estado "j", para cada edad.
+
 ### Propuesta #1
 
 La primera propuesta considera un producto en el cual el cálculo de la prima es el mismo para todas las personas, sin importar su edad, la edad en la que adquieren el producto, su estado de salud o su sexo.

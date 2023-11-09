@@ -302,24 +302,20 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
   }
   
   tabla <- data.frame(
-    "edad" = x:111,
-    "l_age.x_sta.0" = rep(0, 112-x),
-    "l_age.x_sta.1" = rep(0, 112-x),
-    "l_age.x_sta.2" = rep(0, 112-x),
-    "l_age.x_sta.3" = rep(0, 112-x),
-    "l_age.x_sta.4" = rep(0, 112-x),
-    "l_age.x_sta.5" = rep(0, 112-x)
+    "edad" = x:(x + 81),
+    "l_age.x_sta.0" = rep(0, 82),
+    "l_age.x_sta.1" = rep(0, 82),
+    "l_age.x_sta.2" = rep(0, 82),
+    "l_age.x_sta.3" = rep(0, 82),
+    "l_age.x_sta.4" = rep(0, 82),
+    "l_age.x_sta.5" = rep(0, 82)
   )
   
-  #se generan valores aleatorios correspondientes a la cantidad de población
-  #perteneciente a cierto estado en el año cero.
-  div_poblacion <- sample(poblacion_estimada[x-29], 5)
+  tabla[1,status+2] = poblacion_estimada[x-29]
   
-  tabla[1,status+2] = div_poblacion[status+1]
+  #c(10000, rep(0, 111-x))
   
-  c(10000, rep(0, 111-x))
-  
-  for (fila in 2:nrow(tabla)){
+  for (fila in 2:length(x:111)){
     for (col in 2:7){
       tabla[fila,col] <- 
         tabla[fila-1,2]*probabilidades[(fila+x-21),col+1] + 
@@ -330,38 +326,73 @@ obtencion_tabla_proyeccion <- function(x,status,sexo) {
         tabla[fila-1,7]*probabilidades[(fila+x-21)+455,col+1]
     }
   }
+  
+  if(0 %in% tabla$l_age.x_sta.5[2:82]) {
+    tabla$l_age.x_sta.5[(113-x):82] <-tabla$l_age.x_sta.5[112-x]
+  }
+  
   return (tabla)
 }
 
-
-#Se crean listas que contienen las proyecciones de personas según la edad y 
-#estado del año cero, separados por sexo.
-
+#Se crean listas que contienen las proyecciones a 80 años de personas 
+#según la edad y estado del año cero (able), separados por sexo.
 
 #Caso hombres
 lista_proyeccionesH <- list()
-for(i in 1:nrow(edades_df)){
-  lista_proyecciones <- list()
-  x <- edades_df[i,]
-  status <- c(0:4)
-  for (j in status) {
-    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"H")
-  }
-  lista_proyeccionesH[[i]] <- lista_proyecciones
-}
-
 #Caso mujeres
 lista_proyeccionesM <- list()
 for(i in 1:nrow(edades_df)){
-  lista_proyecciones <- list()
   x <- edades_df[i,]
-  status <- c(0:5)
-  for (j in status) {
-    lista_proyecciones[[j+1]] <- obtencion_tabla_proyeccion(x,j,"M")
-  }
-  lista_proyeccionesM[[i]] <- lista_proyecciones
-} 
+  lista_proyeccionesH[[i]] <- obtencion_tabla_proyeccion(x,0,"H")
+  lista_proyeccionesM[[i]] <- obtencion_tabla_proyeccion(x,0,"M")
+}
 
+#Se obtiene la proyección total a 80 años para cada estado para hombres 
+#y mujeres
+
+#Hombres
+tabla_proyeccionesH_total <- data.frame(
+  "Año" = 0:81,
+  "Estado 0" = rep(0, 82),
+  "Estado 1" = rep(0, 82),
+  "Estado 2" = rep(0, 82),
+  "Estado 3" = rep(0, 82),
+  "Estado 4" = rep(0, 82),
+  "Estado 5" = rep(0, 82)
+)
+
+#Mujeres
+tabla_proyeccionesM_total <- data.frame(
+  "Año" = 0:81,
+  "Estado 0" = rep(0, 82),
+  "Estado 1" = rep(0, 82),
+  "Estado 2" = rep(0, 82),
+  "Estado 3" = rep(0, 82),
+  "Estado 4" = rep(0, 82),
+  "Estado 5" = rep(0, 82)
+)
+
+for(i in 1: 82) {
+  sumaH <- c(0)
+  sumaM <- c(0)
+  for (j in 1:35) {
+    sumaH <- sumaH + lista_proyeccionesH[[j]][i,]
+    sumaM <- sumaM + lista_proyeccionesM[[j]][i,]
+  }
+  tabla_proyeccionesH_total$Estado.0[i] <- sumaH[2]
+  tabla_proyeccionesH_total$Estado.1[i] <- sumaH[3]
+  tabla_proyeccionesH_total$Estado.2[i] <- sumaH[4]
+  tabla_proyeccionesH_total$Estado.3[i] <- sumaH[5]
+  tabla_proyeccionesH_total$Estado.4[i] <- sumaH[6]
+  tabla_proyeccionesH_total$Estado.5[i] <- sumaH[7]
+  
+  tabla_proyeccionesM_total$Estado.0[i] <- sumaM[2]
+  tabla_proyeccionesM_total$Estado.1[i] <- sumaM[3]
+  tabla_proyeccionesM_total$Estado.2[i] <- sumaM[4]
+  tabla_proyeccionesM_total$Estado.3[i] <- sumaM[5]
+  tabla_proyeccionesM_total$Estado.4[i] <- sumaM[6]
+  tabla_proyeccionesM_total$Estado.5[i] <- sumaM[7]
+}
 
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
 #Proyeccion a 80 años
