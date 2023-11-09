@@ -208,6 +208,7 @@ tabla_html_hombres <- edades_selec_H %>%
   column_spec(2, width = "150px") %>%
   column_spec(3, width = "150px")
 
+
 #--- Inflación e Interés --------------------------------------------------------
 
 # inflación en Costa Rica de los últimos 10 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
@@ -259,6 +260,8 @@ cat('</div>')
 ```
 
 Por su parte, en el siguiente gráfico se evidencia más la construcción de la población estimada para el producto. 
+
+6. Probabilidades de transisión: Las probabilidades de transición para cada estado que se tenían de [@leung2006multiple], originalmente eran a partir de los 20 años y cada 10 años. Para poder obtener las probabilidades de transición para todos los años, se utilizó interpolación con un ajuste para que las probabilidades sumaran uno. 
 
 ```{r, echo=FALSE, results='hide', message=FALSE}
 print(p)
