@@ -42,8 +42,11 @@ for(fila in 1:nrow(Prob_Trans_Hombres)){
 #--- Poblacion -----------------------------------------------------------------
 edades <- 31:65
 
+
 porcentajes <- c(0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.15, 0.15,
                  rep(0.13, 20))  # Luego, 20 porcentajes uniformes de 0.6
+
+
 # Caso hombres 
 
 # Crear un dataframe para las edades
@@ -402,9 +405,10 @@ for(i in 1: 82) {
 set.seed(123) #establece semilla para probabilidades
 
 #Crear vector con 100 nombres de dataframes
-for (i in 1:1) {#Crear los df
-  pob_tot <- sum(edades_selec_H$pob_estimada)
-  v <- data.frame(
+vector_simulacion <- vector("list", 100)
+pob_tot <- sum(edades_selec_H$pob_estimada)
+for (i in 1:100) {#Crear los df
+  vector_simulacion[[i]] <- data.frame(
     Edad = c(rep(30,edades_selec_H[1,4]),
              rep(31,edades_selec_H[2,4]),
              rep(32,edades_selec_H[3,4]),
@@ -525,50 +529,51 @@ for (i in 1:1) {#Crear los df
 }
 
 #Obtener los estados de las personas simuladas
-for(i in 1:1){#(i in 1:100){
+for(i in 1:100){
   for(col in 3:82){
     for(fil in 1:sum(edades_selec_H$pob_estimada)){
-      if(vector_de_df[[i]][fil,col-1]==0){
-        fil_prob <-  0
-      }
-      if(vector_de_df[[i]][fil,col-1]==1){
-        fil_prob <-  91
-      }
-      if(vector_de_df[[i]][fil,col-1]==2){
-        fil_prob <-  182
-      }
-      if(vector_de_df[[i]][fil,col-1]==3){
-        fil_prob <-  273
-      }
-      if(vector_de_df[[i]][fil,col-1]==4){
-        fil_prob <-  364
-      }
-      if(vector_de_df[[i]][fil,col-1]==5){
-        vector_de_df[[i]][fil,col] <- 5
+      if(vector_simulacion[[i]][fil,col-1]==5){
+        vector_simulacion[[i]][fil,col] <- 5
         next
       }
+      if(vector_simulacion[[i]][fil,col-1]==0){
+        fil_prob <-  0
+      }
+      if(vector_simulacion[[i]][fil,col-1]==1){
+        fil_prob <-  91
+      }
+      if(vector_simulacion[[i]][fil,col-1]==2){
+        fil_prob <-  182
+      }
+      if(vector_simulacion[[i]][fil,col-1]==3){
+        fil_prob <-  273
+      }
+      if(vector_simulacion[[i]][fil,col-1]==4){
+        fil_prob <-  364
+      }
       
-      traspaso_0 <- Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),3]#pasar al estado 0
-      if(vector_de_df[[i]][fil,col]<=traspaso_0){
-        vector_de_df[[i]][fil,col] <- 0
+      
+      traspaso_0 <- Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),3]#pasar al estado 0
+      if(vector_simulacion[[i]][fil,col]<=traspaso_0){
+        vector_simulacion[[i]][fil,col] <- 0
       }else{
-        traspaso_1 <- traspaso_0 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),4]#pasar al estado 1
-        if(vector_de_df[[i]][fil,col]<=traspaso_1){
-          vector_de_df[[i]][fil,col] <- 1
+        traspaso_1 <- traspaso_0 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),4]#pasar al estado 1
+        if(vector_simulacion[[i]][fil,col]<=traspaso_1){
+          vector_simulacion[[i]][fil,col] <- 1
         }else{
-          traspaso_2 <- traspaso_1 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),5]#pasar al estado 2
-          if(vector_de_df[[i]][fil,col]<=traspaso_2){
-            vector_de_df[[i]][fil,col] <- 2
+          traspaso_2 <- traspaso_1 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),5]#pasar al estado 2
+          if(vector_simulacion[[i]][fil,col]<=traspaso_2){
+            vector_simulacion[[i]][fil,col] <- 2
           }else{
-            traspaso_3 <- traspaso_2 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),6]#pasar al estado 3
-            if(vector_de_df[[i]][fil,col]<=traspaso_3){
-              vector_de_df[[i]][fil,col] <- 3
+            traspaso_3 <- traspaso_2 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),6]#pasar al estado 3
+            if(vector_simulacion[[i]][fil,col]<=traspaso_3){
+              vector_simulacion[[i]][fil,col] <- 3
             }else{
-              traspaso_4 <- traspaso_3 + Prob_Trans_Hombres[(vector_de_df[[i]]$Edad[fil]+col-22+fil_prob),7]#pasar al estado 4
-              if(vector_de_df[[i]][fil,col]<=traspaso_4){
-                vector_de_df[[i]][fil,col] <- 4
+              traspaso_4 <- traspaso_3 + Prob_Trans_Hombres[(vector_simulacion[[i]]$Edad[fil]+col-22+fil_prob),7]#pasar al estado 4
+              if(vector_simulacion[[i]][fil,col]<=traspaso_4){
+                vector_simulacion[[i]][fil,col] <- 4
               }else{
-                vector_de_df[[i]][fil,col] <- 5
+                vector_simulacion[[i]][fil,col] <- 5
               }
             }
           }
@@ -577,6 +582,8 @@ for(i in 1:1){#(i in 1:100){
     }
   }
 }
+
+
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
 
@@ -674,7 +681,3 @@ print(G.egresos_H)
 
 #--- Modelo Estocastico montos esperados de ingresos y egresos para cada uno estado -----
 
-
-sum(round(c(13.3,3.25443,4.2433), digits = 0))
-
-assign(paste0("simulacion", i), 
