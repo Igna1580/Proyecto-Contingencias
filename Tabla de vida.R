@@ -584,6 +584,97 @@ for(i in 1:100){
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
 
+#Proyección por generacion
+
+lista_gen_H <- list()
+lista_gen_M <- list()
+
+
+for (edad in 30:64) {
+  nombre_H <- paste("Gen_H_", edad, sep = "")
+  nombre_M <- paste("Gen_M_", edad, sep = "")
+  
+  lista_gen_H[[edad-29]] <- assign(nombre_H, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "H")[, -1], MARGIN = 2, STATS = edades_selec_H$pob_estimada[edad-29], FUN = "*"))))
+  lista_gen_M[[edad-29]] <- assign(nombre_M, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "M")[, -1], MARGIN = 2, STATS = edades_selec_M$pob_estimada[edad-29], FUN = "*"))))
+  
+}
+
+#Ingresos
+
+Ingresos_H <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+Ingresos_M <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+
+for (i in 1:81) {
+  for (k in 1:35) {
+    Ingresos_H[i,2] <- Ingresos_H[i,2] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 1])
+    Ingresos_H[i,3] <- Ingresos_H[i,3] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 2])
+    Ingresos_H[i,4] <- Ingresos_H[i,4] + edades_selec_H$Prima_justa_anual[k]* (lista_gen_H[[k]][i, 3])
+    
+    Ingresos_M[i,2] <- Ingresos_M[i,2] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 1])
+    Ingresos_M[i,3] <- Ingresos_M[i,3] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 2])
+    Ingresos_M[i,4] <- Ingresos_M[i,4] + edades_selec_M$Prima_justa_anual[k]* (lista_gen_M[[k]][i, 3])
+    
+    
+  }
+}
+
+G.ingresos_H = ggplot() + 
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Estado.2 , color = "Moderate"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Esperados') + cowplot::theme_cowplot()
+
+
+print(G.ingresos_H)
+
+
+#Egresos
+
+Egresos_H <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+Egresos_M <- data.frame( tiempo = 0:80, Estado.0 = rep(0, 81), Estado.1 = rep(0, 81), Estado.2 = rep(0, 81), Estado.3 = rep(0, 81), Estado.4 = rep(0, 81), Estado.5 = rep(0, 81))
+
+for (i in 1:81) {
+  for (k in 1:35) {
+    
+    if(i == 1){
+      Egresos_H[i,2] <- Egresos_H[i,2] + 0.2*edades_selec_H$Prima_justa_anual[k]*(lista_gen_H[[k]][i, 1])
+      
+      Egresos_M[i,2] <- Egresos_M[i,2] + 0.2*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 1])
+      
+    } else{
+      Egresos_H[i,2] <- Egresos_H[i,2] + (0.05*edades_selec_H$Prima_justa_anual[k])*(lista_gen_H[[k]][i, 1])
+      Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*edades_selec_H$Prima_justa_anual[k]+B)*(lista_gen_H[[k]][i, 2])
+      Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*edades_selec_H$Prima_justa_anual[k]+C)*(lista_gen_H[[k]][i, 3])
+      Egresos_H[i,5] <- Egresos_H[i,5] + C*(lista_gen_H[[k]][i, 4])
+      Egresos_H[i,6] <- Egresos_H[i,6] + D*(lista_gen_H[[k]][i, 5])
+      
+      Egresos_M[i,2] <- Egresos_M[i,2] + (0.05*edades_selec_M$Prima_justa_anual[k])*(lista_gen_M[[k]][i, 1])
+      Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*edades_selec_M$Prima_justa_anual[k]+A)*(lista_gen_M[[k]][i, 2])
+      Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*edades_selec_M$Prima_justa_anual[k]+B)*(lista_gen_M[[k]][i, 3])
+      Egresos_M[i,5] <- Egresos_M[i,5] + C*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 4])
+      Egresos_M[i,6] <- Egresos_M[i,6] + D*edades_selec_M$Prima_justa_anual[k]*(lista_gen_M[[k]][i, 5])
+      
+    }
+  }
+}
+
+
+G.egresos_H = ggplot() + 
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Estado.4 , color = "Profound"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Esperados') + cowplot::theme_cowplot()
+
+print(G.egresos_H)
+
+
+
 
 #--- Modelo Estocastico montos esperados de ingresos y egresos para cada uno estado -----
 
