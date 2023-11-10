@@ -396,6 +396,31 @@ for(i in 1: 82) {
   tabla_proyeccionesM_total$Estado.5[i] <- sumaM[7]
 }
 
+proyeccion_H = ggplot() + 
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.0), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.1) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.2) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.3) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.4) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.5) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas esperadas (Hombres)') + cowplot::theme_cowplot()
+
+proyeccion_M = ggplot() + 
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.0), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.1) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.2) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.3) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.4) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.5) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas esperadas (Mujeres)') + cowplot::theme_cowplot()
+
+print(proyeccion_H)
+print(proyeccion_M)
+
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
 #Proyeccion a 80 años
 #Esperanza y el percentil 99,5
