@@ -32,18 +32,16 @@ Prob_Trans_Hombres <- read.csv("ProbTransHombres.csv", sep = ";")
 Prob_Trans_Mujeres <- read.csv("ProbTransMujeres.csv", sep = ";")
 
 #ajustarlas para que sumen 1
-for(fila in 1:nrow(Prob_Trans_Hombres)){
-  for(col in 3:8){
-    Prob_Trans_Hombres[fila,col] <- Prob_Trans_Hombres[fila,col]/sum(Prob_Trans_Hombres[fila,3:8])
-    Prob_Trans_Mujeres[fila,col] <- Prob_Trans_Mujeres[fila,col]/sum(Prob_Trans_Mujeres[fila,3:8])
-  }
-}
+Prob_Trans_Hombres <- Prob_Trans_Hombres %>%
+  mutate_at(vars(3:8), function(x) x / rowSums(select(., 3:8)))
+Prob_Trans_Mujeres <- Prob_Trans_Mujeres %>%
+  mutate_at(vars(3:8), function(x) x / rowSums(select(., 3:8)))
+
 
 #--- Poblacion -----------------------------------------------------------------
 edades <- 31:65
 
-porcentajes <- c(0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.15, 0.15,
-                 rep(0.13, 20))  # Luego, 20 porcentajes uniformes de 0.6
+porcentajes <- rep(0.03, 35)  # Luego, 20 porcentajes uniformes de 0.6
 
 
 # Caso hombres 
@@ -396,16 +394,40 @@ for(i in 1: 82) {
   tabla_proyeccionesM_total$Estado.5[i] <- sumaM[7]
 }
 
+proyeccion_H = ggplot() + 
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.0), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.1) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.2) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.3) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.4) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesH_total, aes(x = Año, y = as.numeric(Estado.5) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas esperadas (Hombres)') + cowplot::theme_cowplot()
+
+proyeccion_M = ggplot() + 
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.0), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.1) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.2) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.3) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.4) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = tabla_proyeccionesM_total, aes(x = Año, y = as.numeric(Estado.5) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas esperadas (Mujeres)') + cowplot::theme_cowplot()
+
+print(proyeccion_H)
+print(proyeccion_M)
+
 #--- Modelo Estocastico Cantidad Esperada de Personas al final del año ---------
 #Proyeccion a 80 años
 #Esperanza y el percentil 99,5
-#Se toman 100 bases de datos, cada una con 1000 personas
+#Se toman 100 bases de datos
 
 set.seed(123) #establece semilla para probabilidades
 
 #Creamos la fucnion simulacion
 func_simulacion <- function(edad, col_ant, col_act, sexo, año){
-  
   if(sexo == "H"){
     proba <- Prob_Trans_Hombres
   }
@@ -458,7 +480,7 @@ func_simulacion <- function(edad, col_ant, col_act, sexo, año){
 }
 
 
-##--- Hombres ----
+####--- Hombres ----
 
 #Crear vector con 100 dataframes
 vector_simulacion_H <- vector("list", 100)
@@ -586,7 +608,8 @@ for (i in 1:100) {#Crear los df
 
 #Obtener los estados de las personas simuladas
 for(i in 1:100){
-  vector_simulacion_H[[1]] <- vector_simulacion_H[[1]] %>%
+  print(paste(i,"%"))
+  vector_simulacion_H[[i]] <- vector_simulacion_H[[i]] %>%
     rowwise() %>%
     mutate(Año_1 = func_simulacion(Edad, Año_0, Año_1,sexo="H",año=0),
            Año_2 = func_simulacion(Edad, Año_1, Año_2,sexo="H",año=1),
@@ -672,7 +695,7 @@ for(i in 1:100){
 }
 
 
-##--- Mujeres----
+####--- Mujeres----
 #Crear vector con 100 dataframes
 vector_simulacion_M <- vector("list", 100)
 pob_tot_M <- sum(edades_selec_M$pob_estimada)
@@ -799,7 +822,8 @@ for (i in 1:100) {#Crear los df
 
 #Obtener los estados de las personas simuladas
 for(i in 1:100){
-  vector_simulacion_H[[1]] <- vector_simulacion_H[[1]] %>%
+  print(paste(i,"%"))
+  vector_simulacion_M[[i]] <- vector_simulacion_M[[i]] %>%
     rowwise() %>%
     mutate(Año_1 = func_simulacion(Edad, Año_0, Año_1,sexo="M",año=0),
            Año_2 = func_simulacion(Edad, Año_1, Año_2,sexo="M",año=1),
@@ -883,6 +907,23 @@ for(i in 1:100){
            Año_80 = func_simulacion(Edad, Año_79, Año_80,sexo="M",año=79),
     )
 }
+
+##--- Encontrar las poblaciones ------------------------------------------------
+encontrar_poblacion_simulacion <- function(año, estado, sexo){
+  if(sexo == "H"){
+    df_simulacion <- vector_simulacion_H
+  }
+  if(sexo == "M"){
+    df_simulacion <- vector_simulacion_M
+  }
+  v_pob <- c()
+  for(i in 1:100){
+    v_pob <- c(v_pob, sum(df_simulacion[[i]][,estado] == estado))
+  }
+  
+  return(c(mean(v_pob),quantile(v_pob, 0.995)))
+}
+
 
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
