@@ -154,10 +154,10 @@ u.ax.n_ij <- function(x,u=65-x,n=110-x,i=0, j,r=5.8,inf=2.8818,sexo){
 
 #--- Calculo Prima Generalizada -----------------------------------------------
 
-A <- 183671.1703 #Beneficio estado 1
-B <- 363381.6771 #Beneficio estado 2
-C <- 740398.8263 #Beneficio estado 3
-D <- 1572738.998 #Beneficio estado 4
+A <- 183671.1703*12 #Beneficio estado 1
+B <- 363381.6771*12 #Beneficio estado 2
+C <- 740398.8263*12 #Beneficio estado 3
+D <- 1572738.998*12 #Beneficio estado 4
 
 ##--- Beneficios ---------------------------------------------------------------
 
