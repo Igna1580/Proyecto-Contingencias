@@ -81,9 +81,8 @@ inflacion <- mean(inflacion_data$Costa_Rica)
 # descargamos la curva de rendimiento soberana de los últimos 6 meses
 tasas_Descuento <- read_excel("descuento.xlsx") 
 
-descuento <- mean(tasas_Descuento$`3 meses`)
+descuento <- round(mean(tasas_Descuento$`3 meses`), digits = 1)
 # descuento 5.8
-
 
 
 #--- Probabilidades ------------------------------------------------------------
@@ -426,6 +425,7 @@ print(proyeccion_M)
 
 set.seed(123) #establece semilla para probabilidades
 
+##--- Simulacion ---------------------------------------------------------------
 #Creamos la fucnion simulacion
 func_simulacion <- function(edad, col_ant, col_act, sexo, año){
   if(sexo == "H"){
@@ -908,8 +908,10 @@ for(i in 1:100){
     )
 }
 
-##--- Encontrar las poblaciones ------------------------------------------------
-encontrar_poblacion_simulacion <- function(año, estado, sexo){
+##--- Poblaciones --------------------------------------------------------------
+
+###--- Encontrar las poblaciones -----------------------------------------------
+encontrar_poblacion_tot_simulacion <- function(año, estado, sexo){
   if(sexo == "H"){
     df_simulacion <- vector_simulacion_H
   }
@@ -918,11 +920,109 @@ encontrar_poblacion_simulacion <- function(año, estado, sexo){
   }
   v_pob <- c()
   for(i in 1:100){
-    v_pob <- c(v_pob, sum(df_simulacion[[i]][,estado] == estado))
+    v_pob <- c(v_pob, sum(df_simulacion[[i]][,año+2] == estado))
   }
-  
-  return(c(mean(v_pob),quantile(v_pob, 0.995)))
+  return(v_pob)
 }
+
+encontrar_poblacion_65mas_simulacion <- function(año, estado, sexo){
+  if(sexo == "H"){
+    df_simulacion <- vector_simulacion_H
+  }
+  if(sexo == "M"){
+    df_simulacion <- vector_simulacion_M
+  }
+  v_pob <- c()
+  for(i in 1:100){
+    v_pob <- c(v_pob, sum((df_simulacion[[i]][,año+2] == estado) & (año+df_simulacion[[i]][,1]) >= 65))
+  }
+  return(v_pob)
+}
+
+encontrar_poblacion_64menos_simulacion <- function(año, estado, sexo){
+  if(sexo == "H"){
+    df_simulacion <- vector_simulacion_H
+  }
+  if(sexo == "M"){
+    df_simulacion <- vector_simulacion_M
+  }
+  v_pob <- c()
+  for(i in 1:100){
+    v_pob <- c(v_pob, sum((df_simulacion[[i]][,año+2] == estado) & (año+df_simulacion[[i]][,1]) <= 64))
+  }
+  return(v_pob)
+}
+
+#Poblacion Hombres
+v_pob_xaño_0_H <- vector("list", length = 81)
+v_pob_xaño_1_H <- vector("list", length = 81)
+v_pob_xaño_2_H <- vector("list", length = 81)
+v_pob_xaño_3_H <- vector("list", length = 81)
+v_pob_xaño_4_H <- vector("list", length = 81)
+v_pob_xaño_5_H <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_xaño_0_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 0, sexo = "H")
+  v_pob_xaño_1_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 1, sexo = "H")
+  v_pob_xaño_2_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 2, sexo = "H")
+  v_pob_xaño_3_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 3, sexo = "H")
+  v_pob_xaño_4_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 4, sexo = "H")
+  v_pob_xaño_5_H[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 5, sexo = "H")
+}
+
+df_poblaciones_simuladas_H <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Pob_estim_0 = mean(v_pob_xaño_0_H[[Año+1]]),
+    Perc_99.5_0 = quantile(v_pob_xaño_0_H[[Año+1]],0.995),
+    Pob_estim_1 = mean(v_pob_xaño_1_H[[Año+1]]),
+    Perc_99.5_1 = quantile(v_pob_xaño_1_H[[Año+1]],0.995),
+    Pob_estim_2 = mean(v_pob_xaño_2_H[[Año+1]]),
+    Perc_99.5_2 = quantile(v_pob_xaño_2_H[[Año+1]],0.995),
+    Pob_estim_3 = mean(v_pob_xaño_3_H[[Año+1]]),
+    Perc_99.5_3 = quantile(v_pob_xaño_3_H[[Año+1]],0.995),
+    Pob_estim_4 = mean(v_pob_xaño_4_H[[Año+1]]),
+    Perc_99.5_4 = quantile(v_pob_xaño_4_H[[Año+1]],0.995),
+    Pob_estim_5 = mean(v_pob_xaño_5_H[[Año+1]]),
+    Perc_99.5_5 = quantile(v_pob_xaño_5_H[[Año+1]],0.995)
+  )
+
+
+#Poblacion Mujeres
+v_pob_xaño_0_M <- vector("list", length = 81)
+v_pob_xaño_1_M <- vector("list", length = 81)
+v_pob_xaño_2_M <- vector("list", length = 81)
+v_pob_xaño_3_M <- vector("list", length = 81)
+v_pob_xaño_4_M <- vector("list", length = 81)
+v_pob_xaño_5_M <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_xaño_0_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 0, sexo = "M")
+  v_pob_xaño_1_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 1, sexo = "M")
+  v_pob_xaño_2_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 2, sexo = "M")
+  v_pob_xaño_3_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 3, sexo = "M")
+  v_pob_xaño_4_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 4, sexo = "M")
+  v_pob_xaño_5_M[[i]] <- encontrar_poblacion_tot_simulacion(año = i-1, estado = 5, sexo = "M")
+}
+
+df_poblaciones_simuladas_M <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Pob_estim_0 = mean(v_pob_xaño_0_M[[Año+1]]),
+    Perc_99.5_0 = quantile(v_pob_xaño_0_M[[Año+1]],0.995),
+    Pob_estim_1 = mean(v_pob_xaño_1_M[[Año+1]]),
+    Perc_99.5_1 = quantile(v_pob_xaño_1_M[[Año+1]],0.995),
+    Pob_estim_2 = mean(v_pob_xaño_2_M[[Año+1]]),
+    Perc_99.5_2 = quantile(v_pob_xaño_2_M[[Año+1]],0.995),
+    Pob_estim_3 = mean(v_pob_xaño_3_M[[Año+1]]),
+    Perc_99.5_3 = quantile(v_pob_xaño_3_M[[Año+1]],0.995),
+    Pob_estim_4 = mean(v_pob_xaño_4_M[[Año+1]]),
+    Perc_99.5_4 = quantile(v_pob_xaño_4_M[[Año+1]],0.995),
+    Pob_estim_5 = mean(v_pob_xaño_5_M[[Año+1]]),
+    Perc_99.5_5 = quantile(v_pob_xaño_5_M[[Año+1]],0.995)
+  )
+
+
 
 
 
@@ -1022,3 +1122,173 @@ print(G.egresos_H)
 
 #--- Modelo Estocastico montos esperados de ingresos y egresos para cada uno estado -----
 
+##--- Poblaciones --------------------------------------------------------------
+
+#Poblacion Hombres edades 65+ y 64-
+v_pob_65mas_xaño_0_H <- vector("list", length = 81)
+v_pob_65mas_xaño_1_H <- vector("list", length = 81)
+v_pob_65mas_xaño_2_H <- vector("list", length = 81)
+v_pob_65mas_xaño_3_H <- vector("list", length = 81)
+v_pob_65mas_xaño_4_H <- vector("list", length = 81)
+v_pob_65mas_xaño_5_H <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_65mas_xaño_0_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 0, sexo = "H")
+  v_pob_65mas_xaño_1_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 1, sexo = "H")
+  v_pob_65mas_xaño_2_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 2, sexo = "H")
+  v_pob_65mas_xaño_3_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 3, sexo = "H")
+  v_pob_65mas_xaño_4_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 4, sexo = "H")
+  v_pob_65mas_xaño_5_H[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 5, sexo = "H")
+}
+
+v_pob_64menos_xaño_0_H <- vector("list", length = 81)
+v_pob_64menos_xaño_1_H <- vector("list", length = 81)
+v_pob_64menos_xaño_2_H <- vector("list", length = 81)
+v_pob_64menos_xaño_3_H <- vector("list", length = 81)
+v_pob_64menos_xaño_4_H <- vector("list", length = 81)
+v_pob_64menos_xaño_5_H <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_64menos_xaño_0_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 0, sexo = "H")
+  v_pob_64menos_xaño_1_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 1, sexo = "H")
+  v_pob_64menos_xaño_2_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 2, sexo = "H")
+  v_pob_64menos_xaño_3_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 3, sexo = "H")
+  v_pob_64menos_xaño_4_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 4, sexo = "H")
+  v_pob_64menos_xaño_5_H[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 5, sexo = "H")
+}
+
+#Poblacion Mujeres edades 65+ y 64-
+v_pob_65mas_xaño_0_M <- vector("list", length = 81)
+v_pob_65mas_xaño_1_M <- vector("list", length = 81)
+v_pob_65mas_xaño_2_M <- vector("list", length = 81)
+v_pob_65mas_xaño_3_M <- vector("list", length = 81)
+v_pob_65mas_xaño_4_M <- vector("list", length = 81)
+v_pob_65mas_xaño_5_M <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_65mas_xaño_0_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 0, sexo = "M")
+  v_pob_65mas_xaño_1_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 1, sexo = "M")
+  v_pob_65mas_xaño_2_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 2, sexo = "M")
+  v_pob_65mas_xaño_3_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 3, sexo = "M")
+  v_pob_65mas_xaño_4_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 4, sexo = "M")
+  v_pob_65mas_xaño_5_M[[i]] <- encontrar_poblacion_65mas_simulacion(año = i-1, estado = 5, sexo = "M")
+}
+
+v_pob_64menos_xaño_0_M <- vector("list", length = 81)
+v_pob_64menos_xaño_1_M <- vector("list", length = 81)
+v_pob_64menos_xaño_2_M <- vector("list", length = 81)
+v_pob_64menos_xaño_3_M <- vector("list", length = 81)
+v_pob_64menos_xaño_4_M <- vector("list", length = 81)
+v_pob_64menos_xaño_5_M <- vector("list", length = 81)
+for (i in 1:81) {
+  v_pob_64menos_xaño_0_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 0, sexo = "M")
+  v_pob_64menos_xaño_1_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 1, sexo = "M")
+  v_pob_64menos_xaño_2_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 2, sexo = "M")
+  v_pob_64menos_xaño_3_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 3, sexo = "M")
+  v_pob_64menos_xaño_4_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 4, sexo = "M")
+  v_pob_64menos_xaño_5_M[[i]] <- encontrar_poblacion_64menos_simulacion(año = i-1, estado = 5, sexo = "M")
+}
+##--- Ingresos -----------------------------------------------------------------
+
+#Hombres
+df_ingresos_simulados_H <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+  )
+
+#Mujeres
+df_ingresos_simulados_M <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+  )
+
+##--- Beneficios ---------------------------------------------------------------
+
+#Hombres
+df_beneficios_simulados_H <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+  )
+
+df_costos_simulados_H <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Ing_estim_0 = 0.05*prima_anual*mean(v_pob_65mas_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_1 = 0.05*prima_anual*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_2 = 0.05*prima_anual*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+  )
+df_costos_simulados_H[1,2:3] <- 0.2*prima_anual*mean(v_pob_65mas_xaño_0_H[[1]])
+
+#Mujeres
+df_beneficios_simulados_M <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+  )
+
+df_costos_simulados_M <- tibble(
+  Año = 0:80) %>%
+  rowwise() %>%
+  mutate(
+    Ing_estim_0 = 0.05*prima_anual*mean(v_pob_65mas_xaño_0_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_1 = 0.05*prima_anual*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Ing_estim_2 = 0.05*prima_anual*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+  )
+df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_65mas_xaño_0_M[[1]])
+
+
+##--- Balance ------------------------------------------------------------------
+
+#Hombres
+df_balance_simulado_H <- tibble(
+  Año = 0:80) %>%
+  mutate(
+    Balance_estim_0 = df_ingresos_simulados_H$Ing_estim_0 - df_costos_simulados_H$Ing_estim_0,
+    Perc_99.5_0 = df_ingresos_simulados_H$Perc_99.5_0 - df_costos_simulados_H$Perc_99.5_0,
+    Balance_estim_1 = df_ingresos_simulados_H$Ing_estim_1 - df_beneficios_simulados_H$Benef_estim_1 - df_costos_simulados_H$Ing_estim_1,
+    Perc_99.5_1 = df_ingresos_simulados_H$Perc_99.5_1 - df_beneficios_simulados_H$Perc_99.5_1 - df_costos_simulados_H$Perc_99.5_1,
+    Balance_estim_2 = df_ingresos_simulados_H$Ing_estim_2 - df_beneficios_simulados_H$Benef_estim_2 - df_costos_simulados_H$Ing_estim_2,
+    Perc_99.5_2 = df_ingresos_simulados_H$Perc_99.5_2 - df_beneficios_simulados_H$Perc_99.5_2 - df_costos_simulados_H$Perc_99.5_2,
+    Balance_estim_3 = df_beneficios_simulados_H$Benef_estim_3,
+    Perc_99.5_3 = df_beneficios_simulados_H$Perc_99.5_3,
+    Balance_estim_4 = df_beneficios_simulados_H$Benef_estim_4,
+    Perc_99.5_4 = df_beneficios_simulados_H$Perc_99.5_4
+  )
+
+sum(rowSums(df_balance_simulado_H[,c(2,4,6,8,10)]))
+#- 0.15*prima_anual*pob_tot_H
