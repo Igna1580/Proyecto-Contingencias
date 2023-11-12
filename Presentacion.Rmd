@@ -17,6 +17,7 @@ bibliography: bibliografia_contingencias.bib
 csl: apa.csl  
 editor_options: 
   chunk_output_type: console
+header-includes:
 ---
 
 ```{r setup, include=FALSE}
@@ -53,17 +54,37 @@ suppressWarnings({
  library(kableExtra)
 })
 ```
-\usepackage{actuarialsymbol}
+
 ## Introducción
 
 El presente trabajo tiene como objetivo presentar el diseño de un producto de cuidados de largo plazo para la población costarricense. El producto propuesto se llama **Longevidad Asegurada** y realiza pagos mensuales de forma vitalicia, dependiendo del estado de salud de la persona, siempre y cuando esta realice pagos de primas mensuales hasta los 65 años.
 
 La propuesta actual se centra en ofrecer a los clientes un producto especializado que les brinde mayor seguridad de contar con ingresos mensuales en el futuro, proporcionándoles los recursos necesarios para hacer frente a gastos médicos, cirugías y cuidados en la etapa final de la vida, sin depender de apoyo financiero externo. Específicamente, el seguro de cuidados de largo plazo propuesto constituye una póliza para las personas con estados de salud delicados que requieren tratamiento y atención médica constante. Este seguro cubre los costos mensuales de enfermería domiciliaria para los cuidados paliativos como lo son: ayuda con la alimentación y el aseo, aplicación de inyecciones y medicamentos, tratamiento de heridas, entre otros requeridos.También, el seguro cubre los gastos mensuales de estancia en hogares de ancianos.
 
-
 Debido a que este producto no se encuentra actualmente en el país, se utilizan como base para los cálculos los datos experimentales de probabilidad en el trabajo: "A multiple state model for pricing and reserving private long term care insurance contracts in Australia" [@leung2006multiple].
 
-## Supuestos
+El presente trabajo consta de seis secciones. En la primera sección se analiza la población a la que está destinado el seguro, es decir, la población que se estima que tendrá interés en adquirir el producto. La segunda sección describe el producto, incluyendo aspectos como la temporalidad, los montos de cobertura por estado y lineamientos para el pago de primas. En la tercera sección se presenta la metodología utilizada para llevar a cabo las proyecciones y cálculos, basada en teoría actuarial. Por su parte, en la cuarta sección se presentan los supuestos considerados para el cálculo de las primas. La quinta sección contiene los resultados de la aplicación de dos modelos para calcular las proyecciones de los montos esperados de ingresos y gastos, desglosados por estado y sexo. En la última sección, se presenta las conclusiones de la aplicación de ambos modelos. 
+
+## Análisis de la población
+
+Acorde a lo estipulado por @seguros, "Costa Rica es el país latinoamericano con mayor esperanza de vida al nacer" (p. 1). Además, se señala que entre los años 2000 y 2020, la población de pesonas mayores práctimanente se duplicó y se espera que el 24% de la población en el 2050 se constituya por adultos mayores. 
+
+Considerando el envejecimiento demográfico de la población costarricense,  y
+
+
+Como consecuencia del envejecimiento demográfico, hace
+cuatro décadas los países de altos ingresos iniciaron su desarrollo de CLD (6). E
+
+## Descripción del producto
+
+## Metodología actuarial
+
+## Supuestos 
+
+## Resultados 
+
+## Conclusiones
+
 
 Para poder crear un producto que sea rentable, se utilizaron herramientas de matemática actuarial y fue necesario tomar una serie de supuestos que se presentan a continuación:
 
