@@ -81,8 +81,8 @@ inflacion <- mean(inflacion_data$Costa_Rica)
 # descargamos la curva de rendimiento soberana de los últimos 6 meses
 tasas_Descuento <- read_excel("descuento.xlsx") 
 
-descuento <- round(mean(tasas_Descuento$`3 meses`), digits = 1)
-# descuento 5.8
+descuento <- round(mean(tasas_Descuento$`3 meses`), digits = 1)/100
+# descuento 0.058
 
 
 #--- Probabilidades ------------------------------------------------------------
@@ -165,9 +165,9 @@ D <- 1572738.998*12 #Beneficio estado 4
 benef_H_indiv <- data.frame(benef_H_indiv = numeric())
 for (x in 30:64) {
   beneficios_por_edad_hombres <- (A*u.ax.n_ij(x,65-x,i=0,j=1,sexo="H")) +
-                           (B*u.ax.n_ij(x, 65-x,i=0,j=2,sexo="H")) +
-                             (C*u.ax.n_ij(x, 65-x,i=0,j=3,sexo="H")) +
-                               (D*u.ax.n_ij(x, 65-x,i=0,j=4,sexo="H"))
+    (B*u.ax.n_ij(x, 65-x,i=0,j=2,sexo="H")) +
+    (C*u.ax.n_ij(x, 65-x,i=0,j=3,sexo="H")) +
+    (D*u.ax.n_ij(x, 65-x,i=0,j=4,sexo="H"))
   benef_H_indiv <- rbind(benef_H_indiv, data.frame(benef_H_indiv = beneficios_por_edad_hombres))
 }
 
@@ -1192,12 +1192,12 @@ df_ingresos_simulados_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
 
 #Mujeres
@@ -1205,12 +1205,12 @@ df_ingresos_simulados_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Ing_estim_0 = prima_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_0 = prima_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Ing_estim_1 = prima_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_1 = prima_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Ing_estim_2 = prima_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
 
 ##--- Beneficios ---------------------------------------------------------------
@@ -1220,56 +1220,56 @@ df_beneficios_simulados_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*(1/(1+descuento))^(Año+1)
   )
 
 df_costos_simulados_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Ing_estim_0 = 0.05*prima_anual*mean(v_pob_65mas_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_1 = 0.05*prima_anual*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_2 = 0.05*prima_anual*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Costo_estim_0 = 0.05*prima_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Costo_estim_1 = 0.05*prima_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Costo_estim_2 = 0.05*prima_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
-df_costos_simulados_H[1,2:3] <- 0.2*prima_anual*mean(v_pob_65mas_xaño_0_H[[1]])
+df_costos_simulados_H[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_H[[1]])
 
 #Mujeres
 df_beneficios_simulados_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*(1/(1+descuento))^(Año+1),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*(1/(1+descuento))^(Año+1),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*(1/(1+descuento))^(Año+1)
   )
 
 df_costos_simulados_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Ing_estim_0 = 0.05*prima_anual*mean(v_pob_65mas_xaño_0_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_1 = 0.05*prima_anual*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Ing_estim_2 = 0.05*prima_anual*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Costo_estim_0 = 0.05*prima_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Costo_estim_1 = 0.05*prima_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*(1/(1+descuento))^(Año),
+    Costo_estim_2 = 0.05*prima_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*(1/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
-df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_65mas_xaño_0_M[[1]])
+df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_M[[1]])
 
 
 ##--- Balance ------------------------------------------------------------------
@@ -1278,11 +1278,11 @@ df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_65mas_xaño_0_M[[1]])
 df_balance_simulado_H <- tibble(
   Año = 0:80) %>%
   mutate(
-    Balance_estim_0 = df_ingresos_simulados_H$Ing_estim_0 - df_costos_simulados_H$Ing_estim_0,
+    Balance_estim_0 = df_ingresos_simulados_H$Ing_estim_0 - df_costos_simulados_H$Costo_estim_0,
     Perc_99.5_0 = df_ingresos_simulados_H$Perc_99.5_0 - df_costos_simulados_H$Perc_99.5_0,
-    Balance_estim_1 = df_ingresos_simulados_H$Ing_estim_1 - df_beneficios_simulados_H$Benef_estim_1 - df_costos_simulados_H$Ing_estim_1,
+    Balance_estim_1 = df_ingresos_simulados_H$Ing_estim_1 - df_beneficios_simulados_H$Benef_estim_1 - df_costos_simulados_H$Costo_estim_1,
     Perc_99.5_1 = df_ingresos_simulados_H$Perc_99.5_1 - df_beneficios_simulados_H$Perc_99.5_1 - df_costos_simulados_H$Perc_99.5_1,
-    Balance_estim_2 = df_ingresos_simulados_H$Ing_estim_2 - df_beneficios_simulados_H$Benef_estim_2 - df_costos_simulados_H$Ing_estim_2,
+    Balance_estim_2 = df_ingresos_simulados_H$Ing_estim_2 - df_beneficios_simulados_H$Benef_estim_2 - df_costos_simulados_H$Costo_estim_2,
     Perc_99.5_2 = df_ingresos_simulados_H$Perc_99.5_2 - df_beneficios_simulados_H$Perc_99.5_2 - df_costos_simulados_H$Perc_99.5_2,
     Balance_estim_3 = df_beneficios_simulados_H$Benef_estim_3,
     Perc_99.5_3 = df_beneficios_simulados_H$Perc_99.5_3,
@@ -1290,5 +1290,21 @@ df_balance_simulado_H <- tibble(
     Perc_99.5_4 = df_beneficios_simulados_H$Perc_99.5_4
   )
 
-sum(rowSums(df_balance_simulado_H[,c(2,4,6,8,10)]))
-#- 0.15*prima_anual*pob_tot_H
+#Mujeres
+df_balance_simulado_M <- tibble(
+  Año = 0:80) %>%
+  mutate(
+    Balance_estim_0 = df_ingresos_simulados_M$Ing_estim_0 - df_costos_simulados_M$Costo_estim_0,
+    Perc_99.5_0 = df_ingresos_simulados_M$Perc_99.5_0 - df_costos_simulados_M$Perc_99.5_0,
+    Balance_estim_1 = df_ingresos_simulados_M$Ing_estim_1 - df_beneficios_simulados_M$Benef_estim_1 - df_costos_simulados_M$Costo_estim_1,
+    Perc_99.5_1 = df_ingresos_simulados_M$Perc_99.5_1 - df_beneficios_simulados_M$Perc_99.5_1 - df_costos_simulados_M$Perc_99.5_1,
+    Balance_estim_2 = df_ingresos_simulados_M$Ing_estim_2 - df_beneficios_simulados_M$Benef_estim_2 - df_costos_simulados_M$Costo_estim_2,
+    Perc_99.5_2 = df_ingresos_simulados_M$Perc_99.5_2 - df_beneficios_simulados_M$Perc_99.5_2 - df_costos_simulados_M$Perc_99.5_2,
+    Balance_estim_3 = df_beneficios_simulados_M$Benef_estim_3,
+    Perc_99.5_3 = df_beneficios_simulados_M$Perc_99.5_3,
+    Balance_estim_4 = df_beneficios_simulados_M$Benef_estim_4,
+    Perc_99.5_4 = df_beneficios_simulados_M$Perc_99.5_4
+  )
+
+
+
