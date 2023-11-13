@@ -290,7 +290,7 @@ print(p)
 # Esta función crea un dataframe con la proyección a 80 años de personas en 
 # ciertos estados a ciertas edades partiendo de una edad base, estado y un sexo
 
-obtencion_tabla_proyeccion <- function(x,status,sexo) {
+tabla_proyeccion_80años <- function(x,status,sexo) {
   if (sexo == "H"){
     probabilidades <- Prob_Trans_Hombres
     poblacion_estimada <- edades_selec_H$pob_estimada
@@ -342,8 +342,8 @@ lista_proyeccionesH <- list()
 lista_proyeccionesM <- list()
 for(i in 1:nrow(edades_df)){
   x <- edades_df[i,]
-  lista_proyeccionesH[[i]] <- obtencion_tabla_proyeccion(x,0,"H")
-  lista_proyeccionesM[[i]] <- obtencion_tabla_proyeccion(x,0,"M")
+  lista_proyeccionesH[[i]] <- tabla_proyeccion_80años(x,0,"H")
+  lista_proyeccionesM[[i]] <- tabla_proyeccion_80años(x,0,"M")
 }
 
 #Se obtiene la proyección total a 80 años para cada estado para hombres 
@@ -1038,8 +1038,8 @@ for (edad in 30:64) {
   nombre_H <- paste("Gen_H_", edad, sep = "")
   nombre_M <- paste("Gen_M_", edad, sep = "")
   
-  lista_gen_H[[edad-29]] <- assign(nombre_H, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "H")[, -1], MARGIN = 2, STATS = edades_selec_H$pob_estimada[edad-29], FUN = "*"))))
-  lista_gen_M[[edad-29]] <- assign(nombre_M, round(data.frame(sweep(obtencion_tabla_proyeccion(edad, 0, "M")[, -1], MARGIN = 2, STATS = edades_selec_M$pob_estimada[edad-29], FUN = "*"))))
+  lista_gen_H[[edad-29]] <- assign(nombre_H, round(data.frame(sweep(tabla_proyeccion_80años(edad, 0, "H")[, -1], MARGIN = 2, STATS = edades_selec_H$pob_estimada[edad-29], FUN = "*"))))
+  lista_gen_M[[edad-29]] <- assign(nombre_M, round(data.frame(sweep(tabla_proyeccion_80años(edad, 0, "M")[, -1], MARGIN = 2, STATS = edades_selec_M$pob_estimada[edad-29], FUN = "*"))))
   
 }
 
