@@ -87,8 +87,8 @@ sum(rowSums(df_balance_simulado_M[,c(2,4,6,8,10)]))
 )
 
 
+Prob_Trans_Hombres
+Verificacion_simul <- vector_simulacion_H[[1]]
 
-
-
-
+vector_simulacion_H_probabilidades <- vector_simulacion_H[[1]]
 

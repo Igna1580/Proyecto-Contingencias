@@ -436,7 +436,6 @@ func_simulacion <- function(edad, col_ant, col_act, sexo, año){
   }
   
   if(col_ant == 5){
-    col_act <- 5
     return(5)
   }
   if(col_ant == 0){
@@ -456,19 +455,19 @@ func_simulacion <- function(edad, col_ant, col_act, sexo, año){
   }
   
   
-  if(col_act < proba[edad+fil_prob+año-22,3]){#Pasar al estado 0
+  if(col_act < proba[edad+fil_prob+año-19,3]){#Pasar al estado 0
     return(0)
   }else{
-    if(col_act < sum(proba[edad+fil_prob+año-22,3:4])){#Pasar al estado 1
+    if(col_act < sum(proba[edad+fil_prob+año-19,3:4])){#Pasar al estado 1
       return(1)
     }else{
-      if(col_act < sum(proba[edad+fil_prob+año-22,3:5])){#Pasar al estado 2
+      if(col_act < sum(proba[edad+fil_prob+año-19,3:5])){#Pasar al estado 2
         return(2)
       }else{
-        if(col_act < sum(proba[edad+fil_prob+año-22,3:6])){#Pasar al estado 3
+        if(col_act < sum(proba[edad+fil_prob+año-19,3:6])){#Pasar al estado 3
           return(3)
         }else{
-          if(col_act < sum(proba[edad+fil_prob+año-22,3:7])){#Pasar al estado 4
+          if(col_act < sum(proba[edad+fil_prob+año-19,3:7])){#Pasar al estado 4
             return(4)
           }else{
             return(5)
@@ -1284,10 +1283,10 @@ df_balance_simulado_H <- tibble(
     Perc_99.5_1 = df_ingresos_simulados_H$Perc_99.5_1 - df_beneficios_simulados_H$Perc_99.5_1 - df_costos_simulados_H$Perc_99.5_1,
     Balance_estim_2 = df_ingresos_simulados_H$Ing_estim_2 - df_beneficios_simulados_H$Benef_estim_2 - df_costos_simulados_H$Costo_estim_2,
     Perc_99.5_2 = df_ingresos_simulados_H$Perc_99.5_2 - df_beneficios_simulados_H$Perc_99.5_2 - df_costos_simulados_H$Perc_99.5_2,
-    Balance_estim_3 = df_beneficios_simulados_H$Benef_estim_3,
-    Perc_99.5_3 = df_beneficios_simulados_H$Perc_99.5_3,
-    Balance_estim_4 = df_beneficios_simulados_H$Benef_estim_4,
-    Perc_99.5_4 = df_beneficios_simulados_H$Perc_99.5_4
+    Balance_estim_3 = (-df_beneficios_simulados_H$Benef_estim_3),
+    Perc_99.5_3 = (-df_beneficios_simulados_H$Perc_99.5_3),
+    Balance_estim_4 = (-df_beneficios_simulados_H$Benef_estim_4),
+    Perc_99.5_4 = (-df_beneficios_simulados_H$Perc_99.5_4)
   )
 
 #Mujeres
@@ -1300,10 +1299,10 @@ df_balance_simulado_M <- tibble(
     Perc_99.5_1 = df_ingresos_simulados_M$Perc_99.5_1 - df_beneficios_simulados_M$Perc_99.5_1 - df_costos_simulados_M$Perc_99.5_1,
     Balance_estim_2 = df_ingresos_simulados_M$Ing_estim_2 - df_beneficios_simulados_M$Benef_estim_2 - df_costos_simulados_M$Costo_estim_2,
     Perc_99.5_2 = df_ingresos_simulados_M$Perc_99.5_2 - df_beneficios_simulados_M$Perc_99.5_2 - df_costos_simulados_M$Perc_99.5_2,
-    Balance_estim_3 = df_beneficios_simulados_M$Benef_estim_3,
-    Perc_99.5_3 = df_beneficios_simulados_M$Perc_99.5_3,
-    Balance_estim_4 = df_beneficios_simulados_M$Benef_estim_4,
-    Perc_99.5_4 = df_beneficios_simulados_M$Perc_99.5_4
+    Balance_estim_3 = -df_beneficios_simulados_M$Benef_estim_3,
+    Perc_99.5_3 = -df_beneficios_simulados_M$Perc_99.5_3,
+    Balance_estim_4 = -df_beneficios_simulados_M$Benef_estim_4,
+    Perc_99.5_4 = -df_beneficios_simulados_M$Perc_99.5_4
   )
 
 
