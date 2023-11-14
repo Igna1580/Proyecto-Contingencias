@@ -92,3 +92,17 @@ Verificacion_simul <- vector_simulacion_H[[1]]
 
 vector_simulacion_H_probabilidades <- vector_simulacion_H[[1]]
 
+i<-81
+(
+v_pob_64menos_xaño_0_M[[i]] + v_pob_65mas_xaño_0_M[[i]] +
+v_pob_64menos_xaño_1_M[[i]] + v_pob_65mas_xaño_1_M[[i]] +
+v_pob_64menos_xaño_2_M[[i]] + v_pob_65mas_xaño_2_M[[i]] +
+v_pob_64menos_xaño_3_M[[i]] + v_pob_65mas_xaño_3_M[[i]] +
+v_pob_64menos_xaño_4_M[[i]] + v_pob_65mas_xaño_4_M[[i]] +
+v_pob_64menos_xaño_5_M[[i]] + v_pob_65mas_xaño_5_M[[i]]
+
+)
+tPx_ij(30,35,i=0,j=0,sexo = "H")
+obtencion_tabla_proyeccion(30,0,"H")
+u.ax.n_ij(30,j=0,sexo="H")
+u.ax.n_ij_12(30,j=0,sexo="H")
