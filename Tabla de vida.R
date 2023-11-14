@@ -176,8 +176,8 @@ ax.n_ij_12 <- function(x,n=110-x,i=0,j,r=5.8,inf=2.8818,sexo){
 
 u.ax.n_ij_12 <- function(x,u=65-x,n=110-x,i=0, j,r=5.8,inf=2.8818,sexo){
   
-  prob1 <- obtencion_tabla_proyeccion(x,i,sexo)[n+1,j+2]
-  prob2 <- obtencion_tabla_proyeccion(x,i,sexo)[u+1,j+2]
+  prob1 <- obtencion_tabla_proyeccion(x,i,sexo)[n,j+2]
+  prob2 <- obtencion_tabla_proyeccion(x,i,sexo)[u,j+2]
   
   anualidad <- alfa*u.ax.n_ij(x,u,n,i,j,r,inf,sexo)-beta*((v^u)*prob2 -(v^n)*prob1)
   
