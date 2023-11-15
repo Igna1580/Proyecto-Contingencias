@@ -309,14 +309,77 @@ edades_selec_M <- cbind(edades_selec_M, Prima_justa_mensual = Prima_justa_M_mens
 ##--------Graficos de población--------------
 
 p = ggplot() + 
-  geom_line(data = edades_selec_H, aes(x = Edad, y = pob_estimada, color = "Hombres"), linetype = "solid", size = 1) +
-  geom_line(data = edades_selec_M, aes(x = Edad, y = pob_estimada, color = "Mujeres"), linetype = "solid", size = 1) +
-  scale_color_manual(values = c("Hombres" = "lightblue4", "Mujeres" = "maroon"), name = "Población") +
-  xlab('Edad') +
-  ylab('Población estimada') + cowplot::theme_cowplot()
-
+  geom_line(data = edades_selec_H, aes(x = Edad, y = pob_estimada, color = "Hombres"), linetype = "solid", linewidth = 1) +
+  geom_line(data = edades_selec_M, aes(x = Edad, y = pob_estimada, color = "Mujeres"), linetype = "solid", linewidth = 1) +
+  scale_color_manual(values = c("Hombres" = "#9AC0CD", "Mujeres" = "#CD3333"), name = "Población") +
+  xlab("Edad") +
+  ylab("Población estimada") + cowplot::theme_cowplot()
 
 print(p)
+
+ggsave(filename = "poblacion.pdf", plot = p, device = "pdf", width = 5, height = 3)
+# Crear un dataframe para los hombres
+hombres <- edades_selec_H[, c("Edad", "pob_estimada")]
+
+distrib.hombres.estimada <- ggplot(hombres, aes(x = Edad, y = pob_estimada)) +
+  geom_bar(stat = "identity", fill = "lightblue4", color = "black") +
+  xlab("Edad") +
+  ylab("Poblacion de Hombres") +
+  ggtitle("Distribucion de la Poblacion de hombres por Edad") +
+  theme_minimal() + cowplot::theme_cowplot()
+print(distrib.hombres.estimada)
+
+
+edad_promedio_hombres <- sum(hombres$Edad * hombres$pob_estimada) / sum(hombres$pob_estimada)
+varianza_hombres <- sum((hombres$Edad - edad_promedio_hombres)^2 * hombres$pob_estimada) / sum(hombres$pob_estimada)
+hombres_moda <- max(hombres$pob_estimada) # 37 años
+hombres$Sexo <- "Hombre"
+
+# Crear un dataframe para las mujeres
+mujeres <- edades_selec_M[, c("Edad", "pob_estimada")]
+
+distrib.mujeres.estimada <- ggplot(mujeres, aes(x = Edad, y = pob_estimada)) +
+  geom_bar(stat = "identity", fill = "maroon", color = "black") +
+  xlab("Edad") +
+  ylab("Poblacion de Mujeres") +
+  ggtitle("Distribucion de la Poblacion de Mujeres por Edad") +
+  theme_minimal() + cowplot::theme_cowplot()
+
+print(distrib.mujeres.estimada)
+
+edad_promedio_mujeres <- sum(mujeres$Edad * mujeres$pob_estimada) / sum(mujeres$pob_estimada)
+mujeres_moda <- max(mujeres$pob_estimada) # 37 años
+varianza_mujeres <- sum((mujeres$Edad - edad_promedio_mujeres)^2 * mujeres$pob_estimada) / sum(mujeres$pob_estimada)
+mujeres$Sexo <- "Mujer"
+
+# Combinar los dataframes
+demografico <- rbind(hombres, mujeres)
+
+# Definir la secuencia creciente
+breaks <- c(seq(-1800, -200, by = 400), seq(0, 1800, by = 400))
+
+# Negar la secuencia para las etiquetas
+labels <- c(abs(seq(-1800, -200, by = 400)), seq(0, 1800, by = 400))
+
+# Crear el gráfico con las nuevas ubicaciones de las marcas y etiquetas
+graf.demografico <- ggplot(demografico, aes(x = Edad, y = pob_estimada, fill = Sexo)) +
+  geom_col(data = subset(demografico, Sexo == "Hombre") %>% 
+             mutate(pob_estimada = -pob_estimada),
+           width = 0.5, fill = "#9AC0CD") +
+  geom_col(data = subset(demografico, Sexo == "Mujer"),
+           width = 0.5, fill = "#CD3333") +
+  coord_flip() + 
+  scale_y_continuous(breaks = breaks, labels = labels) +
+  scale_fill_manual(values = c("Hombres" = "#9AC0CD", "Mujeres" = "#CD3333"), name = "Población") +
+  xlab("Edad") +
+  ylab("Población estimada") + cowplot::theme_cowplot()  +
+  annotate("text", x = Inf, y = Inf, hjust = 6.5, vjust = 3, label = "Hombres") +
+  annotate("text", x = Inf, y = Inf, hjust = 1.5, vjust = 3, label = "Mujeres")
+ggsave(filename = "piramide.pdf", plot = graf.demografico, device = "pdf", width = 5, height = 3)
+
+print(graf.demografico)
+
+
 
 #--- Modelo Deterministico Cantidad Esperada de Personas al final del año ------
 
