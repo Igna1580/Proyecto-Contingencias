@@ -84,6 +84,8 @@ tasas_Descuento <- read_excel("descuento.xlsx")
 descuento <- round(mean(tasas_Descuento$`3 meses`), digits = 1)/100
 # descuento 0.058
 
+descue
+
 
 #--- Probabilidades ------------------------------------------------------------
 
@@ -1341,7 +1343,7 @@ G.egresos_simulados_H = ggplot() +
   geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_4 , color = "Profound"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
   xlab('Tiempo') +
-  ylab('Egresos Esperados') + cowplot::theme_cowplot()
+  ylab('Egresos Simulados') + cowplot::theme_cowplot()
 print(G.egresos_simulados_H)
 
 
@@ -1396,7 +1398,7 @@ G.egresos_simulados_M = ggplot() +
   geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_4 , color = "Profound"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
   xlab('Tiempo') +
-  ylab('Egresos Esperados') + cowplot::theme_cowplot()
+  ylab('Egresos Simulados') + cowplot::theme_cowplot()
 print(G.egresos_simulados_M)
 
 
