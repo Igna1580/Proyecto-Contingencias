@@ -75,7 +75,7 @@ inflacion_data <- data.frame(
 )
 
 inflacion <- mean(inflacion_data$Costa_Rica)/100
-# inflación = 2.8818
+# inflación = 0.02881818
 
 
 # descargamos la curva de rendimiento soberana de los últimos 6 meses
@@ -133,21 +133,21 @@ tPx_ij <- function(t=1,x=65,i=0,j=0,sexo){
 }
 
 #Función de anualidad prepagable
-ax.n_ij <- function(x,n=110-x,i=0,j,r=5.8,sexo){
+ax.n_ij <- function(x,n=110-x,i=0,j,r=5.8,inf=0.02881818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
   for (e in 0:(n-1)){
-    resultado <- (1/(1+r/100))^(e)*prob[e+1,j+2] + resultado
+    resultado <- ((1+inf)/(1+r/100))^(e)*prob[e+1,j+2] + resultado
   }
   return(resultado)
 }
 
 #Función anualidad diferida
-u.ax.n_ij <- function(x,u=65-x,n=110-u-x,i=0, j,r=5.8,sexo){
+u.ax.n_ij <- function(x,u=65-x,n=110-u-x,i=0, j,r=5.8,inf=0.02881818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
   for (e in u:(u+n-1)){
-    resultado <- (1/(1+r/100))^(e)*prob[e+1,j+2] + resultado
+    resultado <- ((1+inf)/(1+r/100))^(e)*prob[e+1,j+2] + resultado
   }
   return(resultado)
 }
@@ -254,9 +254,9 @@ primas_hombres_suma <- sum(edades_selec_H$primas_tot_por_edad)
 # mujeres
 primas_mujeres <- data.frame(Primas_mujeres = numeric())
 for (x in 30:64) {
-  primas_por_edad_mujeres <- (ax.n_ij(x,n = 65-x,i=0,0,5.8,"M")) +
-    (ax.n_ij(x,n = 65-x,i=0,1,5.8,"M")) +
-    (ax.n_ij(x,n = 65-x,i=0,2,5.8,"M")) 
+  primas_por_edad_mujeres <- (ax.n_ij(x,n = 65-x,i=0,0,5.8,sexo="M")) +
+    (ax.n_ij(x,n = 65-x,i=0,1,5.8,sexo="M")) +
+    (ax.n_ij(x,n = 65-x,i=0,2,5.8,sexo="M")) 
   primas_mujeres <- rbind(primas_mujeres, data.frame(Primas_mujeres = primas_por_edad_mujeres))
 }
 
