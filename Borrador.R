@@ -104,5 +104,22 @@ v_pob_64menos_xaño_5_M[[i]] + v_pob_65mas_xaño_5_M[[i]]
 )
 tPx_ij(30,35,i=0,j=0,sexo = "H")
 obtencion_tabla_proyeccion(30,0,"H")
-u.ax.n_ij(30,j=0,sexo="H")
-u.ax.n_ij_12(30,j=0,sexo="H")
+ax.n_ij(60,n=65-x,j=1,sexo="H")
+
+for(i in 2){
+  print(mean(v_pob_64menos_xaño_0_M[[i]]) +
+  mean(v_pob_64menos_xaño_1_M[[i]]) +
+  mean(v_pob_64menos_xaño_2_M[[i]]))
+}
+pob_tot_M
+
+
+
+lista_proyeccionesH
+
+
+(1/(1+descuento))^(1)
+
+
+
+

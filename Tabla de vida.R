@@ -41,7 +41,7 @@ Prob_Trans_Mujeres <- Prob_Trans_Mujeres %>%
 #--- Poblacion -----------------------------------------------------------------
 edades <- 31:65
 
-porcentajes <- rep(0.03, 35)  # Luego, 20 porcentajes uniformes de 0.6
+porcentajes <- rep(0.005, 35)  # Luego, 20 porcentajes uniformes de 0.6
 
 
 # Caso hombres 
@@ -254,9 +254,9 @@ primas_hombres_suma <- sum(edades_selec_H$primas_tot_por_edad)
 # mujeres
 primas_mujeres <- data.frame(Primas_mujeres = numeric())
 for (x in 30:64) {
-  primas_por_edad_mujeres <- (ax.n_ij(x,n = 65-x,i=0,0,5.8,inf=2.8818,"M")) +
-    (ax.n_ij(x,n = 65-x,i=0,1,5.8,inf=2.8818,"M")) +
-    (ax.n_ij(x,n = 65-x,i=0,2,5.8,inf=2.8818,"M")) 
+  primas_por_edad_mujeres <- (ax.n_ij(x,n = 65-x,i=0,0,5.8,"M")) +
+    (ax.n_ij(x,n = 65-x,i=0,1,5.8,"M")) +
+    (ax.n_ij(x,n = 65-x,i=0,2,5.8,"M")) 
   primas_mujeres <- rbind(primas_mujeres, data.frame(Primas_mujeres = primas_por_edad_mujeres))
 }
 
@@ -345,8 +345,7 @@ tabla_proyeccion_80años <- function(x,status,sexo) {
   
   tabla[1,status+2] = poblacion_estimada[x-29]
   
-  #c(10000, rep(0, 111-x))
-  
+
   for (fila in 2:length(x:111)){
     for (col in 2:7){
       tabla[fila,col] <- 
@@ -1054,9 +1053,29 @@ df_poblaciones_simuladas_M <- tibble(
     Perc_99.5_5 = quantile(v_pob_xaño_5_M[[Año+1]],0.995)
   )
 
+proyeccion_estoc_H = ggplot() + 
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_0 ), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_1 ) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_2 ) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_3 ) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_4 ) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_H, aes(x = Año, y = as.numeric(Pob_estim_5 ) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas simuladas (Hombres)') + cowplot::theme_cowplot()
+print(proyeccion_estoc_H)
 
-
-
+proyeccion_estoc_M = ggplot() + 
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_0 ), color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_1 ) , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_2 ) , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_3 ) , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_4 ) , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = df_poblaciones_simuladas_M, aes(x = Año, y = as.numeric(Pob_estim_5 ) , color = "Dead"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink", "Dead" ="red"), name = "Estado") +
+  xlab('Año') +
+  ylab('Personas simuladas (Mujeres)') + cowplot::theme_cowplot()
+print(proyeccion_estoc_M)
 
 #--- Modelo Deterministico montos esperados de ingresos y egresos para cada uno estado -----
 
@@ -1232,6 +1251,15 @@ df_ingresos_simulados_H <- tibble(
     Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
 
+G.ingresos_simulados_H = ggplot() + 
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_0 , color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_2 , color = "Moderate"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Simulados') + cowplot::theme_cowplot()
+print(G.ingresos_simulados_H)
+
 #Mujeres
 df_ingresos_simulados_M <- tibble(
   Año = 0:80) %>%
@@ -1245,7 +1273,17 @@ df_ingresos_simulados_M <- tibble(
     Perc_99.5_2 = prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
 
-##--- Beneficios ---------------------------------------------------------------
+G.ingresos_simulados_M = ggplot() + 
+  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_0 , color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_2 , color = "Moderate"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Simulados') + cowplot::theme_cowplot()
+print(G.ingresos_simulados_M)
+
+
+##--- Egresos ---------------------------------------------------------------
 
 #Hombres
 df_beneficios_simulados_H <- tibble(
@@ -1275,6 +1313,33 @@ df_costos_simulados_H <- tibble(
   )
 df_costos_simulados_H[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_H[[1]])
 
+df_egresos_simulado_H <- tibble(
+  Año = 0:80) %>%
+  mutate(
+    Egresos_estim_0 = df_costos_simulados_H$Costo_estim_0,
+    Perc_99.5_0 = df_costos_simulados_H$Perc_99.5_0,
+    Egresos_estim_1 = df_beneficios_simulados_H$Benef_estim_1 + df_costos_simulados_H$Costo_estim_1,
+    Perc_99.5_1 = df_beneficios_simulados_H$Perc_99.5_1 + df_costos_simulados_H$Perc_99.5_1,
+    Egresos_estim_2 = df_beneficios_simulados_H$Benef_estim_2 + df_costos_simulados_H$Costo_estim_2,
+    Perc_99.5_2 = df_beneficios_simulados_H$Perc_99.5_2 + df_costos_simulados_H$Perc_99.5_2,
+    Egresos_estim_3 = df_beneficios_simulados_H$Benef_estim_3,
+    Perc_99.5_3 = df_beneficios_simulados_H$Perc_99.5_3,
+    Egresos_estim_4 = df_beneficios_simulados_H$Benef_estim_4,
+    Perc_99.5_4 = df_beneficios_simulados_H$Perc_99.5_4
+  )
+
+G.egresos_simulados_H = ggplot() + 
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_4 , color = "Profound"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Egresos Esperados') + cowplot::theme_cowplot()
+print(G.egresos_simulados_H)
+
+
 #Mujeres
 df_beneficios_simulados_M <- tibble(
   Año = 0:80) %>%
@@ -1302,6 +1367,32 @@ df_costos_simulados_M <- tibble(
     Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*(1/(1+descuento))^(Año)
   )
 df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_M[[1]])
+
+df_egresos_simulado_M <- tibble(
+  Año = 0:80) %>%
+  mutate(
+    Egresos_estim_0 = df_costos_simulados_M$Costo_estim_0,
+    Perc_99.5_0 = df_costos_simulados_M$Perc_99.5_0,
+    Egresos_estim_1 = df_beneficios_simulados_M$Benef_estim_1 + df_costos_simulados_M$Costo_estim_1,
+    Perc_99.5_1 = df_beneficios_simulados_M$Perc_99.5_1 + df_costos_simulados_M$Perc_99.5_1,
+    Egresos_estim_2 = df_beneficios_simulados_M$Benef_estim_2 + df_costos_simulados_M$Costo_estim_2,
+    Perc_99.5_2 = df_beneficios_simulados_M$Perc_99.5_2 + df_costos_simulados_M$Perc_99.5_2,
+    Egresos_estim_3 = df_beneficios_simulados_M$Benef_estim_3,
+    Perc_99.5_3 = df_beneficios_simulados_M$Perc_99.5_3,
+    Egresos_estim_4 = df_beneficios_simulados_M$Benef_estim_4,
+    Perc_99.5_4 = df_beneficios_simulados_M$Perc_99.5_4
+  )
+
+G.egresos_simulados_M = ggplot() + 
+  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_4 , color = "Profound"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Egresos Esperados') + cowplot::theme_cowplot()
+print(G.egresos_simulados_M)
 
 
 ##--- Balance ------------------------------------------------------------------
