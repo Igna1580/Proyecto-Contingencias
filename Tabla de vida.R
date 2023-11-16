@@ -1232,16 +1232,16 @@ for (i in 1:82) {
     
   } else{
     Egresos_H[i,2] <- Egresos_H[i,2] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.0_65[i]
-    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1.65[i]
-    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2.65[i]
-    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.3.65[i]
-    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.4.65[i]
+    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.1.65[i]
+    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.2.65[i]
+    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.3.65[i]
+    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.4.65[i]
     
     Egresos_M[i,2] <- Egresos_M[i,2] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.0_65[i]
-    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1.65[i]
-    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2.65[i]
-    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.3.65[i]
-    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.4.65[i]
+    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.1.65[i]
+    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.2.65[i]
+    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.3.65[i]
+    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.4.65[i]
   }
 }
 
@@ -1408,12 +1408,12 @@ df_costos_simulados_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Costo_estim_0 = 0.05*prima_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Costo_estim_1 = 0.05*prima_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Costo_estim_2 = 0.05*prima_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Costo_estim_0 = 0.05*prima_hombres_anual*mean(v_pob_64menos_xaño_0_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_0 = 0.05*prima_hombres_anual*quantile(v_pob_64menos_xaño_0_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Costo_estim_1 = 0.05*prima_hombres_anual*mean(v_pob_64menos_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_hombres_anual*quantile(v_pob_64menos_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Costo_estim_2 = 0.05*prima_hombres_anual*mean(v_pob_64menos_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_hombres_anual*quantile(v_pob_64menos_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 df_costos_simulados_H[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_H[[1]])
 
@@ -1463,12 +1463,12 @@ df_costos_simulados_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Costo_estim_0 = 0.05*prima_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]]*((1+inflacion)/(1+descuento))^(Año)),
-    Perc_99.5_0 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Costo_estim_1 = 0.05*prima_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Costo_estim_2 = 0.05*prima_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = 0.05*prima_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
+    Costo_estim_0 = 0.05*prima_mujeres_anual*mean(v_pob_64menos_xaño_0_M[[Año+1]]*((1+inflacion)/(1+descuento))^(Año)),
+    Perc_99.5_0 = 0.05*prima_mujeres_anual*quantile(v_pob_64menos_xaño_0_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Costo_estim_1 = 0.05*prima_mujeres_anual*mean(v_pob_64menos_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = 0.05*prima_mujeres_anual*quantile(v_pob_64menos_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Costo_estim_2 = 0.05*prima_mujeres_anual*mean(v_pob_64menos_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = 0.05*prima_mujeres_anual*quantile(v_pob_64menos_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 df_costos_simulados_M[1,2:3] <- 0.2*prima_anual*mean(v_pob_64menos_xaño_0_M[[1]])
 
