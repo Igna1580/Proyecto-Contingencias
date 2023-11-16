@@ -1145,9 +1145,9 @@ print(proyeccion_estoc_M)
 #Proyección por generacion
 
 Pob_H <-data.frame(tiempo = (0:81), Estado.0_65 = rep(0, 82), Estado.0.65 = rep(0, 82), Estado.1_65 = rep(0, 82), Estado.1.65 = rep(0, 82),
-                   Estado.2_65 = rep(0, 82), Estado.2.65 = rep(0, 82), Estado.3 = rep(0, 82), Estado.4 = rep(0, 82), Estado.5 = rep(0, 82))
+                   Estado.2_65 = rep(0, 82), Estado.2.65 = rep(0, 82),  Estado.3_65 = rep(0, 82), Estado.3.65 = rep(0, 82), Estado.4_65 = rep(0, 82), Estado.4.65 = rep(0, 82), Estado.5 = rep(0, 82))
 Pob_M <-data.frame(tiempo = (0:81), Estado.0_65 = rep(0, 82), Estado.0.65 = rep(0, 82), Estado.1_65 = rep(0, 82), Estado.1.65 = rep(0, 82),
-                   Estado.2_65 = rep(0, 82), Estado.2.65 = rep(0, 82), Estado.3 = rep(0, 82), Estado.4 = rep(0, 82), Estado.5 = rep(0, 82))
+                   Estado.2_65 = rep(0, 82), Estado.2.65 = rep(0, 82), Estado.3_65 = rep(0, 82), Estado.3.65 = rep(0, 82), Estado.4_65 = rep(0, 82), Estado.4.65 = rep(0, 82), Estado.5 = rep(0, 82))
 
 for(k in 0:34){
   proyeccion <- tabla_proyeccion_80años(30+k, 0, "H")
@@ -1156,9 +1156,9 @@ for(k in 0:34){
   Pob_H$Estado.1_65[1:(35-k)] <- Pob_H$Estado.1_65[1:(35-k)] + proyeccion[1:(35-k),3]
   Pob_H$Estado.1.65[(36-k):82] <- Pob_H$Estado.1.65[(36-k):82] + proyeccion[(36-k):82,3]
   Pob_H$Estado.2_65[1:(35-k)] <- Pob_H$Estado.2_65[1:(35-k)] + proyeccion[1:(35-k),4]
-  Pob_H$Estado.2.65[(36-k):82] <- Pob_H$Estado.2.65[(36-k):82] + proyeccion[(36-k):82,4]
-  Pob_H$Estado.3 <- Pob_H$Estado.3 + proyeccion[,5]
-  Pob_H$Estado.4 <- Pob_H$Estado.4 + proyeccion[,6]
+  Pob_H$Estado.3.65[(36-k):82] <- Pob_H$Estado.3.65[(36-k):82] + proyeccion[(36-k):82,5]
+  Pob_H$Estado.4_65[1:(35-k)] <- Pob_H$Estado.4_65[1:(35-k)] + proyeccion[1:(35-k),6]
+  Pob_H$Estado.4.65[(36-k):82] <- Pob_H$Estado.4.65[(36-k):82] + proyeccion[(36-k):82,6]
   Pob_H$Estado.5 <- Pob_H$Estado.5 + proyeccion[,7]
   
   
@@ -1169,8 +1169,10 @@ for(k in 0:34){
   Pob_M$Estado.1.65[(36-k):82] <- Pob_M$Estado.1.65[(36-k):82] + proyeccion[(36-k):82,3]
   Pob_M$Estado.2_65[1:(35-k)] <- Pob_M$Estado.2_65[1:(35-k)] + proyeccion[1:(35-k),4]
   Pob_M$Estado.2.65[(36-k):82] <- Pob_M$Estado.2.65[(36-k):82] + proyeccion[(36-k):82,4]
-  Pob_M$Estado.3 <- Pob_M$Estado.3 + proyeccion[,5]
-  Pob_M$Estado.4 <- Pob_M$Estado.4 + proyeccion[,6]
+  Pob_M$Estado.3_65[1:(35-k)] <- Pob_M$Estado.3_65[1:(35-k)] + proyeccion[1:(35-k),5]
+  Pob_M$Estado.3.65[(36-k):82] <- Pob_M$Estado.3.65[(36-k):82] + proyeccion[(36-k):82,5]
+  Pob_M$Estado.4_65[1:(35-k)] <- Pob_M$Estado.4_65[1:(35-k)] + proyeccion[1:(35-k),6]
+  Pob_M$Estado.4.65[(36-k):82] <- Pob_M$Estado.4.65[(36-k):82] + proyeccion[(36-k):82,6]
   Pob_M$Estado.5 <- Pob_M$Estado.5 + proyeccion[,7]
   
 }
@@ -1230,16 +1232,16 @@ for (i in 1:82) {
     
   } else{
     Egresos_H[i,2] <- Egresos_H[i,2] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.0_65[i]
-    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual+A)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1.65[i]
-    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual+B)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2.65[i]
-    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.3[i]
-    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.4[i]
+    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1.65[i]
+    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2.65[i]
+    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.3.65[i]
+    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.4.65[i]
     
     Egresos_M[i,2] <- Egresos_M[i,2] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.0_65[i]
-    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual+A)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1.65[i]
-    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual+B)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2.65[i]
-    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.3[i]
-    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.4[i]
+    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1.65[i]
+    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2.65[i]
+    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.3.65[i]
+    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.4.65[i]
   }
 }
 
