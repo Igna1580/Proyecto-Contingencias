@@ -73,46 +73,66 @@ Prima <- function(age){
 
 
 #--- Ignacio --------------------------------------------------------------
+sum(rowSums(df_balance_simulado_H[,c(2,4,6,8,10)]))
+sum(rowSums(df_balance_simulado_M[,c(2,4,6,8,10)]))
+
+(
+  sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)])) -
+    sum(rowSums(df_beneficios_simulados_H[,c(2,4,6,8)])) -
+    sum(rowSums(df_costos_simulados_H[,c(2,4,6)])) +
+    
+    sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)])) -
+    sum(rowSums(df_beneficios_simulados_M[,c(2,4,6,8)])) -
+    sum(rowSums(df_costos_simulados_M[,c(2,4,6)]))
+)
+sum(rowSums(df_balance_simulado_H[,c(2,4,6,8,10)]))/sum(edades_selec_H$benef_tot_por_edad)
+sum(rowSums(df_balance_simulado_M[,c(2,4,6,8,10)]))/sum(edades_selec_M$benef_tot_por_edad)
 
 
 ambos_ingresos = ggplot() + 
-  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_0 , color = "Able_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E0, color = "Able"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_0 , color = "Able_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue","Able_s" = "lightblue4", "Mild_s" = "maroon", "Moderate_s" = "darkblue"), name = "Estado") +
   xlab('Tiempo') +
   ylab('Ingresos Simulados') + cowplot::theme_cowplot()
 print(ambos_ingresos)
 
 ambos_egresos = ggplot() + 
-  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_0, color = "Able_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_3 , color = "Severe_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_4 , color = "Profound_s"), linetype = "solid", size = 1) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E0, color = "Able"), linetype = "solid", size = 1) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E3 , color = "Severe"), linetype = "solid", size = 1) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E4 , color = "Profound"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_0, color = "Able_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_3 , color = "Severe_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_4 , color = "Profound_s"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E4 , color = "Profound"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink","Able_s" = "lightblue4", "Mild_s" = "maroon", "Moderate_s" = "darkblue", "Severe_s" = "purple", "Profound_s" = "pink"), name = "Estado") +
   xlab('Tiempo') +
   ylab('Egresos Simulados') + cowplot::theme_cowplot()
 print(ambos_egresos)
 
-df_beneficios_simulados_M <- tibble(
-  Año = 0:80) %>%
-  rowwise() %>%
-  mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
-  )
+
+
+x <- 30
+u.ax.n_ij(x,i=0,j=1,sexo = "H")
+obtencion_tabla_proyeccion(x,0,"H")
+
+(A*u.ax.n_ij(x,i=0,j=1,sexo="H")) +
+  (B*u.ax.n_ij(x,i=0,j=2,sexo="H")) +
+  (C*u.ax.n_ij(x,i=0,j=3,sexo="H")) +
+  (D*u.ax.n_ij(x,i=0,j=4,sexo="H")) +
+  0.15*Prima_justa_H[x-29] -
+  0.95*Prima_justa_H[x-29]*((ax.n_ij(x,n = 65-x,i=0,j=0,sexo="H")) +
+                       (ax.n_ij(x,n = 65-x,i=0,j=1,sexo="H")) +
+                       (ax.n_ij(x,n = 65-x,i=0,j=2,sexo="H")))
+
+0.006232994
+0.01198371
+0.01730149
+
