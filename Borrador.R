@@ -73,53 +73,33 @@ Prima <- function(age){
 
 
 #--- Ignacio --------------------------------------------------------------
-sum(rowSums(df_balance_simulado_H[,c(2,4,6,8,10)]))
-sum(rowSums(df_balance_simulado_M[,c(2,4,6,8,10)]))
-
-(
-  sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)])) -
-    sum(rowSums(df_beneficios_simulados_H[,c(2,4,6,8)])) -
-    sum(rowSums(df_costos_simulados_H[,c(2,4,6)])) +
-    
-    sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)])) -
-    sum(rowSums(df_beneficios_simulados_M[,c(2,4,6,8)])) -
-    sum(rowSums(df_costos_simulados_M[,c(2,4,6)]))
-)
 
 
-Prob_Trans_Hombres
-Verificacion_simul <- vector_simulacion_H[[1]]
+ambos_ingresos = ggplot() + 
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_0 , color = "Able_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue","Able_s" = "lightblue4", "Mild_s" = "maroon", "Moderate_s" = "darkblue"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Ingresos Simulados') + cowplot::theme_cowplot()
+print(ambos_ingresos)
 
-vector_simulacion_H_probabilidades <- vector_simulacion_H[[1]]
-
-i<-81
-(
-v_pob_64menos_xaño_0_M[[i]] + v_pob_65mas_xaño_0_M[[i]] +
-v_pob_64menos_xaño_1_M[[i]] + v_pob_65mas_xaño_1_M[[i]] +
-v_pob_64menos_xaño_2_M[[i]] + v_pob_65mas_xaño_2_M[[i]] +
-v_pob_64menos_xaño_3_M[[i]] + v_pob_65mas_xaño_3_M[[i]] +
-v_pob_64menos_xaño_4_M[[i]] + v_pob_65mas_xaño_4_M[[i]] +
-v_pob_64menos_xaño_5_M[[i]] + v_pob_65mas_xaño_5_M[[i]]
-
-)
-tPx_ij(30,35,i=0,j=0,sexo = "H")
-obtencion_tabla_proyeccion(30,0,"H")
-ax.n_ij(60,n=65-x,j=1,sexo="H")
-
-for(i in 2){
-  print(mean(v_pob_64menos_xaño_0_M[[i]]) +
-  mean(v_pob_64menos_xaño_1_M[[i]]) +
-  mean(v_pob_64menos_xaño_2_M[[i]]))
-}
-pob_tot_M
-
-
-
-lista_proyeccionesH
-
-
-(1/(1+descuento))^(1)
-
-
-
+ambos_egresos = ggplot() + 
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_0, color = "Able_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_3 , color = "Severe_s"), linetype = "solid", size = 1) +
+  geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_4 , color = "Profound_s"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E0, color = "Able"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E3 , color = "Severe"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_H, aes(x = tiempo, y = Egresos.E4 , color = "Profound"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue", "Severe" = "purple", "Profound" = "pink","Able_s" = "lightblue4", "Mild_s" = "maroon", "Moderate_s" = "darkblue", "Severe_s" = "purple", "Profound_s" = "pink"), name = "Estado") +
+  xlab('Tiempo') +
+  ylab('Egresos Simulados') + cowplot::theme_cowplot()
+print(ambos_egresos)
 
