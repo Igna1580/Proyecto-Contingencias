@@ -1958,7 +1958,7 @@ ambos_ingresos_M = ggplot() +
   geom_line(data = Ingresos_M, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = Ingresos_M, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue"), name = "Estado") +
-  labs(title = "Ingresos Conjuntos para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Ingresos") +
+  labs(title = "Ingresos Conjuntos para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Ingresos") +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(ambos_ingresos_M)
@@ -1975,7 +1975,7 @@ ambos_egresos_M = ggplot() +
   geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue", "Severo Simulado" = "purple", "Profundo Simulado" = "pink"), name = "Estado") +
-  labs(title = "Egresos Conjuntos para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
+  labs(title = "Egresos Conjuntos para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(ambos_egresos_M)
 
