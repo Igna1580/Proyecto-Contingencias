@@ -143,7 +143,7 @@ ax.n_ij <- function(x,n=65-x,i=0,j,r=5.8,inf=2.881818,sexo){
 }
 
 #Función anualidad diferida
-u.ax.n_ij <- function(x,u=66-x,n=111-u-x,i=0, j,r=5.8,inf=2.881818,sexo){
+u.ax.n_ij <- function(x,u=65-x,n=111-u-x,i=0, j,r=5.8,inf=2.881818,sexo){
   prob <- obtencion_tabla_proyeccion(x,i,sexo)
   resultado <- 0
   for (e in u:(u+n-1)){
@@ -267,19 +267,19 @@ costo_inicial <- 0.15*(sum(edades_selec_H$pob_estimada)+sum(edades_selec_M$pob_e
 
 total_primas <- primas_0.95 - costo_inicial
 
-prima_anual <- beneficios_totales / total_primas #P_anual = 1 006 699
+prima_anual <- beneficios_totales / total_primas #P_anual = 1 659 838
 
 #Si consideramos primas separadas para población mujeres y población masculina sería:
 
 #Hombres
 primas_0.95_hombres <- primas_hombres_suma*0.95
 total_primas_hombres <- primas_0.95_hombres - 0.15*sum(edades_selec_H$pob_estimada)
-prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 833 929.1
+prima_hombres_anual <- suma_benef_H_total / total_primas_hombres #P_H_anual = 1 348 142
 
 #Mujeres
 primas_0.95_mujeres <- primas_mujeres_suma*0.95
 total_primas_mujeres <- primas_0.95_mujeres - 0.15*sum(edades_selec_M$pob_estimada)
-prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual= 1 181 316
+prima_mujeres_anual <- suma_benef_M_total / total_primas_mujeres #P_M_anual= 1 975 022
 
 #--Prima según la edad de entrada-----------------------------------------------------
 
