@@ -1841,3 +1841,4 @@ ambos_egresos_unit_M = ggplot() +
   labs(title = "Egresos Conjuntos para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(ambos_egresos_unit_M)
+
