@@ -1930,11 +1930,11 @@ ambos_egresos_M = ggplot() +
   geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_2 , color = "Moderado Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_3 , color = "Severo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_M, aes(x = Año, y = Egresos_estim_4 , color = "Profundo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue", "Severo Simulado" = "purple", "Profundo Simulado" = "pink"), name = "Estado") +
   labs(title = "Egresos Conjuntos para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
@@ -1975,9 +1975,9 @@ ambos_ingresos_unit_M = ggplot() +
   geom_line(data = df_ingresos_simulados_unit_M, aes(x = Año, y = Ing_estim_0 , color = "Capaz Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_ingresos_simulados_unit_M, aes(x = Año, y = Ing_estim_1 , color = "Leve Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_ingresos_simulados_unit_M, aes(x = Año, y = Ing_estim_2 , color = "Moderado Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Ingresos_M, aes(x = tiempo, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue"), name = "Estado") +
   labs(title = "Ingresos Conjuntos para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Ingresos") +
   xlim(0, 35) +
@@ -1990,11 +1990,11 @@ ambos_egresos_unit_M = ggplot() +
   geom_line(data = df_egresos_simulado_unit_M, aes(x = Año, y = Egresos_estim_2 , color = "Moderado Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_unit_M, aes(x = Año, y = Egresos_estim_3 , color = "Severo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_unit_M, aes(x = Año, y = Egresos_estim_4 , color = "Profundo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_M, aes(x = tiempo, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue", "Severo Simulado" = "purple", "Profundo Simulado" = "pink"), name = "Estado") +
   labs(title = "Egresos Conjuntos para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
