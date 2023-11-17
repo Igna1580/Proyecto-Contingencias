@@ -1219,7 +1219,25 @@ for (i in 1:82) {
 Ingresos_esperados_unit_H$Ingresos_totales <- rowSums(Ingresos_esperados_unit_H[, 2:4, drop = FALSE], na.rm = TRUE, dims = 1)
 Ingresos_esperados_unit_M$Ingresos_totales <- rowSums(Ingresos_esperados_unit_M[, 2:4, drop = FALSE], na.rm = TRUE, dims = 1)
 
+G.df_ingresos_estimados_unit_H = ggplot() + 
+  geom_line(data = Ingresos_esperados_unit_H, aes(x = Año, y = Ingresos.E0 , color = "Capaz"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_esperados_unit_H, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_esperados_unit_H, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue"), name = "Estado") +
+  labs(title = "Ingresos Esperados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Ingresos") +
+  xlim(0, 35) +
+  cowplot::theme_cowplot()
+print(G.df_ingresos_estimados_unit_H)
 
+G.df_ingresos_estimados_unit_M = ggplot() + 
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E0 , color = "Capaz"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
+  geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue"), name = "Estado") +
+  labs(title = "Ingresos Esperados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Ingresos") +
+  xlim(0, 35) +
+  cowplot::theme_cowplot()
+print(G.df_ingresos_estimados_unit_M)
 
 #----Ingresos Prima Nivelada-----------------------------------------------
 
@@ -1347,6 +1365,27 @@ for (i in 1:82) {
   }
 }
 
+G.egresos_esperados_unit_H = ggplot() + 
+  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
+  labs(title = "Egresos Simulados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
+  cowplot::theme_cowplot()
+print(G.egresos_esperados_unit_H)
+
+G.egresos_esperados_unit_M = ggplot() + 
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
+  geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
+  scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
+  labs(title = "Egresos Simulados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
+  cowplot::theme_cowplot()
+print(G.egresos_esperados_unit_M)
 
 #-----Egreso Prima Nivelada------------------------------------------------------------
 
