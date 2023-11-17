@@ -340,10 +340,10 @@ mujeres$Sexo <- "Mujer"
 demografico <- rbind(hombres, mujeres)
 
 # Definir la secuencia creciente
-breaks <- c(seq(-1800, -200, by = 400), seq(0, 1800, by = 400))
+breaks <- c(seq(-200, by = 100), seq(0, 200, by = 100))
 
 # Negar la secuencia para las etiquetas
-labels <- c(abs(seq(-1800, -200, by = 400)), seq(0, 1800, by = 400))
+labels <- c(abs(seq(-200, by = 100)), seq(0,200, by = 100))
 
 # Crear el gráfico con las nuevas ubicaciones de las marcas y etiquetas
 graf.demografico <- ggplot(demografico, aes(x = Edad, y = pob_estimada, fill = Sexo)) +
@@ -362,7 +362,6 @@ graf.demografico <- ggplot(demografico, aes(x = Edad, y = pob_estimada, fill = S
 ggsave(filename = "piramide.pdf", plot = graf.demografico, device = "pdf", width = 5, height = 3)
 
 print(graf.demografico)
-
 
 
 #--- Modelo Deterministico Cantidad Esperada de Personas al final del año ------
@@ -1551,6 +1550,8 @@ G.ingresos_simulados_H = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_H)
+ggsave(filename = "G.ingresos_simulados_H.pdf", plot = G.ingresos_simulados_H, device = "pdf")
+
 
 #Mujeres
 df_ingresos_simulados_M <- tibble(
@@ -1574,6 +1575,8 @@ G.ingresos_simulados_M = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_M)
+ggsave(filename = "G.ingresos_simulados_M.pdf", plot = G.ingresos_simulados_M, device = "pdf")
+
 
 ###--- Egresos ---------------------------------------------------------------
 
@@ -1630,6 +1633,7 @@ G.egresos_simulados_H = ggplot() +
   labs(title = "Egresos Simulados para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_H)
+ggsave(filename = "G.egresos_simulados_H.pdf", plot = G.egresos_simulados_H, device = "pdf")
 
 
 #Mujeres
@@ -1685,6 +1689,7 @@ G.egresos_simulados_M = ggplot() +
   labs(title = "Egresos Simulados para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(G.egresos_simulados_M)
+ggsave(filename = "G.egresos_simulados_M.pdf", plot = G.egresos_simulados_M, device = "pdf")
 
 
 ###--- Balance ------------------------------------------------------------------
@@ -1748,6 +1753,8 @@ G.df_ingresos_simulados_unit_H = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.df_ingresos_simulados_unit_H)
+ggsave(filename = "G.df_ingresos_simulados_unit_H.pdf", plot = G.df_ingresos_simulados_unit_H, device = "pdf")
+
 
 #Mujeres
 df_ingresos_simulados_unit_M <- tibble(
@@ -1771,6 +1778,7 @@ G.ingresos_simulados_unit_M = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_unit_M)
+ggsave(filename = "G.ingresos_simulados_unit_M.pdf", plot = G.ingresos_simulados_unit_M, device = "pdf")
 
 
 ###--- Egresos ---------------------------------------------------------------
@@ -1828,6 +1836,7 @@ G.egresos_simulados_unit_H = ggplot() +
   labs(title = "Egresos Simulados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_unit_H)
+ggsave(filename = "G.egresos_simulados_unit_H.pdf", plot = G.egresos_simulados_unit_H, device = "pdf")
 
 
 #Mujeres
@@ -1883,6 +1892,7 @@ G.egresos_simulados_unit_M = ggplot() +
   labs(title = "Egresos Simulados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_unit_M)
+ggsave(filename = "G.egresos_simulados_unit_M.pdf", plot = G.egresos_simulados_unit_M, device = "pdf")
 
 
 ###--- Balance ------------------------------------------------------------------
