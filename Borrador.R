@@ -90,12 +90,12 @@ sum(rowSums(df_balance_simulado_M[,c(2,4,6,8,10)]))/sum(edades_selec_M$benef_tot
 
 
 ambos_ingresos = ggplot() + 
-  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_0 , color = "Able_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_1 , color = "Mild_s"), linetype = "solid", size = 1) +
-  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E0, color = "Able"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E1 , color = "Mild"), linetype = "solid", size = 1) +
-  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E2 , color = "Moderate"), linetype = "solid", size = 1) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_0 , color = "Able_s"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_1 , color = "Mild_s"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = df_ingresos_simulados_H, aes(x = Año, y = Ing_estim_2 , color = "Moderate_s"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E0, color = "Able"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E1 , color = "Mild"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Ingresos_H, aes(x = tiempo, y = Ingresos.E2 , color = "Moderate"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Able" = "lightblue4", "Mild" = "maroon", "Moderate" = "darkblue","Able_s" = "lightblue4", "Mild_s" = "maroon", "Moderate_s" = "darkblue"), name = "Estado") +
   xlab('Tiempo') +
   ylab('Ingresos Simulados') + cowplot::theme_cowplot()
