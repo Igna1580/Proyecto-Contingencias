@@ -1140,6 +1140,8 @@ for(k in 0:34){
   Pob_H$Estado.1_65[1:(35-k)] <- Pob_H$Estado.1_65[1:(35-k)] + proyeccion[1:(35-k),3]
   Pob_H$Estado.1.65[(36-k):82] <- Pob_H$Estado.1.65[(36-k):82] + proyeccion[(36-k):82,3]
   Pob_H$Estado.2_65[1:(35-k)] <- Pob_H$Estado.2_65[1:(35-k)] + proyeccion[1:(35-k),4]
+  Pob_H$Estado.2.65[(36-k):82] <- Pob_H$Estado.2.65[(36-k):82] + proyeccion[(36-k):82,4]
+  Pob_H$Estado.3_65[1:(35-k)] <- Pob_H$Estado.3_65[1:(35-k)] + proyeccion[1:(35-k),5]
   Pob_H$Estado.3.65[(36-k):82] <- Pob_H$Estado.3.65[(36-k):82] + proyeccion[(36-k):82,5]
   Pob_H$Estado.4_65[1:(35-k)] <- Pob_H$Estado.4_65[1:(35-k)] + proyeccion[1:(35-k),6]
   Pob_H$Estado.4.65[(36-k):82] <- Pob_H$Estado.4.65[(36-k):82] + proyeccion[(36-k):82,6]
