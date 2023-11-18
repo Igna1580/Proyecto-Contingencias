@@ -68,21 +68,21 @@ edades_selec_M$pob_estimada<- round(edades_selec_M$pob_M * edades_selec_M$porc_e
 
 #--- Inflación e Interés --------------------------------------------------------
 
-# inflación en Costa Rica de los últimos 10 años según Base de datos del Fondo Monetario Internacional, Banco Mundial e indicador del IPC de la OCDE
+# Variación interanual diciembre entre 2012 y 2023
 inflacion_data <- data.frame(
-  Ano = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
-  Costa_Rica = c(4.50, 5.23, 4.52, 0.80, -0.02, 1.63, 2.22, 2.10, 0.72, 1.73, 8.27)
+  Diciembre_Año = c(2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022),
+  Costa_Rica = c(4.55053049, 3.67954067, 5.12718527, -0.80758133, 0.76519109, 2.57410995, 2.02726215, 1.52242911, 0.89244852, 3.29890791, 7.87715376)
 )
 
 inflacion <- mean(inflacion_data$Costa_Rica)/100
-# inflación = 0.02881818
+# inflación = 0.02864289
 
 
 # descargamos la curva de rendimiento soberana de los últimos 6 meses
 tasas_Descuento <- read_excel("descuento.xlsx") 
 
-descuento <- round(mean(tasas_Descuento$`3 meses`), digits = 1)/100
-# descuento 0.058
+descuento <- round(mean(tasas_Descuento$`10 años`), digits = 1)/100
+# descuento 0.075
 
 
 #--- Probabilidades ------------------------------------------------------------
@@ -187,10 +187,20 @@ u.ax.n_ij_12 <- function(x,u=65-x,n=110-x-u,i=0, j,r=5.8,sexo){
 
 #--- Calculo Prima Generalizada -----------------------------------------------
 
-A <- 183671.1703*12 #Beneficio estado 1
-B <- 363381.6771*12 #Beneficio estado 2
-C <- 740398.8263*12 #Beneficio estado 3
-D <- 1572738.998*12 #Beneficio estado 4
+# monto de asilo en el 2015
+asilo <- 5173632 * (1+inflacion_data$Costa_Rica[5]/100) * (1+inflacion_data$Costa_Rica[6]/100) * (1+inflacion_data$Costa_Rica[7]/100) * (1+inflacion_data$Costa_Rica[8]/100) * (1+inflacion_data$Costa_Rica[9]/100) * (1+inflacion_data$Costa_Rica[10]/100) * (1+inflacion_data$Costa_Rica[11]/100)
+
+# monto de enfermería en el 2019
+A1 <- 3642584.1744 * (1+inflacion_data$Costa_Rica[9]/100) * (1+inflacion_data$Costa_Rica[10]/100) * (1+inflacion_data$Costa_Rica[11]/100)
+B1 <- 7285168.35 * (1+inflacion_data$Costa_Rica[9]/100) * (1+inflacion_data$Costa_Rica[10]/100) * (1+inflacion_data$Costa_Rica[11]/100)
+C1 <-  14570336.7 * (1+inflacion_data$Costa_Rica[9]/100) * (1+inflacion_data$Costa_Rica[10]/100) * (1+inflacion_data$Costa_Rica[11]/100)
+D1 <- 29140673.4 * (1+inflacion_data$Costa_Rica[9]/100) * (1+inflacion_data$Costa_Rica[10]/100) * (1+inflacion_data$Costa_Rica[11]/100)
+  
+  
+A <- (A1 + asilo)*0.25  #Beneficio estado 1
+B <- (B1 + asilo)*0.35 #Beneficio estado 2
+C <- (C1 + asilo)*0.45 #Beneficio estado 3
+D <- (D1 + asilo)*0.55 #Beneficio estado 4
 
 ##--- Beneficios ---------------------------------------------------------------
 
@@ -290,6 +300,16 @@ Prima_justa_M <- edades_selec_M$Benef_ind_por_edad/(edades_selec_M$primas_ind_po
 edades_selec_M <- cbind(edades_selec_M, Prima_justa_anual = Prima_justa_M)
 
 
+Prima_justa_H_min <- min(Prima_justa_H)
+Prima_justa_M_min <- min(Prima_justa_M)
+
+Prima_justa_H_max <- max(Prima_justa_H)
+Prima_justa_M_max <- max(Prima_justa_M)
+
+Prima_justa_H_media <- mean(Prima_justa_H)
+Prima_justa_M_media <- mean(Prima_justa_M)
+
+
 ##--------Graficos de población--------------
 
 p = ggplot() + 
@@ -297,11 +317,12 @@ p = ggplot() +
   geom_line(data = edades_selec_M, aes(x = Edad, y = pob_estimada, color = "Mujeres"), linetype = "solid", linewidth = 1) +
   scale_color_manual(values = c("Hombres" = "#9AC0CD", "Mujeres" = "#CD3333"), name = "Población") +
   xlab("Edad") +
-  ylab("Población estimada") + cowplot::theme_cowplot()
+  ylab("Población estimada") + cowplot::theme_cowplot() + scale_y_continuous(limits = c(0, 300), breaks = seq(0, 300, by = 100))  + scale_x_continuous(limits = c(30, 65), breaks = seq(30, 65, by = 2))
+
 
 print(p)
 
-ggsave(filename = "poblacion.pdf", plot = p, device = "pdf", width = 5, height = 3)
+ggsave(filename = "poblacion.pdf", plot = p, device = "pdf", width = 6, height = 3)
 # Crear un dataframe para los hombres
 hombres <- edades_selec_H[, c("Edad", "pob_estimada")]
 
@@ -340,10 +361,10 @@ mujeres$Sexo <- "Mujer"
 demografico <- rbind(hombres, mujeres)
 
 # Definir la secuencia creciente
-breaks <- c(seq(-1800, -200, by = 400), seq(0, 1800, by = 400))
+breaks <- c(seq(-100, -300, by = -100), seq(0, 100, by = 100))
 
 # Negar la secuencia para las etiquetas
-labels <- c(abs(seq(-1800, -200, by = 400)), seq(0, 1800, by = 400))
+labels <- c(abs(seq(-100, -300, by = -100)), seq(0, 100, by = 100))
 
 # Crear el gráfico con las nuevas ubicaciones de las marcas y etiquetas
 graf.demografico <- ggplot(demografico, aes(x = Edad, y = pob_estimada, fill = Sexo)) +
@@ -419,6 +440,7 @@ tabla_proyeccion_80años <- function(x,status,sexo) {
 lista_proyeccionesH <- list()
 #Caso mujeres
 lista_proyeccionesM <- list()
+
 for(i in 1:nrow(edades_df)){
   x <- edades_df[i,]
   lista_proyeccionesH[[i]] <- tabla_proyeccion_80años(x,0,"H")
