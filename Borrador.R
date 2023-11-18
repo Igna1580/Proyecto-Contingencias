@@ -132,7 +132,20 @@ obtencion_tabla_proyeccion(x,0,"H")
                        (ax.n_ij(x,n = 65-x,i=0,j=1,sexo="H")) +
                        (ax.n_ij(x,n = 65-x,i=0,j=2,sexo="H")))
 
-0.006232994
-0.01198371
-0.01730149
+#Diferencia Hombres
+(sum(Ingresos_H$Ingresos_totales) - sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)]))
+)/((sum(Ingresos_H$Ingresos_totales) + sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)]))
+)/2)
+
+(sum(Egresos_H$Egresos_totales) - sum(rowSums(df_egresos_simulado_H[,c(2,4,6,8,10)]))
+)/((sum(Egresos_H$Egresos_totales) + sum(rowSums(df_egresos_simulado_H[,c(2,4,6,8,10)]))
+)/2)
+#Diferencia Mujeres
+(sum(Ingresos_M$Ingresos_totales) - sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)]))
+)/((sum(Ingresos_M$Ingresos_totales) + sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)]))
+)/2)
+
+(sum(Egresos_M$Egresos_totales) - sum(rowSums(df_egresos_simulado_M[,c(2,4,6,8,10)]))
+)/((sum(Egresos_M$Egresos_totales) + sum(rowSums(df_egresos_simulado_M[,c(2,4,6,8,10)]))
+)/2)
 

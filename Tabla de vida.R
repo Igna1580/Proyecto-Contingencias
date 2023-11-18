@@ -301,7 +301,7 @@ p = ggplot() +
 
 print(p)
 
-ggsave(filename = "poblacion.pdf", plot = p, device = "pdf", width = 5, height = 3)
+ggsave(filename = "poblacion.jpg", plot = p, device = "jpg", width = 5, height = 3)
 # Crear un dataframe para los hombres
 hombres <- edades_selec_H[, c("Edad", "pob_estimada")]
 
@@ -359,7 +359,7 @@ graf.demografico <- ggplot(demografico, aes(x = Edad, y = pob_estimada, fill = S
   ylab("Población estimada") + cowplot::theme_cowplot()  +
   annotate("text", x = Inf, y = Inf, hjust = 6.5, vjust = 3, label = "Hombres") +
   annotate("text", x = Inf, y = Inf, hjust = 1.5, vjust = 3, label = "Mujeres")
-ggsave(filename = "piramide.pdf", plot = graf.demografico, device = "pdf", width = 5, height = 3)
+ggsave(filename = "piramide.jpg", plot = graf.demografico, device = "jpg", width = 5, height = 3)
 
 print(graf.demografico)
 
@@ -1230,6 +1230,7 @@ G.df_ingresos_estimados_unit_H = ggplot() +
   cowplot::theme_cowplot()
 print(G.df_ingresos_estimados_unit_H)
 
+
 G.df_ingresos_estimados_unit_M = ggplot() + 
   geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E0 , color = "Capaz"), linetype = "solid", size = 1) +
   geom_line(data = Ingresos_esperados_unit_M, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
@@ -1274,7 +1275,7 @@ G.df_ingresos_esperados_niv_H = ggplot() +
   geom_line(data = Ingresos_H_nivel, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
   geom_line(data = Ingresos_H_nivel, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue"), name = "Estado") +
-  labs(title = "Ingresos esperados para Hombres \ncon Prima según la Edad", x = "Tiempo", y = "Ingresos") +
+  labs(title = "Ingresos Esperados para Hombres \ncon Prima según la Edad", x = "Tiempo", y = "Ingresos") +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.df_ingresos_esperados_niv_H)
@@ -1284,7 +1285,7 @@ G.ingresos_simulados_niv_M = ggplot() +
   geom_line(data = Ingresos_M_nivel, aes(x = Año, y = Ingresos.E1 , color = "Leve"), linetype = "solid", size = 1) +
   geom_line(data = Ingresos_M_nivel, aes(x = Año, y = Ingresos.E2 , color = "Moderado"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue"), name = "Estado") +
-  labs(title = "Ingresos Simulados para Mujeres \ncon Prima según la Edad", x = "Tiempo", y = "Ingresos") +
+  labs(title = "Ingresos Esperados para Mujeres \ncon Prima según la Edad", x = "Tiempo", y = "Ingresos") +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_niv_M)
@@ -1302,16 +1303,16 @@ for (i in 1:82) {
     
   } else{
     Egresos_H[i,2] <- Egresos_H[i,2] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.0_65[i]
-    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.1.65[i]
-    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.2.65[i]
-    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.3.65[i]
-    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.4.65[i]
+    Egresos_H[i,3] <- Egresos_H[i,3] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1.65[i]
+    Egresos_H[i,4] <- Egresos_H[i,4] + (0.05*prima_hombres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2.65[i]
+    Egresos_H[i,5] <- Egresos_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.3.65[i]
+    Egresos_H[i,6] <- Egresos_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.4.65[i]
     
     Egresos_M[i,2] <- Egresos_M[i,2] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.0_65[i]
-    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.1.65[i]
-    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.2.65[i]
-    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.3.65[i]
-    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.4.65[i]
+    Egresos_M[i,3] <- Egresos_M[i,3] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1.65[i]
+    Egresos_M[i,4] <- Egresos_M[i,4] + (0.05*prima_mujeres_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2.65[i]
+    Egresos_M[i,5] <- Egresos_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.3.65[i]
+    Egresos_M[i,6] <- Egresos_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.4.65[i]
   }
 }
 
@@ -1325,9 +1326,11 @@ G.egresos_esperados_H = ggplot() +
   geom_line(data = Egresos_H, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_H, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
+  labs(title = "Egresos Esperados para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(G.egresos_esperados_H)
+ggsave(filename = "G.egresos_esperados_H.jpg", plot = G.egresos_esperados_H, device = "jpg")
+
 
 G.egresos_esperados_M = ggplot() + 
   geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1) +
@@ -1336,9 +1339,10 @@ G.egresos_esperados_M = ggplot() +
   geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
+  labs(title = "Egresos Esperados para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(G.egresos_esperados_M)
+ggsave(filename = "G.egresos_esperados_M.jpg", plot = G.egresos_esperados_M, device = "jpg")
 
 
 ##-----Egreso Prima Unitaria------------------------------------------------------------
@@ -1353,16 +1357,16 @@ for (i in 1:82) {
     
   } else{
     Egresos_esperado_unit_H[i,2] <- Egresos_esperado_unit_H[i,2] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.0_65[i]
-    Egresos_esperado_unit_H[i,3] <- Egresos_esperado_unit_H[i,3] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.1.65[i]
-    Egresos_esperado_unit_H[i,4] <- Egresos_esperado_unit_H[i,4] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.2.65[i]
-    Egresos_esperado_unit_H[i,5] <- Egresos_esperado_unit_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.3.65[i]
-    Egresos_esperado_unit_H[i,6] <- Egresos_esperado_unit_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_H$Estado.4.65[i]
+    Egresos_esperado_unit_H[i,3] <- Egresos_esperado_unit_H[i,3] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.1.65[i]
+    Egresos_esperado_unit_H[i,4] <- Egresos_esperado_unit_H[i,4] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.2.65[i]
+    Egresos_esperado_unit_H[i,5] <- Egresos_esperado_unit_H[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.3.65[i]
+    Egresos_esperado_unit_H[i,6] <- Egresos_esperado_unit_H[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_H$Estado.4.65[i]
     
     Egresos_esperado_unit_M[i,2] <- Egresos_esperado_unit_M[i,2] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.0_65[i]
-    Egresos_esperado_unit_M[i,3] <- Egresos_esperado_unit_M[i,3] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.1.65[i]
-    Egresos_esperado_unit_M[i,4] <- Egresos_esperado_unit_M[i,4] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.2.65[i]
-    Egresos_esperado_unit_M[i,5] <- Egresos_esperado_unit_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.3.65[i]
-    Egresos_esperado_unit_M[i,6] <- Egresos_esperado_unit_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*Pob_M$Estado.4.65[i]
+    Egresos_esperado_unit_M[i,3] <- Egresos_esperado_unit_M[i,3] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1_65[i] + A*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.1.65[i]
+    Egresos_esperado_unit_M[i,4] <- Egresos_esperado_unit_M[i,4] + (0.05*prima_anual)*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2_65[i] + B*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.2.65[i]
+    Egresos_esperado_unit_M[i,5] <- Egresos_esperado_unit_M[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.3.65[i]
+    Egresos_esperado_unit_M[i,6] <- Egresos_esperado_unit_M[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*Pob_M$Estado.4.65[i]
   }
 }
 
@@ -1373,9 +1377,11 @@ G.egresos_esperados_unit_H = ggplot() +
   geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
+  labs(title = "Egresos Esperados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_esperados_unit_H)
+ggsave(filename = "G.egresos_esperados_unit_H.jpg", plot = G.egresos_esperados_unit_H, device = "jpg")
+
 
 G.egresos_esperados_unit_M = ggplot() + 
   geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1) +
@@ -1384,9 +1390,10 @@ G.egresos_esperados_unit_M = ggplot() +
   geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_esperado_unit_M, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
+  labs(title = "Egresos Esperados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_esperados_unit_M)
+ggsave(filename = "G.egresos_esperados_unit_M.jpg", plot = G.egresos_esperados_unit_M, device = "jpg")
 
 ##-----Egreso Prima Nivelada------------------------------------------------------------
 
@@ -1416,15 +1423,15 @@ for (k in 0:34){
   }
   
   for (i in (36-k):82) {
-    Egresos_H_nivel[i,3] <- Egresos_H_nivel[i,3] + A*(((1+inflacion)/(1+descuento))^(i))*proyeccion_H[i,3]
-    Egresos_H_nivel[i,4] <- Egresos_H_nivel[i,4] + B*(((1+inflacion)/(1+descuento))^(i))*proyeccion_H[i,4]
-    Egresos_H_nivel[i,5] <- Egresos_H_nivel[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*proyeccion_H[i,5]
-    Egresos_H_nivel[i,6] <- Egresos_H_nivel[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*proyeccion_H[i,6]
+    Egresos_H_nivel[i,3] <- Egresos_H_nivel[i,3] + A*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_H[i,3]
+    Egresos_H_nivel[i,4] <- Egresos_H_nivel[i,4] + B*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_H[i,4]
+    Egresos_H_nivel[i,5] <- Egresos_H_nivel[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_H[i,5]
+    Egresos_H_nivel[i,6] <- Egresos_H_nivel[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_H[i,6]
     
-    Egresos_M_nivel[i,3] <- Egresos_M_nivel[i,3] + A*(((1+inflacion)/(1+descuento))^(i))*proyeccion_M[i,3]
-    Egresos_M_nivel[i,4] <- Egresos_M_nivel[i,4] + B*(((1+inflacion)/(1+descuento))^(i))*proyeccion_M[i,4]
-    Egresos_M_nivel[i,5] <- Egresos_M_nivel[i,5] + C*(((1+inflacion)/(1+descuento))^(i))*proyeccion_M[i,5]
-    Egresos_M_nivel[i,6] <- Egresos_M_nivel[i,6] + D*(((1+inflacion)/(1+descuento))^(i))*proyeccion_M[i,6]
+    Egresos_M_nivel[i,3] <- Egresos_M_nivel[i,3] + A*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_M[i,3]
+    Egresos_M_nivel[i,4] <- Egresos_M_nivel[i,4] + B*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_M[i,4]
+    Egresos_M_nivel[i,5] <- Egresos_M_nivel[i,5] + C*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_M[i,5]
+    Egresos_M_nivel[i,6] <- Egresos_M_nivel[i,6] + D*(((1+inflacion)/(1+descuento))^(i-1))*proyeccion_M[i,6]
     
   }
   
@@ -1441,7 +1448,7 @@ G.egresos_esperados_niv_H = ggplot() +
   geom_line(data = Egresos_H_nivel, aes(x = tiempo , y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_H_nivel, aes(x = tiempo , y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Hombres \ncon Prima según Edad", x = "Tiempo", y = "Egresos") +
+  labs(title = "Egresos Esperados para Hombres \ncon Prima según Edad", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_esperados_niv_H)
 
@@ -1452,7 +1459,7 @@ G.egresos_esperados_niv_M = ggplot() +
   geom_line(data = Egresos_M_nivel, aes(x = tiempo , y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1) +
   geom_line(data = Egresos_M_nivel, aes(x = tiempo , y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink"), name = "Estado") +
-  labs(title = "Egresos Simulados para Mujeres \ncon Prima según Edad", x = "Tiempo", y = "Egresos") +
+  labs(title = "Egresos Esperados para Mujeres \ncon Prima según Edad", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_esperados_niv_M)
 
@@ -1550,7 +1557,7 @@ G.ingresos_simulados_H = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_H)
-ggsave(filename = "G.ingresos_simulados_H.pdf", plot = G.ingresos_simulados_H, device = "pdf")
+ggsave(filename = "G.ingresos_simulados_H.jpg", plot = G.ingresos_simulados_H, device = "jpg")
 
 
 #Mujeres
@@ -1575,7 +1582,7 @@ G.ingresos_simulados_M = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_M)
-ggsave(filename = "G.ingresos_simulados_M.pdf", plot = G.ingresos_simulados_M, device = "pdf")
+ggsave(filename = "G.ingresos_simulados_M.jpg", plot = G.ingresos_simulados_M, device = "jpg")
 
 
 ###--- Egresos ---------------------------------------------------------------
@@ -1585,14 +1592,14 @@ df_beneficios_simulados_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 
 df_costos_simulados_H <- tibble(
@@ -1633,7 +1640,7 @@ G.egresos_simulados_H = ggplot() +
   labs(title = "Egresos Simulados para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_H)
-ggsave(filename = "G.egresos_simulados_H.pdf", plot = G.egresos_simulados_H, device = "pdf")
+ggsave(filename = "G.egresos_simulados_H.jpg", plot = G.egresos_simulados_H, device = "jpg")
 
 
 #Mujeres
@@ -1641,14 +1648,14 @@ df_beneficios_simulados_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 
 df_costos_simulados_M <- tibble(
@@ -1689,7 +1696,7 @@ G.egresos_simulados_M = ggplot() +
   labs(title = "Egresos Simulados para Mujeres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(G.egresos_simulados_M)
-ggsave(filename = "G.egresos_simulados_M.pdf", plot = G.egresos_simulados_M, device = "pdf")
+ggsave(filename = "G.egresos_simulados_M.jpg", plot = G.egresos_simulados_M, device = "jpg")
 
 
 ###--- Balance ------------------------------------------------------------------
@@ -1753,7 +1760,7 @@ G.df_ingresos_simulados_unit_H = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.df_ingresos_simulados_unit_H)
-ggsave(filename = "G.df_ingresos_simulados_unit_H.pdf", plot = G.df_ingresos_simulados_unit_H, device = "pdf")
+ggsave(filename = "G.df_ingresos_simulados_unit_H.jpg", plot = G.df_ingresos_simulados_unit_H, device = "jpg")
 
 
 #Mujeres
@@ -1778,7 +1785,7 @@ G.ingresos_simulados_unit_M = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(G.ingresos_simulados_unit_M)
-ggsave(filename = "G.ingresos_simulados_unit_M.pdf", plot = G.ingresos_simulados_unit_M, device = "pdf")
+ggsave(filename = "G.ingresos_simulados_unit_M.jpg", plot = G.ingresos_simulados_unit_M, device = "jpg")
 
 
 ###--- Egresos ---------------------------------------------------------------
@@ -1788,14 +1795,14 @@ df_beneficios_simulados_unit_H <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_H[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_H[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 
 df_costos_simulados_unit_H <- tibble(
@@ -1836,7 +1843,7 @@ G.egresos_simulados_unit_H = ggplot() +
   labs(title = "Egresos Simulados para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_unit_H)
-ggsave(filename = "G.egresos_simulados_unit_H.pdf", plot = G.egresos_simulados_unit_H, device = "pdf")
+ggsave(filename = "G.egresos_simulados_unit_H.jpg", plot = G.egresos_simulados_unit_H, device = "jpg")
 
 
 #Mujeres
@@ -1844,14 +1851,14 @@ df_beneficios_simulados_unit_M <- tibble(
   Año = 0:80) %>%
   rowwise() %>%
   mutate(
-    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1),
-    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año+1),
-    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año+1)
+    Benef_estim_1 = A*mean(v_pob_65mas_xaño_1_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_1 = A*quantile(v_pob_65mas_xaño_1_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_2 = B*mean(v_pob_65mas_xaño_2_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_2 = B*quantile(v_pob_65mas_xaño_2_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_3 = C*mean(v_pob_65mas_xaño_3_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_3 = C*quantile(v_pob_65mas_xaño_3_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año),
+    Benef_estim_4 = D*mean(v_pob_65mas_xaño_4_M[[Año+1]])*((1+inflacion)/(1+descuento))^(Año),
+    Perc_99.5_4 = D*quantile(v_pob_65mas_xaño_4_M[[Año+1]],0.995)*((1+inflacion)/(1+descuento))^(Año)
   )
 
 df_costos_simulados_unit_M <- tibble(
@@ -1892,7 +1899,7 @@ G.egresos_simulados_unit_M = ggplot() +
   labs(title = "Egresos Simulados para Mujeres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") +
   cowplot::theme_cowplot()
 print(G.egresos_simulados_unit_M)
-ggsave(filename = "G.egresos_simulados_unit_M.pdf", plot = G.egresos_simulados_unit_M, device = "pdf")
+ggsave(filename = "G.egresos_simulados_unit_M.jpg", plot = G.egresos_simulados_unit_M, device = "jpg")
 
 
 ###--- Balance ------------------------------------------------------------------
@@ -1945,6 +1952,8 @@ ambos_ingresos_H = ggplot() +
   xlim(0, 35) +
   cowplot::theme_cowplot()
 print(ambos_ingresos_H)
+ggsave(filename = "ambos_ingresos_H.jpg", plot = ambos_ingresos_H, device = "jpg")
+
 
 ambos_egresos_H = ggplot() + 
   geom_line(data = df_egresos_simulado_H, aes(x = Año, y = Egresos_estim_0, color = "Capaz Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
@@ -1961,6 +1970,8 @@ ambos_egresos_H = ggplot() +
   labs(title = "Egresos Conjuntos para Hombres \ncon Prima por Sexo", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
 print(ambos_egresos_H)
+ggsave(filename = "ambos_egresos_H.jpg", plot = ambos_egresos_H, device = "jpg")
+
 
 ambos_ingresos_M = ggplot() + 
   geom_line(data = df_ingresos_simulados_M, aes(x = Año, y = Ing_estim_0 , color = "Capaz Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
@@ -2012,11 +2023,11 @@ ambos_egresos_unit_H = ggplot() +
   geom_line(data = df_egresos_simulado_unit_H, aes(x = Año, y = Egresos_estim_2 , color = "Moderado Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_unit_H, aes(x = Año, y = Egresos_estim_3 , color = "Severo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
   geom_line(data = df_egresos_simulado_unit_H, aes(x = Año, y = Egresos_estim_4 , color = "Profundo Simulado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
-  geom_line(data = Egresos_esperado_unit_H, aes(x = Año, y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = (Año-1), y = Egresos.E0, color = "Capaz"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = (Año-1), y = Egresos.E1 , color = "Leve"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = (Año-1), y = Egresos.E2 , color = "Moderado"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = (Año-1), y = Egresos.E3 , color = "Severo"), linetype = "solid", size = 1, alpha = 0.5) +
+  geom_line(data = Egresos_esperado_unit_H, aes(x = (Año-1), y = Egresos.E4 , color = "Profundo"), linetype = "solid", size = 1, alpha = 0.5) +
   scale_color_manual(values = c("Capaz" = "lightblue4", "Leve" = "maroon", "Moderado" = "darkblue", "Severo" = "purple", "Profundo" = "pink","Capaz Simulado" = "lightblue4", "Leve Simulado" = "maroon", "Moderado Simulado" = "darkblue", "Severo Simulado" = "purple", "Profundo Simulado" = "pink"), name = "Estado") +
   labs(title = "Egresos Conjuntos para Hombres \ncon Prima Indiferente", x = "Tiempo", y = "Egresos") + 
   cowplot::theme_cowplot()
