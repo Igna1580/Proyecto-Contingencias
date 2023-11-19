@@ -2087,3 +2087,23 @@ ambos_egresos_unit_M = ggplot() +
   cowplot::theme_cowplot()
 print(ambos_egresos_unit_M)
 
+#---Diferencias-----------------------------------
+
+
+#Diferencia Hombres
+(sum(Ingresos_H$Ingresos_totales) - sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)]))
+)/((sum(Ingresos_H$Ingresos_totales) + sum(rowSums(df_ingresos_simulados_H[,c(2,4,6)]))
+)/2)
+
+(sum(Egresos_H$Egresos_totales) - sum(rowSums(df_egresos_simulado_H[,c(2,4,6,8,10)]))
+)/((sum(Egresos_H$Egresos_totales) + sum(rowSums(df_egresos_simulado_H[,c(2,4,6,8,10)]))
+)/2)
+#Diferencia Mujeres
+(sum(Ingresos_M$Ingresos_totales) - sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)]))
+)/((sum(Ingresos_M$Ingresos_totales) + sum(rowSums(df_ingresos_simulados_M[,c(2,4,6)]))
+)/2)
+
+(sum(Egresos_M$Egresos_totales) - sum(rowSums(df_egresos_simulado_M[,c(2,4,6,8,10)]))
+)/((sum(Egresos_M$Egresos_totales) + sum(rowSums(df_egresos_simulado_M[,c(2,4,6,8,10)]))
+)/2)
+
