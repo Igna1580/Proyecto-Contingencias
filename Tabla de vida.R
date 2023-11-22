@@ -152,38 +152,6 @@ u.ax.n_ij <- function(x,u=65-x,n=111-u-x,i=0, j,r=5.8,inf=2.881818,sexo){
   return(resultado)
 }
 
-#Anualidades mensualizadas
-
-#Función anualidad prepagable mensualizada
-
-v <- (1+inflacion)/(1+descuento)
-d <- 1-v
-d_m <- 12*(1-(v^(1/12)))
-i_m <- 12*((1+descuento)^(1/12)-1)
-alfa <- (descuento*d)/(i_m*d_m)
-beta <- (descuento-i_m)/(i_m*d_m)
-
-ax.n_ij_12 <- function(x,n=110-x,i=0,j,r=5.8,sexo){
-  
-  prob <- obtencion_tabla_proyeccion(x,i,sexo)[n,j+2]
- 
-  anualidad <- alfa*ax.n_ij(x, n, i, j, r, sexo)-beta*(1-(v^n)*prob)
-  
-  return(anualidad)
-}
-
-#Función anualidad diferida mensualizada
-
-u.ax.n_ij_12 <- function(x,u=65-x,n=110-x-u,i=0, j,r=5.8,sexo){
-  
-  prob1 <- obtencion_tabla_proyeccion(x,i,sexo)[n,j+2]
-  prob2 <- obtencion_tabla_proyeccion(x,i,sexo)[u,j+2]
-  
-  anualidad <- alfa*u.ax.n_ij(x,u,n,i,j,r,sexo)-beta*((v^u)*prob2 -(v^n)*prob1)
-  
-  return(anualidad)
-}
-
 
 #--- Calculo Prima Generalizada -----------------------------------------------
 
